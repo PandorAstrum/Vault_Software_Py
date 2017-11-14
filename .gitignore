@@ -17,7 +17,7 @@ ENV/
 DjangoVenv/
 
 .DS_Store
-bin/
+
 include/
 pip-selfcheck.json
 
@@ -37,7 +37,7 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
+
 lib64/
 parts/
 sdist/
