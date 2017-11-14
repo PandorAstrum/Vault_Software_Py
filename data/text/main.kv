@@ -1,0 +1,254 @@
+#: import icon data.lib.iconfonts.icon
+#:import C kivy.utils.get_color_from_hex
+#:import Toolbar kivymd.toolbar.Toolbar
+
+# Main Root
+<RootWidget>:
+    orientation: "vertical"
+    on_size: print(self.size)
+
+#   Action Bar ---------------------------------------------------------------
+    ActionBar:
+        pos_hint: {'top':1}
+        # App Logo
+        ActionView:
+            orientation: 'horizontal'
+            padding: '5dp'
+            use_separator: True
+            ActionPrevious:
+                title: ''
+                with_previous: False
+
+            # contextual DropDown
+            ActionOverflow: # Build Content From PY
+                id: action_overflow_id
+
+            # DropDown Selection
+            ActionGroup: # Build Content From PY
+                id: action_group_id
+                markup:True
+                text: ""
+                mode: 'spinner'
+                size_hint_x: None
+
+
+            ActionButton:
+                halign: "center"
+                markup: True
+                text:"%s"%(icon('fa-bell', 20))
+            ActionButton:
+                halign: "center"
+                markup: True # Always turn markup on
+                text:"%s"%(icon('fa-flag', 20))
+            ActionButton:
+                halign: "center"
+                markup: True # Always turn markup on
+                text:"%s"%(icon('fa-user', 20))
+
+#    Main screen Manager ---------------------------------------------------------------------------
+    RelativeLayout:
+        id: main_screen_manager_id
+        canvas:
+            Color:
+                rgb: C('#AAAAAA')
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+#        pos_hint: {'bottom':1}
+#        size_hint: 1, 0.9
+
+
+<ScrappingScreen>:
+
+    BoxLayout:
+        canvas:
+            Color:
+                rgb: C('#E2E2E2')
+            Rectangle:
+                pos: self.pos
+                size: self.size
+#        Button:
+#            text: 'Scrapping'
+#        Button:
+#            text: 'On'
+#<Label>:
+#    size_hint: 0.3, 0.25
+
+
+
+# screen general
+<PluginsScreen>:
+    FloatLayout:
+        canvas:
+            Color:
+                rgb: C('#BAC437')
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        # section + content
+        RelativeLayout:
+            id: tab_screen_content_id
+            pos_hint: {"right": 1, "y": 0}
+            size_hint: 0.95, 1
+            canvas:
+                Color:
+                    rgb: C('#AAAAAA')
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+        # tabs
+        FloatLayout:
+            id: screen_sidebar_id
+            pos_hint: {"x": 0, "top": 1}
+            size_hint: 0.05, 1
+            canvas:
+                Color:
+                    rgb: C('#222222')
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+<Plugin_tab_Screen>:
+    FloatLayout:
+#        pos_hint: {"x": 0, "top": 1}
+#        size_hint: 0.05, 1
+        canvas:
+            Color:
+                rgb: C('#FA7D67')
+            Rectangle:
+                pos: self.pos
+                size: self.size
+#       Section
+        FloatLayout:
+            id: plugins_section_panel_id
+            pos_hint: {"left": 1, "top": 1}
+            size_hint: 0.25, 1
+            canvas:
+                Color:
+                    rgb: C('5247CC')
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+#        Content
+        RelativeLayout:
+            id: plugins_manager_section_main_id
+            pos_hint: {"right": 1, "bottom": 1}
+            size_hint: 0.75, 1
+            canvas:
+                Color:
+                    rgb: C('D15767')
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+#            Button:
+#                text:"LL"
+
+<UsersScreen>:
+    BoxLayout:
+        Button:
+            text: 'Users'
+<GuideScreen>:
+    BoxLayout:
+        Button:
+            text: 'Guide'
+
+
+
+
+
+<PluginTabCreatorScreen>:
+    FloatLayout:
+        canvas:
+            Color:
+                rgb: C('#7AA3C0')
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        Button:
+            text: "NAVIGATION DRAWER"
+#        Button:
+#            text: "NEXT"
+
+
+
+<PluginTabHelpScreen>:
+    BoxLayout:
+        canvas:
+            Color:
+                rgb: C('#8FCC95')
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+
+
+
+
+<Plugin_t_Manager_s_General_screen>:
+    BoxLayout:
+        canvas:
+            Color:
+                rgb: C('#04EBBF')
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+<Plugin_t_Manager_s_Ui_screen>:
+    BoxLayout:
+        canvas:
+            Color:
+                rgb: C('#E46E00')
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+<Plugin_t_Manager_s_Function_screen>:
+    BoxLayout:
+        canvas:
+            Color:
+                rgb: C('#9A5FCA')
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+
+
+
+
+#Split
+<Users_Component_Screen>:
+    FloatLayout:
+        canvas:
+            Color:
+                rgb: C('#BAC437')
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        # section + content
+        RelativeLayout:
+            id: tab_screen_content_id
+            pos_hint: {"right": 1, "y": 0}
+            size_hint: 0.95, 1
+            canvas:
+                Color:
+                    rgb: C('#AAAAAA')
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+        # tabs
+        FloatLayout:
+            id: screen_sidebar_id
+            pos_hint: {"x": 0, "top": 1}
+            size_hint: 0.05, 1
+            canvas:
+                Color:
+                    rgb: C('#222222')
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
