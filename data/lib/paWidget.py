@@ -3,15 +3,16 @@ from functools import partial
 from kivy.clock import mainthread
 from kivy.lang import Builder
 from kivy.uix.actionbar import ActionToggleButton
-from kivy.uix.screenmanager import ScreenManager, SwapTransition, SlideTransition, Screen
+from kivy.uix.screenmanager import ScreenManager, SwapTransition, SlideTransition, Screen, FadeTransition
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.togglebutton import ToggleButton
-from kivymd.navigationdrawer import MDNavigationDrawer, NavigationDrawerToolbar
+from kivymd.navigationdrawer import MDNavigationDrawer, NavigationDrawerToolbar, NavigationDrawerIconButton
+from kivymd.toolbar import Toolbar
 
 from data.lib.iconfonts import icon
 from data.lib.jsonUtility import getJsonFile, dumpKeyValue
 
-root_widget_layout = """
+rootWidget = """
 #: import icon data.lib.iconfonts.icon
 #:import C kivy.utils.get_color_from_hex
 #:import Toolbar kivymd.toolbar.Toolbar
@@ -117,23 +118,16 @@ root_widget_layout = """
                 pos: self.pos
                 size: self.size
 """
-generic_component_widget_layout = """
-<Generic_component_widget_screen>:
+ComponentsWidget = """
+<ComponentsWidget>:
     BoxLayout:
         id: src_mngr_comp_id
         pos_hint: {"right": 1, "y": 0}
         size_hint: 0.95, 1
-        canvas:
-            Color:
-                rgb: C('#FFFFFF')
-            Rectangle:
-                pos: self.pos
-                size: self.size
 
-    # tabs
+    # tabs ---------------------------------------------
     FloatLayout:
         id: tab_panel_id
-        # pos_hint: {"left": 1, "y": 0}
         size_hint: 0.05, 1
         canvas:
             Color:
@@ -143,33 +137,59 @@ generic_component_widget_layout = """
                 size: self.size
 
 """
-generic_tab_widget_layout = """
-<Generic_tab_widget_screen>:
+TabWithDrawer = """
+<TabWithDrawer>:
     NavigationLayout:
         id: nav_layout_id
         BoxLayout:
+            # MDNavigationDrawer add here --------------------------------------
             id: nav_drawer
             orientation: "horizontal"
-            # add the MDNavigationDrawer class here
 
         BoxLayout:
+            # Toolbar add here -------------------------------------------------
             orientation: "vertical"
-            # pos_hint: {"x":0, "bottom":1}
-            # size_hint_y: 1
+            id: toolbar_id
             canvas:
                 Color:
-                    rgb: C('5BADEE')
+                    rgb: C('5BAD00')
                 Rectangle:
                     pos: self.pos
                     size: self.size
-            Toolbar:
-                id: toolbar_id
-                size_hint_y: 0.1
-                right_action_items: [['dots-vertical', lambda x: self.parent.parent.parent.toggle_nav_drawer()]]
-            Button:
-                text: "OKAY"
+            # Toolbar:
+            #     # must have top bar
+            #
+                # size_hint_y: 0.1
+                # right_action_items: [['dots-vertical', lambda x: self.parent.parent.parent.toggle_nav_drawer()]]
+            # BoxLayout:
+            #     id: content_id
+            #     orientation: "vertical"
+            #     # Button:
+            #     #     text: "OKAY"
 """
-Builder.load_string(root_widget_layout + generic_component_widget_layout + generic_tab_widget_layout)
+TabWithoutDrawer = """
+<TabWithoutDrawer>:
+    BoxLayout:
+        orientation: "vertical"
+        canvas:
+            Color:
+                rgb: C('5BAD00')
+            Rectangle:
+                pos: self.pos
+                size: self.size
+"""
+custom_toolbar = """
+# <CustomListToolbar>:
+#     size_hint_y: 0.1
+"""
+custom_block = """
+<CustomBlock>:
+    id: content_id
+    orientation: "vertical"
+    Button:
+        text: "Okay"
+"""
+Builder.load_string(rootWidget + ComponentsWidget + TabWithDrawer + TabWithoutDrawer + custom_toolbar + custom_block)
 
 class RootWidget(BoxLayout):
     def __init__(self, **kwargs):
@@ -194,7 +214,7 @@ class RootWidget(BoxLayout):
                     for each_component_name, each_component_fields in all_component.items():
                         if each_component_fields["status"] == True:
                             # initialize with generic class
-                            instance = Generic_component_widget_screen(component_name=each_component_fields["id"],
+                            instance = ComponentsWidget(component_name=each_component_fields["id"],
                                                                        component_id=each_component_fields["id"],
                                                                        component_icon=each_component_fields["icon"],
                                                                        component_tab_info=each_component_fields["tab"],
@@ -232,15 +252,15 @@ class RootWidget(BoxLayout):
         dumpKeyValue(self.data, "window_width", size[0])
         dumpKeyValue(self.data, "window_height", size[1])
 
-class Generic_component_widget_screen(Screen):
+class ComponentsWidget(Screen):
     def __init__(self, **kwargs):
-        super(Generic_component_widget_screen, self).__init__()
+        super(ComponentsWidget, self).__init__()
         self.name = kwargs.get("component_name")
         self.component_id = kwargs.get("component_id")
         self.component_icon = kwargs.get("component_icon")
         self.component_tab_info = kwargs.get("component_tab_info")
         self.tab_group_name = kwargs.get("tab_group_name")
-        self.src_mngr_comp = ScreenManager(transition=SlideTransition())
+        self.src_mngr_comp = ScreenManager(transition=SlideTransition(direction="down"))
         self.tab_collection = []
         self.on_create()
 
@@ -249,11 +269,25 @@ class Generic_component_widget_screen(Screen):
         tab_dict = {}
         for each_tab_dict in self.component_tab_info:
             tab_dict[each_tab_dict["tab_name"]] = each_tab_dict["tab_icon"]
-            # initialize tab class widget and add to sc manger
-            instance = Generic_tab_widget_screen(tab_name=each_tab_dict["tab_name"],
-                                                 tab_icon=each_tab_dict["tab_icon"],
-                                                 tab_type=each_tab_dict["tab_type"])
-            self.src_mngr_comp.add_widget(instance)
+
+            if (each_tab_dict["tab_type"] == "list" or each_tab_dict["tab_type"] == "basic"):
+                # TODO: Tab Withdrawer Initialize but Differenct list view
+                # initialize the tab widget with list and drawer
+                instance = TabWithDrawer(tab_name=each_tab_dict["tab_name"],
+                                         tab_type=each_tab_dict["tab_type"],
+                                         tab_content=each_tab_dict["tab_content"])
+                self.src_mngr_comp.add_widget(instance)
+
+            elif (each_tab_dict["tab_type"] == "null"):
+                # TODO: Tab Without drawer initialize
+                pass
+                # initialize the tab widget without drawer
+
+                # instance = TabWithDrawer(tab_name=each_tab_dict["tab_name"],
+                #                                      tab_icon=each_tab_dict["tab_icon"],
+                #                                      tab_type=each_tab_dict["tab_type"],
+                #                                      tab_content=each_tab_dict["tab_content"])
+                # self.src_mngr_comp.add_widget(instance)
         self.ids.src_mngr_comp_id.add_widget(self.src_mngr_comp)
 
         def callback(instance): #tab button callback
@@ -281,31 +315,87 @@ class Generic_component_widget_screen(Screen):
             position_y -= 0.09
             self.tab_collection.append(btn)
 
-class Generic_tab_widget_screen(Screen):
+class TabWithDrawer(Screen):
+
     def __init__(self, **kwargs):
-        super(Generic_tab_widget_screen, self).__init__()
+        super(TabWithDrawer, self).__init__()
         self.name = kwargs.get("tab_name")
-        # self.tab_id = kwargs.get("tab_id")
-        self.tab_icon = kwargs.get("tab_icon")
         self.tab_type = kwargs.get("tab_type")
+        self.tab_content = kwargs.get("tab_content")
+        print(self.tab_content)
         self.on_create()
 
     @mainthread
     def on_create(self):
+        # TODO: Create the appropiate drawer
+        # TODO: Create the appropriate toolbar
+        # TODO: Create appropriate Screen Manager
         # create the navigation drawer according to type
         if (self.tab_type == "list"):
-            instance = TypeListDrawer(drawer_name=self.name)
+            # add toolbar
+            c = CustomListToolbar()
+            self.ids.toolbar_id.add_widget(c)
+            # add boxlayout
+            b = CustomBlock()
+            self.ids.toolbar_id.add_widget(b)
+            # add drawer list
+            instance = TypeListDrawer(drawer_name=self.name, drawer_item_list=self.tab_content)
             self.ids.nav_drawer.add_widget(instance)
         elif (self.tab_type == "basic"):
+            # no toolbar
+            c = CustomBasicToolbar()
+            self.ids.toolbar_id.add_widget(c)
+            # add boxlayout
+            b = CustomBlock()
+            self.ids.toolbar_id.add_widget(b)
+            instance = TypeBasicDrawer()
+            self.ids.nav_drawer.add_widget(instance)
             pass
         # add screen based on tab type and assign to ids
+
+class TabWithoutDrawer(Screen):
+    def __init__(self, **kwargs):
+        super(TabWithoutDrawer, self).__init__()
+
+
+class CustomListToolbar(Toolbar):
+    def __init__(self, **kwargs):
+        super(CustomListToolbar, self).__init__()
+        self.size_hint_y = 0.1
+        self.right_action_items = [['dots-vertical', lambda x: self.parent.parent.parent.toggle_nav_drawer()]]
+
+class CustomBasicToolbar(Toolbar):
+    def __init__(self, **kwargs):
+        super(CustomBasicToolbar, self).__init__()
+
+class CustomBlock(BoxLayout):
+    def __init__(self, **kwargs):
+        super(CustomBlock, self).__init__()
+
 
 class TypeListDrawer(MDNavigationDrawer):
     def __init__(self, **kwargs):
         super(TypeListDrawer, self).__init__()
+        self.drawer_item_list = kwargs.get("drawer_item_list")
+        self.content_src_mngr = ScreenManager(transition=SlideTransition())
+
+        # add screen to content
+
+        # add a toolbar on the drawer
         self.toolbar = DrawerToolbar(drawer_name=kwargs.get("drawer_name"))
-        #TODO: add list of screen
         self.add_widget(self.toolbar)
+        # add list of buttons
+        for i in self.drawer_item_list:
+            ins = DrawerIconBtn(drawer_item_name=i["tab_item_name"], on_release=print("working"))
+            self.add_widget(ins)
+
+class DrawerIconBtn(NavigationDrawerIconButton):
+    def __init__(self, **kwargs):
+        super(DrawerIconBtn, self).__init__()
+        self.icon = "checkbox-blank-circle"
+        self.text = kwargs.get("drawer_item_name")
+        # self.on_release = print("working")
+        # self.on_release: app.root.ids.scr_mngr.current = 'accordion'
 
 class DrawerToolbar(NavigationDrawerToolbar):
     def __init__(self, **kwargs):

@@ -20,13 +20,23 @@
                         "tab_id": "accounts",
                         "tab_icon": "fa-key",
                         "tab_type": "list",
-                        "tab_content": []
+                        "tab_content": [
+                            {
+                                "tab_item_name": "1 First"
+                            },
+                            {
+                                "tab_item_name": "2 Second"
+                            },
+                            {
+                                "tab_item_name": "3 Third"
+                            }
+                        ]
                     },
                     {
                         "tab_name": "Help",
                         "tab_id": "help",
                         "tab_icon": "fa-question",
-                        "tab_type": "basic",
+                        "tab_type": "null",
                         "tab_content": []
                     }
                 ]
@@ -70,8 +80,8 @@
     "settings": [
         {
             "window_size": {
-                "window_width": 1360,
-                "window_height": 705
+                "window_width": 1000,
+                "window_height": 500
             }
         }
     ]

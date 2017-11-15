@@ -9,21 +9,31 @@
                 "tab_group_name": "user_tab_group",
                 "tab": [
                     {
-                        "tab_name": "general",
+                        "tab_name": "General",
                         "tab_id": "general",
                         "tab_icon": "fa-user",
                         "tab_type": "basic",
                         "tab_content": []
                     },
                     {
-                        "tab_name": "accounts",
+                        "tab_name": "Accounts",
                         "tab_id": "accounts",
                         "tab_icon": "fa-key",
                         "tab_type": "list",
-                        "tab_content": []
+                        "tab_content": [
+                            {
+                                "tab_item_name": "1 First"
+                            },
+                            {
+                                "tab_item_name": "2 Second"
+                            },
+                            {
+                                "tab_item_name": "3 Second"
+                            }
+                        ]
                     },
                     {
-                        "tab_name": "help",
+                        "tab_name": "Help",
                         "tab_id": "help",
                         "tab_icon": "fa-question",
                         "tab_type": "basic",
@@ -41,14 +51,14 @@
                 "tab_group_name": "help_tab_group",
                 "tab": [
                     {
-                        "tab_name": "general",
+                        "tab_name": "General",
                         "tab_id": "general",
                         "tab_icon": "fa-user",
                         "tab_type": "basic",
                         "tab_content": []
                     },
                     {
-                        "tab_name": "guides",
+                        "tab_name": "Guides",
                         "tab_id": "guides",
                         "tab_icon": "fa-key",
                         "tab_type": "list",
@@ -70,8 +80,8 @@
     "settings": [
         {
             "window_size": {
-                "width": 1000,
-                "height": 500
+                "window_width": 1000,
+                "window_height": 500
             }
         }
     ]

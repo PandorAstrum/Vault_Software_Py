@@ -12,84 +12,6 @@ from data.lib.iconfonts import icon
 from data.lib.essWidget import Generic_component_widget_screen
 from data.lib.jsonUtility import dumpJson, getJsonFile, getKeyValue, dumpKeyValue
 
-USER_SETTINGS_JSON = {
-    "component" : [
-        {
-            "User_component" : {
-                "id" : "Users",
-                "icon" : "fa-home",
-                "status" : True,
-                "order" : 1,
-                "tab_group_name" : "user_tab_group",
-                "tab" : [
-                    {
-                        "tab_name" : "general",
-                        "tab_id" : "general",
-                        "tab_icon" : "fa-user",
-                        "tab_type" : "basic",
-                        "tab_content" : []
-                    },
-                    {
-                        "tab_name" : "accounts",
-                        "tab_id" : "accounts",
-                        "tab_icon" : "fa-key",
-                        "tab_type" : "list",
-                        "tab_content" : []
-                    },
-                    {
-                        "tab_name" : "help",
-                        "tab_id" : "help",
-                        "tab_icon" : "fa-question",
-                        "tab_type" : "basic",
-                        "tab_content" : []
-                    }
-                ]
-            }
-        },
-        {
-            "Help_component" : {
-                "id" : "Help",
-                "icon" : "fa-question",
-                "status" : True,
-                "order" : 2,
-                "tab_group_name" : "help_tab_group",
-                "tab" : [
-                    {
-                        "tab_name": "general",
-                        "tab_id": "general",
-                        "tab_icon": "fa-user",
-                        "tab_type": "basic",
-                        "tab_content": []
-                    },
-                    {
-                        "tab_name": "guides",
-                        "tab_id": "guides",
-                        "tab_icon": "fa-key",
-                        "tab_type": "list",
-                        "tab_content": []
-                    }
-                ]
-            }
-        },
-        {
-            "Test_component" : {
-                "id" : "Test",
-                "icon" : "fa-question",
-                "status" : False,
-                "order" : 3,
-                "tab" : []
-            }
-        }
-    ],
-    "settings" : [
-        {
-            "window_size": {
-                "window_width": 1000,
-                "window_height": 500
-            }
-        }
-    ]
-}
 
 def list_files(dir):
     r = []
@@ -330,8 +252,8 @@ ls = LocalStorage(debug=True)
 # print(ls.dump_dir)
 dumpJson(USER_SETTINGS_JSON)
 # print(getJsonFile())
-data = getJsonFile()
-dumpKeyValue(data, "window_width", 1200)
+# data = getJsonFile()
+# dumpKeyValue(data, "window_width", 1200)
 
 # window = jsontest.getkey(data, "settings")
 # # size = jsontest.getkey(window, "window_size")
