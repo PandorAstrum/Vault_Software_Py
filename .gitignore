@@ -12,6 +12,7 @@ dist/
 kivy-designer-master/
 kivymdmaster/
 test/
+data/testclass/
 
 # Environments to ignore
 .env

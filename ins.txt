@@ -44,3 +44,6 @@ coll = COLLECT(exe, Tree('data'),
 designer//
 @ change directory
 @ python -m designer
+
+git
+git rm -r one-of-the-directories (delete folders)
