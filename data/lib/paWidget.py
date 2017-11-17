@@ -11,8 +11,10 @@ from kivymd.toolbar import Toolbar
 
 from data.lib.iconfonts import icon
 from data.lib.jsonUtility import getJsonFile, dumpKeyValue
+from data.lib.generalUtility import colorScale
+from data.lib.paLogger import PaLogger
 
-rootWidget = """
+rootWidgetKV = """
 #: import icon data.lib.iconfonts.icon
 #:import C kivy.utils.get_color_from_hex
 #:import Toolbar kivymd.toolbar.Toolbar
@@ -118,7 +120,7 @@ rootWidget = """
                 pos: self.pos
                 size: self.size
 """
-ComponentsWidget = """
+ComponentsWidgetKV = """
 <ComponentsWidget>:
     BoxLayout:
         id: src_mngr_comp_id
@@ -137,7 +139,7 @@ ComponentsWidget = """
                 size: self.size
 
 """
-TabWithDrawer = """
+TabWithDrawerKV = """
 <TabWithDrawer>:
     NavigationLayout:
         id: nav_layout_id
@@ -164,10 +166,10 @@ TabWithDrawer = """
             # BoxLayout:
             #     id: content_id
             #     orientation: "vertical"
-            #     # Button:
-            #     #     text: "OKAY"
+            #     Button:
+            #         text: "OKAY"
 """
-TabWithoutDrawer = """
+TabWithoutDrawerKV = """
 <TabWithoutDrawer>:
     BoxLayout:
         orientation: "vertical"
@@ -178,8 +180,8 @@ TabWithoutDrawer = """
                 pos: self.pos
                 size: self.size
 """
-custom_toolbar = """
-# <CustomListToolbar>:
+CustomToolbar = """
+# <CustomToolbar>:
 #     size_hint_y: 0.1
 """
 custom_block = """
@@ -189,7 +191,7 @@ custom_block = """
     Button:
         text: "Okay"
 """
-Builder.load_string(rootWidget + ComponentsWidget + TabWithDrawer + TabWithoutDrawer + custom_toolbar + custom_block)
+Builder.load_string(rootWidgetKV + ComponentsWidgetKV + TabWithDrawerKV + TabWithoutDrawerKV + CustomToolbar + custom_block)
 
 class RootWidget(BoxLayout):
     def __init__(self, **kwargs):
@@ -201,6 +203,7 @@ class RootWidget(BoxLayout):
         self.directory = self.dir + self.folder_name
         self.dict_of_component = {}
         self.src_mngr = ScreenManager(transition=SwapTransition())
+        self.ls = kwargs.get("ls")
         self.on_create()
 
     @mainthread
@@ -242,7 +245,6 @@ class RootWidget(BoxLayout):
             ac_drpdwn_btn.allow_no_selection = False
             ac_drpdwn_btn.bind(on_press=partial(callback))
             self.ids.act_spinner_id.add_widget(ac_drpdwn_btn)
-
     def resize_window(self, size):
         """
         RootWidget size dump settings key in json
@@ -275,10 +277,11 @@ class ComponentsWidget(Screen):
                 # initialize the tab widget with list and drawer
                 instance = TabWithDrawer(tab_name=each_tab_dict["tab_name"],
                                          tab_type=each_tab_dict["tab_type"],
-                                         tab_content=each_tab_dict["tab_content"])
+                                         tab_content=each_tab_dict["tab_content"],
+                                         toolbar=each_tab_dict["toolbar"])
                 self.src_mngr_comp.add_widget(instance)
 
-            elif (each_tab_dict["tab_type"] == "null"):
+            elif each_tab_dict["tab_type"] == "null":
                 # TODO: Tab Without drawer initialize
                 pass
                 # initialize the tab widget without drawer
@@ -322,47 +325,63 @@ class TabWithDrawer(Screen):
         self.name = kwargs.get("tab_name")
         self.tab_type = kwargs.get("tab_type")
         self.tab_content = kwargs.get("tab_content")
-        print(self.tab_content)
+        self.toolbar_dict = kwargs.get("toolbar")
         self.on_create()
 
     @mainthread
     def on_create(self):
-        # TODO: Create the appropiate drawer
+        # TODO: Create the appropriate drawer
+
+        if self.tab_type == "list":
+            #drawer
+            customdrawer = TypeListDrawer(drawer_name=self.name, drawer_item_list=self.tab_content)
+            self.ids.nav_drawer.add_widget(customdrawer)
+            #toolbar
+            tlbar = CustomToolbar(toolbar_color=self.toolbar_dict["color"])
+            self.ids.toolbar_id.add_widget(tlbar)
+        elif self.tab_type == "basic":
+            pass
         # TODO: Create the appropriate toolbar
         # TODO: Create appropriate Screen Manager
         # create the navigation drawer according to type
-        if (self.tab_type == "list"):
-            # add toolbar
-            c = CustomListToolbar()
-            self.ids.toolbar_id.add_widget(c)
-            # add boxlayout
-            b = CustomBlock()
-            self.ids.toolbar_id.add_widget(b)
-            # add drawer list
-            instance = TypeListDrawer(drawer_name=self.name, drawer_item_list=self.tab_content)
-            self.ids.nav_drawer.add_widget(instance)
-        elif (self.tab_type == "basic"):
-            # no toolbar
-            c = CustomBasicToolbar()
-            self.ids.toolbar_id.add_widget(c)
-            # add boxlayout
-            b = CustomBlock()
-            self.ids.toolbar_id.add_widget(b)
-            instance = TypeBasicDrawer()
-            self.ids.nav_drawer.add_widget(instance)
-            pass
+        # if (self.tab_type == "list"):
+        #     # add toolbar
+        #     c = CustomListToolbar()
+        #     self.ids.toolbar_id.add_widget(c)
+        #     # add boxlayout
+        #     b = CustomBlock()
+        #     self.ids.toolbar_id.add_widget(b)
+        #     # add drawer list
+        #     instance = TypeListDrawer(drawer_name=self.name, drawer_item_list=self.tab_content)
+        #     self.ids.nav_drawer.add_widget(instance)
+        # elif (self.tab_type == "basic"):
+        #     # no toolbar
+        #     c = CustomBasicToolbar()
+        #     self.ids.toolbar_id.add_widget(c)
+        #     # add boxlayout
+        #     b = CustomBlock()
+        #     self.ids.toolbar_id.add_widget(b)
+        #     instance = TypeBasicDrawer()
+        #     self.ids.nav_drawer.add_widget(instance)
+        #     pass
         # add screen based on tab type and assign to ids
 
 class TabWithoutDrawer(Screen):
     def __init__(self, **kwargs):
         super(TabWithoutDrawer, self).__init__()
 
-
-class CustomListToolbar(Toolbar):
+class CustomToolbar(Toolbar):
     def __init__(self, **kwargs):
-        super(CustomListToolbar, self).__init__()
+        super(CustomToolbar, self).__init__()
+        self.toolbar_color = kwargs.get("toolbar_color")
+        temp_color_list = []
+        for i in self.toolbar_color:
+            result = colorScale(i)
+            temp_color_list.append(result)
+        temp_color_list.append(1)
         self.size_hint_y = 0.1
         self.right_action_items = [['dots-vertical', lambda x: self.parent.parent.parent.toggle_nav_drawer()]]
+        self.md_bg_color = temp_color_list
 
 class CustomBasicToolbar(Toolbar):
     def __init__(self, **kwargs):

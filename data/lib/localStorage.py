@@ -34,8 +34,9 @@ class LocalStorage:
             self.one_up = os.path.normpath(os.getcwd() + os.sep + os.pardir)
             self.debug_storage_cd = self.one_up + "\\local_storage\\"
             self.debug_storage_root = self.current_dir + "\\local_storage\\"
-            self.test_dir = os.getcwd() + "\\bin\\Component\\"
+            self.test_dir = os.getcwd() + "\\data\\dump\\"
             self.dump_dir = self.one_up + "\\data\\dump\\"
+            self.dump_dir2 = self.one_up + "\\dump\\"
         else:
             self.user_home = os.path.expanduser('~')
             self.desktop = self.user_home + "\\Desktop\\"

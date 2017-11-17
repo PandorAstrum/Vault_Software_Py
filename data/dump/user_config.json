@@ -13,6 +13,13 @@
                         "tab_id": "general",
                         "tab_icon": "fa-user",
                         "tab_type": "basic",
+                        "toolbar": {
+                            "color": [
+                                133,
+                                133,
+                                133
+                            ]
+                        },
                         "tab_content": []
                     },
                     {
@@ -20,6 +27,13 @@
                         "tab_id": "accounts",
                         "tab_icon": "fa-key",
                         "tab_type": "list",
+                        "toolbar": {
+                            "color": [
+                                219,
+                                134,
+                                37
+                            ]
+                        },
                         "tab_content": [
                             {
                                 "tab_item_name": "1 First"
@@ -37,6 +51,13 @@
                         "tab_id": "help",
                         "tab_icon": "fa-question",
                         "tab_type": "null",
+                        "toolbar": {
+                            "color": [
+                                133,
+                                133,
+                                133
+                            ]
+                        },
                         "tab_content": []
                     }
                 ]
@@ -55,6 +76,13 @@
                         "tab_id": "general",
                         "tab_icon": "fa-user",
                         "tab_type": "basic",
+                        "toolbar": {
+                            "color": [
+                                133,
+                                133,
+                                133
+                            ]
+                        },
                         "tab_content": []
                     },
                     {
@@ -62,6 +90,13 @@
                         "tab_id": "guides",
                         "tab_icon": "fa-key",
                         "tab_type": "list",
+                        "toolbar": {
+                            "color": [
+                                133,
+                                133,
+                                133
+                            ]
+                        },
                         "tab_content": []
                     }
                 ]

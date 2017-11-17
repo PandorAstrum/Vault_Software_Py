@@ -125,7 +125,8 @@ class MainApp(App):
         self.icon = "res/icon/icon.ico"
         self.root = RootWidget(directory=ls.test_dir,
                                view_file="*_Views.py",
-                               folder_name="/*Component")
+                               folder_name="/*Component",
+                               ls=ls)
 
         return self.root
 
