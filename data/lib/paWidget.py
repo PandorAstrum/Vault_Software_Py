@@ -3,6 +3,9 @@ from functools import partial
 from kivy.clock import mainthread
 from kivy.lang import Builder
 from kivy.uix.actionbar import ActionToggleButton
+from kivy.uix.button import Button
+from kivy.uix.label import Label
+from kivy.uix.popup import Popup
 from kivy.uix.screenmanager import ScreenManager, SwapTransition, SlideTransition, Screen, FadeTransition
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.togglebutton import ToggleButton
@@ -180,7 +183,7 @@ TabWithoutDrawerKV = """
                 pos: self.pos
                 size: self.size
 """
-CustomToolbar = """
+CustomToolbarKV = """
 # <CustomToolbar>:
 #     size_hint_y: 0.1
 """
@@ -190,8 +193,9 @@ custom_block = """
     orientation: "vertical"
     Button:
         text: "Okay"
+        on_release: self.parent.testPress()
 """
-Builder.load_string(rootWidgetKV + ComponentsWidgetKV + TabWithDrawerKV + TabWithoutDrawerKV + CustomToolbar + custom_block)
+Builder.load_string(rootWidgetKV + ComponentsWidgetKV + TabWithDrawerKV + TabWithoutDrawerKV + CustomToolbarKV + custom_block)
 
 class RootWidget(BoxLayout):
     def __init__(self, **kwargs):
@@ -273,8 +277,7 @@ class ComponentsWidget(Screen):
             tab_dict[each_tab_dict["tab_name"]] = each_tab_dict["tab_icon"]
 
             if (each_tab_dict["tab_type"] == "list" or each_tab_dict["tab_type"] == "basic"):
-                # TODO: Tab Withdrawer Initialize but Differenct list view
-                # initialize the tab widget with list and drawer
+                # TODO: Tab Withdrawer Initialize but different list view
                 instance = TabWithDrawer(tab_name=each_tab_dict["tab_name"],
                                          tab_type=each_tab_dict["tab_type"],
                                          tab_content=each_tab_dict["tab_content"],
@@ -339,6 +342,9 @@ class TabWithDrawer(Screen):
             #toolbar
             tlbar = CustomToolbar(toolbar_color=self.toolbar_dict["color"])
             self.ids.toolbar_id.add_widget(tlbar)
+            #block
+            block = CustomBlock()
+            self.ids.toolbar_id.add_widget(block)
         elif self.tab_type == "basic":
             pass
         # TODO: Create the appropriate toolbar
@@ -390,6 +396,10 @@ class CustomBasicToolbar(Toolbar):
 class CustomBlock(BoxLayout):
     def __init__(self, **kwargs):
         super(CustomBlock, self).__init__()
+        #TODO: import appropriate component class and implement build ui
+        # attach the ui to appropriate ids
+
+        print("Open webpage")
 
 
 class TypeListDrawer(MDNavigationDrawer):
