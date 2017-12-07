@@ -1,11 +1,6 @@
-from functools import partial
-
-from kivy.clock import mainthread
 from kivy.uix.screenmanager import Screen, ScreenManager, SlideTransition
 
-
 from data.lib import customBuilder as CustomBuilder
-from data.lib.iconfonts import icon
 
 layout = """
 <Help_t_Basic_screen>:

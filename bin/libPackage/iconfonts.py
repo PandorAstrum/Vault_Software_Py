@@ -1,16 +1,15 @@
-# logging
-# import logging
-# from kivy.logger import Logger
-# Logger.setLevel(logging.ERROR)
+"""
+DocString
+"""
 import re
 import json
 from collections import OrderedDict
 from kivy.compat import PY2
 
-_register = OrderedDict()
+_REGISTER = OrderedDict()
 
 if not PY2:
-    unichr = chr
+    UNICHR = chr
 
 
 def register(name, ttf_fname, fontd_fname):
@@ -21,7 +20,7 @@ def register(name, ttf_fname, fontd_fname):
     """
     with open(fontd_fname, 'r') as f:
         fontd = json.loads(f.read())
-        _register[name] = ttf_fname, fontd_fname, fontd
+        _REGISTER[name] = ttf_fname, fontd_fname, fontd
 
 
 def icon(code, size=None, color=None, font_name=None):
@@ -32,9 +31,9 @@ def icon(code, size=None, color=None, font_name=None):
     :param font_name: Registered font name. If None first one is used.
     :returns: icon text (with markups)
     """
-    font = list(_register.keys())[0] if font_name is None else font_name
-    font_data = _register[font]
-    s = "[font=%s]%s[/font]" % (font_data[0], unichr(font_data[2][code]))
+    font = list(_REGISTER.keys())[0] if font_name is None else font_name
+    font_data = _REGISTER[font]
+    s = "[font=%s]%s[/font]" % (font_data[0], UNICHR(font_data[2][code]))
     if size is not None:
         s = "[size=%s]%s[/size]" % (size, s)
     if color is not None:

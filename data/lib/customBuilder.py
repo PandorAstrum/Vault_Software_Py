@@ -1,16 +1,18 @@
-import importlib.util, fnmatch, os, glob, inspect
+import fnmatch
+import glob
+import importlib.util
+import inspect
+import os
 from functools import partial
 
 from kivy.clock import mainthread
-from kivy.uix.actionbar import ActionToggleButton
-from kivy.uix.screenmanager import ScreenManager, SlideTransition
-from kivy.uix.togglebutton import ToggleButton
 from kivy.lang import Builder
+from kivy.uix.actionbar import ActionToggleButton
+from kivy.uix.togglebutton import ToggleButton
 
-from data.lib.iconfonts import icon
-# from data.lib import navdrawer
+from bin.libPackage.iconfonts import icon
 from data.lib.essWidget import Generic_component_widget_screen
-from data.lib.jsonUtility import dumpJson, getJsonFile, getKeyValue, dumpKeyValue
+from data.lib.jsonUtility import dumpJson
 
 
 def list_files(dir):

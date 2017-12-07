@@ -1,6 +1,8 @@
 from kivy.uix.screenmanager import Screen, ScreenManager, SlideTransition
+
+from bin.Component.UserComponent.drivers import Drivers
 from data.lib import customBuilder as CustomBuilder
-from data.bin.Component.UserComponent.drivers  import Drivers
+
 layout_base = """
 <UserComponentBase>:
     BoxLayout:

@@ -3,11 +3,10 @@ from functools import partial
 from kivy.lang import Builder
 from kivy.uix.screenmanager import Screen, ScreenManager, SlideTransition
 from kivy.uix.togglebutton import ToggleButton
-from kivy.utils import get_color_from_hex
-from kivymd.navigationdrawer import MDNavigationDrawer, NavigationLayout, NavigationDrawerToolbar
+from kivymd.navigationdrawer import MDNavigationDrawer, NavigationDrawerToolbar
 from kivymd.toolbar import Toolbar
 
-from data.lib.iconfonts import icon
+from bin.libPackage.iconfonts import icon
 
 layout_base = """
 NavigationLayout:

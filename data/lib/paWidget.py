@@ -3,22 +3,18 @@ from functools import partial
 from kivy.clock import mainthread
 from kivy.lang import Builder
 from kivy.uix.actionbar import ActionToggleButton
-from kivy.uix.button import Button
-from kivy.uix.label import Label
-from kivy.uix.popup import Popup
-from kivy.uix.screenmanager import ScreenManager, SwapTransition, SlideTransition, Screen, FadeTransition
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.screenmanager import ScreenManager, SwapTransition, SlideTransition, Screen
 from kivy.uix.togglebutton import ToggleButton
 from kivymd.navigationdrawer import MDNavigationDrawer, NavigationDrawerToolbar, NavigationDrawerIconButton
 from kivymd.toolbar import Toolbar
 
-from data.lib.iconfonts import icon
-from data.lib.jsonUtility import getJsonFile, dumpKeyValue
+from bin.libPackage.iconfonts import icon
 from data.lib.generalUtility import colorScale
-from data.lib.paLogger import PaLogger
+from data.lib.jsonUtility import getJsonFile, dumpKeyValue
 
 rootWidgetKV = """
-#: import icon data.lib.iconfonts.icon
+#: import icon bin.libPackage.iconfonts.icon
 #:import C kivy.utils.get_color_from_hex
 #:import Toolbar kivymd.toolbar.Toolbar
 #:import ThemeManager kivymd.theming.ThemeManager

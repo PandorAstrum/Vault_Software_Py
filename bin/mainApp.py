@@ -1,25 +1,30 @@
-# logging
-# import logging
-# from kivy.logger import Logger
-# Logger.setLevel(logging.ERROR)
+# -*- coding: utf-8 -*-
+"""
+__author__ = "Ashiquzzaman Khan"
+__desc__ = "main app module"
+"""
 
 # Window size settings
+import kivy
+kivy.require("1.10.0")
 from kivy.config import Config
 Config.set('kivy', 'window_icon', 'res/logo.png')
 Config.set('graphics', 'minimum_width', '1000')
 Config.set('graphics', 'minimum_height', '500')
-from data.lib.jsonUtility import getJsonFile, getKeyValue, dumpKeyValue, dumpJson
+from data.lib.jsonUtility import getJsonFile,\
+                                 getKeyValue,\
+                                 dumpKeyValue,\
+                                 dumpJson
 data = getJsonFile()
-width = getKeyValue(data, "window_width")
-height = getKeyValue(data, "window_height")
-Config.set('graphics', 'width', width[0])
-Config.set('graphics', 'height', height[0])
+WIDTH = getKeyValue(data, "window_width")
+HEIGHT = getKeyValue(data, "window_height")
+Config.set('graphics', 'width', WIDTH[0])
 
-#kivy import
-import kivy
-kivy.require("1.10.0")
-from kivy.app import App
+Config.set('graphics', 'height', HEIGHT[0])
+
 from kivymd.theming import ThemeManager
+from kivy.app import App
+
 
 # lib import
 from data.lib.paWidget import RootWidget
@@ -27,28 +32,28 @@ from data.lib.localStorage import LocalStorage
 
 # json test
 USER_SETTINGS_JSON = {
-    "component" : [
+    "component": [
         {
-            "User_component" : {
-                "id" : "Users",
-                "icon" : "fa-home",
-                "status" : True,
-                "order" : 1,
-                "tab_group_name" : "user_tab_group",
-                "tab" : [
+            "User_component": {
+                "id": "Users",
+                "icon": "fa-home",
+                "status": True,
+                "order": 1,
+                "tab_group_name": "user_tab_group",
+                "tab": [
                     {
-                        "tab_name" : "General",
-                        "tab_id" : "general",
-                        "tab_icon" : "fa-user",
-                        "tab_type" : "basic",
-                        "tab_content" : []
+                        "tab_name": "General",
+                        "tab_id": "general",
+                        "tab_icon": "fa-user",
+                        "tab_type": "basic",
+                        "tab_content": []
                     },
                     {
-                        "tab_name" : "Accounts",
-                        "tab_id" : "accounts",
-                        "tab_icon" : "fa-key",
-                        "tab_type" : "list",
-                        "tab_content" : [
+                        "tab_name": "Accounts",
+                        "tab_id": "accounts",
+                        "tab_icon": "fa-key",
+                        "tab_type": "list",
+                        "tab_content": [
                             {
                                 "tab_item_name": "1 First"
                             },
@@ -61,23 +66,23 @@ USER_SETTINGS_JSON = {
                         ]
                     },
                     {
-                        "tab_name" : "Help",
-                        "tab_id" : "help",
-                        "tab_icon" : "fa-question",
-                        "tab_type" : "basic",
-                        "tab_content" : []
+                        "tab_name": "Help",
+                        "tab_id": "help",
+                        "tab_icon": "fa-question",
+                        "tab_type": "basic",
+                        "tab_content": []
                     }
                 ]
             }
         },
         {
-            "Help_component" : {
-                "id" : "Help",
-                "icon" : "fa-question",
-                "status" : True,
-                "order" : 2,
-                "tab_group_name" : "help_tab_group",
-                "tab" : [
+            "Help_component": {
+                "id": "Help",
+                "icon": "fa-question",
+                "status": True,
+                "order": 2,
+                "tab_group_name": "help_tab_group",
+                "tab": [
                     {
                         "tab_name": "General",
                         "tab_id": "general",
@@ -96,16 +101,16 @@ USER_SETTINGS_JSON = {
             }
         },
         {
-            "Test_component" : {
-                "id" : "Test",
-                "icon" : "fa-question",
-                "status" : False,
-                "order" : 3,
-                "tab" : []
+            "Test_component": {
+                "id": "Test",
+                "icon": "fa-question",
+                "status": False,
+                "order": 3,
+                "tab": []
             }
         }
     ],
-    "settings" : [
+    "settings": [
         {
             "window_size": {
                 "window_width": 1000,
@@ -117,6 +122,7 @@ USER_SETTINGS_JSON = {
 # dumpJson(USER_SETTINGS_JSON)
 
 class MainApp(App):
+    """Doc String"""
     def build(self):
         ls = LocalStorage(debug=True)
         self.theme_cls = ThemeManager()
