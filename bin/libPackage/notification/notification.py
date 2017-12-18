@@ -1,15 +1,22 @@
+# -*- coding: utf-8 -*-
+"""
+__author__ = "Ashiquzzaman Khan"
+__desc__ = "main notification file"
+"""
+
 import os
 import sys
 import traceback
 from ast import literal_eval
-from kivy.utils import platform
-from subprocess import check_output
 from os.path import dirname, abspath, join
-from kivy.garden.notification import utils
+from subprocess import check_output
+
+from kivy.utils import platform
+
+from bin.libPackage.notification import utils
 
 # platform dependent imports
 if platform == 'win':
-    import ctypes
     import win32gui
     from win32con import (
         SW_HIDE, SW_SHOW,

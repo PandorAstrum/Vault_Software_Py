@@ -4,11 +4,10 @@ __author__ = "Ashiquzzaman Khan"
 __desc__ = "jsonUtility libpackage"
 """
 
-from data.lib.localStorage import LocalStorage
 import json
+from data.lib.localStorage import LocalStorage
 
-# dump json
-def dumpJson(dict):
+def dumpJson(dict, store_location): # pylint: disable=C0103
     """
     Dump the dictionary into a json
     :param dict: A dictionary value
@@ -22,7 +21,7 @@ def dumpJson(dict):
     with open(path+fileName, "w") as f:
         f.write(dumps)
 
-def getJsonFile():
+def getJsonFile(): # pylint: disable=C0103
     """
     Get the json file
     """
@@ -34,7 +33,7 @@ def getJsonFile():
         data = json.loads(s)
     return data
 
-def getKeyValue(search_dict, field):
+def getKeyValue(search_dict, field): # pylint: disable=C0103
     """
     Takes a dict with nested lists and dicts,
     and searches all dicts for a key of the field
@@ -61,7 +60,7 @@ def getKeyValue(search_dict, field):
 
     return fields_found
 
-def dumpKeyValue(dump_dict, field, val):
+def dumpKeyValue(dump_dict, field, val): # pylint: disable=C0103
     """
     Takes a dict with nested lists and dicts,
     and searches all dicts for a key of the field

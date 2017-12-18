@@ -1,60 +1,32 @@
-'''
-# Copyright (c) 2017 Peter Badida (KeyWeeUsr)
+# -*- coding: utf-8 -*-
+"""
+__author__ = "Ashiquzzaman Khan"
+__desc__ = "This widget provides a browser-like |notification|_ with all of the Kivy
+            features available. You can use it either in its default state, where is
+            only basic title and message with some of the color configuration, or
+            you can input your own message layout in kv language. The message string
+            is available through ``app.message`` property.
 
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of the Software.
-
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-# THE SOFTWARE.
-
-.. |notification| replace:: notification
-.. _notification: https://developer.mozilla.org/en-US/docs/Web/API/notification
-
-This widget provides a browser-like |notification|_ with all of the Kivy
-features available. You can use it either in its default state, where is
-only basic title and message with some of the color configuration, or
-you can input your own message layout in kv language. The message string
-is available through ``app.message`` property.
-
-Features:
-- message scrolls
-- available icon option
-- title will be shortened if too long
-- callback after the notification disappears
-- stacking multiple notifs on top of each other
-- markup turned on in title and message by default
-- kv language input
-- positioning and stacking relatively to the taskbar (Windows)
-
-TODO:
-- Ubuntu's Unity & OSX window hide implementation
-  (needed for hiding the window another python interpreter creates)
-- grab window focus back - each notification steals focus from the main window
-  (linux & OSX)
-- forbid notification to print Kivy initialisation logs to output
-  unless asked for it
-- positioning and stacking relatively to the taskbar (linux & OSX)
-'''
+            Features:
+            - message scrolls
+            - available icon option
+            - title will be shortened if too long
+            - callback after the notification disappears
+            - stacking multiple notifs on top of each other
+            - markup turned on in title and message by default
+            - kv language input
+            - positioning and stacking relatively to the taskbar (Windows)"
+"""
 
 import os
 import sys
 import threading
-from subprocess import Popen
 from os.path import dirname, abspath, join
+from subprocess import Popen
+
 from kivy.app import App
-from kivy.garden.notification import utils
+
+from bin.libPackage.notification import utils
 
 
 class Notification(object):
