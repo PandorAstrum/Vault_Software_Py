@@ -1,6 +1,6 @@
 from kivy.uix.screenmanager import Screen, ScreenManager, SlideTransition
 
-from bin.Component.UserComponent.drivers import Drivers
+# from bin.Component import drivers
 from data.lib import customBuilder as CustomBuilder
 
 layout_base = """
@@ -68,7 +68,7 @@ class UserComponentBase(Screen):
         #                          class_id=self.class_id,
         #                          tab_btn_collections=self.tab_collections,
         #                          tab_group_name=self.tab_group_name)
-        self.driver = Drivers()
+        # self.driver = Drivers()
     def toggle_nav_drawer(self):
         print("Working")
 

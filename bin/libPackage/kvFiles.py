@@ -3,7 +3,7 @@
 __author__ = "Ashiquzzaman Khan"
 __desc__ = "kv design files for all"
 """
-RootScreenMngrKV = """
+launchPadKV = """
 #:import icon bin.libPackage.iconfonts.icon
 #:import C kivy.utils.get_color_from_hex
 #:import Toolbar kivymd.toolbar.Toolbar
@@ -42,25 +42,9 @@ RootScreenMngrKV = """
 #:import MDThemePicker kivymd.theme_picker.MDThemePicker
 #:import MDBottomNavigation kivymd.tabs.MDBottomNavigation
 #:import MDBottomNavigationItem kivymd.tabs.MDBottomNavigationItem
-
-<RootScreenMngr>:
+<LaunchPad>:
     id: mainRoot
-    # login screen -----------------
-    LoginScreen:
-        id: login
-        name: "loginScreen"
-    # error screen -----------------
-    ErrorScreen:
-        id: err
-        name: "errScreen"
-    # registration screen ----------
-    NewRegistrationScreen:
-        id: reg
-        name: "registration"
-    # main screen ------------------
-    MainScreen:
-        id: main
-        name: "mainScreen"
+    on_size: self.resize_window(self.size)
 """
 seperatorKV = """
 <Separator@Widget>:
@@ -128,7 +112,7 @@ loginScreenKV = """
                         size_hint: None, None
 				        size: dp(48), dp(40)
                         pos_hint:{'center_x': 0.3, 'center_y': 0.25}
-                        on_release: root.show_example_dialog()
+                        on_release: root.forget()
                     MDRaisedButton:
                         text: "    New User?    "
                         size_hint: None, None
@@ -136,6 +120,7 @@ loginScreenKV = """
                         pos_hint:{'center_x':0.75,'center_y':0.25}
                         on_release: root.newRegister()
                     MDRaisedButton:
+                        id: loginbtn
                         text: "                                        Login                                        "
                         size_hint:None, None
 			            size:dp(48), dp(40)
@@ -150,12 +135,16 @@ newRegistrationKV = """
             pos_hint: {'center_x': 0.5, 'center_y': 0.5}
             BoxLayout:
                 orientation: "vertical"
+                padding: "20dp"
+                Image:
+                    size_hint: 0.2, 0.2
+                    pos_hint:{'center_x': 0.5, 'center_y': 0.5}
+                    source: "res\\edit_u.png"
                 ScrollView:
 			        do_scroll_x: False
 			        MDList:
                         padding: "20dp"
                         id: test
-
                         MDTextField:
                             id: usrname
                             hint_text: "Username"
@@ -323,9 +312,12 @@ errorScreenKV = """
 			    size:dp(400), dp(300)
                 orientation: "vertical"
                 padding: "20dp"
+
                 MDLabel:
+                    id: errorTextBox
                     text: "Password or Username is Incorrect"
                     font_style: "Title"
+                    theme_text_color: 'Primary'
                 RelativeLayout:
                     size_hint:None, None
 			        size:dp(360), dp(100)
@@ -385,7 +377,7 @@ mainScreenKV = """
     #Main screen Manager ---------------------------------------------------------
 
         BoxLayout:
-            id: src_mngr_id
+            id: src_mngr_level_2_id
             canvas:
                 Color:
                     rgb: C('#AAAAAA')
@@ -393,7 +385,7 @@ mainScreenKV = """
                     pos: self.pos
                     size: self.size
 
-    # Bottom Bar
+    # Bottom Bar -----------------------------------------------------------------
         BoxLayout:
             pos_hint: {'bottom':1}
             size_hint: 1, None
@@ -476,4 +468,21 @@ BoxLayout:
                 text_size: self.width, None
                 height: self.texture_size[1]
                 markup: True
+"""
+
+loadingScreenKV = """
+<LoadingScreen>:
+    MDSpinner:
+        id: spinner
+        size_hint: None, None
+        size: dp(46), dp(46)
+        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+        active: True
+"""
+
+mainAppKV = """
+<Root>:
+    id: mainRoot
+    Button:
+        text: "Okay"
 """

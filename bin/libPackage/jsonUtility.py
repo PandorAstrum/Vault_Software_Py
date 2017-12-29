@@ -5,39 +5,50 @@ __desc__ = "jsonUtility libpackage"
 """
 
 import json
-from data.lib.localStorage import LocalStorage
 
-def dumpJson(dict, store_location): # pylint: disable=C0103
+
+def dump_json(dictionary, store_location):   # pylint: disable=C0103
     """
-    Dump the dictionary into a json
-    :param dict: A dictionary value
-    :return: None
+    dump json
+    :param dictionary: A dictionary
+    :param store_location: A location Path
+    :return:
     """
-    ls = LocalStorage(debug=True)
-    path = ls.dump_dir
-    ls.make_dir(path)
-    fileName = "user_config.json"
-    dumps = json.dumps(dict, indent=4)
-    with open(path+fileName, "w") as f:
+    file_name = "user_config.json"
+    dumps = json.dumps(dictionary, indent=4)
+    with open(store_location+file_name, "w") as f:
         f.write(dumps)
 
-def getJsonFile(): # pylint: disable=C0103
+
+def add_to_json(dictionary, json_file):   # pylint: disable=C0103
     """
-    Get the json file
+    add things to existing json
+    :param dictionary: the new dictionary
+    :param json_file: the old json file
+    :return:
     """
-    ls = LocalStorage(debug=True)
-    path = ls.dump_dir
-    fileName = "user_config.json"
-    with open(path+fileName, "r") as f:
+    pass
+
+
+def get_json_file(path):  # pylint: disable=C0103
+    """
+    get the Json file
+    :param path: A location Path
+    :return:
+    """
+    file_name = "user_config.json"
+    with open(path+file_name, "r") as f:
         s = f.read()
         data = json.loads(s)
     return data
 
-def getKeyValue(search_dict, field): # pylint: disable=C0103
+
+def get_key_value(search_dict, field):  # pylint: disable=C0103
     """
-    Takes a dict with nested lists and dicts,
-    and searches all dicts for a key of the field
-    provided.
+    get key from json dict
+    :param search_dict:
+    :param field:
+    :return:
     """
     fields_found = []
 
@@ -47,18 +58,19 @@ def getKeyValue(search_dict, field): # pylint: disable=C0103
             fields_found.append(value)
 
         elif isinstance(value, dict):
-            results = getKeyValue(value, field)
+            results = get_key_value(value, field)
             for result in results:
                 fields_found.append(result)
 
         elif isinstance(value, list):
             for item in value:
                 if isinstance(item, dict):
-                    more_results = getKeyValue(item, field)
+                    more_results = get_key_value(item, field)
                     for another_result in more_results:
                         fields_found.append(another_result)
 
     return fields_found
+
 
 def dumpKeyValue(dump_dict, field, val): # pylint: disable=C0103
     """
@@ -79,4 +91,4 @@ def dumpKeyValue(dump_dict, field, val): # pylint: disable=C0103
                 if isinstance(item, dict):
                     dumpKeyValue(item, field, val)
 
-    dumpJson(dump_dict)
+    # dumpJson(dump_dict)

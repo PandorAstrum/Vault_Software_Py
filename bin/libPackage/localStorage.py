@@ -17,7 +17,7 @@ class LocalStorage(object):
             self.current_dir = os.getcwd()
             self.one_up = os.path.normpath(os.getcwd() + os.sep + os.pardir)
             self.root = "C:\\Users\\Ana Ash\\Desktop\\Project Software\\KivyPy\\Vault"
-            self.dump = "C:\\Users\\Ana Ash\\Desktop\\Project Software\\KivyPy\\Vault\\localDump"
+            self.storage = "C:\\Users\\Ana Ash\\Desktop\\Project Software\\KivyPy\\Vault\\localDump\\"
         else:
             self.user_home = os.path.expanduser('~')
             self.desktop = self.user_home + "\\Desktop\\"
@@ -28,6 +28,12 @@ class LocalStorage(object):
     def make_dir(self, dir_path):
         if not os.path.exists(dir_path):
             os.makedirs(dir_path)
+
+    def check_directory(self, dir_path):
+        return os.path.isdir(dir_path)
+
+    def check_file(self, path, filename):
+        os.path.isfile(path+filename)
 
     def get_current_dir(self, file=None):
         if not hasattr(self.get_current_dir, "dir"):
