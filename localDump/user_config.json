@@ -1,12 +1,18 @@
 {
-    "Help_component": {
-        "id": "Help",
+    "User_Component": {
+        "id": "Users",
+        "component_name": "UserComponent",
         "icon": "fa-home",
         "status": true,
-        "order": 0,
-        "tab_group_name": "help_tab_group",
+        "order": 1,
+        "tab_group_name": "user_tab_group",
         "tab": [
             {
+                "toolbar": {
+                    "have_toolbar": false,
+                    "toolbar_color": []
+                },
+                "tab_class_name": "GeneralTab",
                 "tab_name": "General",
                 "tab_id": "general",
                 "tab_icon": "fa-user",
@@ -14,6 +20,11 @@
                 "tab_content": []
             },
             {
+                "toolbar": {
+                    "have_toolbar": false,
+                    "toolbar_color": []
+                },
+                "tab_class_name": "AccountTab",
                 "tab_name": "Accounts",
                 "tab_id": "accounts",
                 "tab_icon": "fa-key",
@@ -31,6 +42,71 @@
                 ]
             },
             {
+                "toolbar": {
+                    "have_toolbar": true,
+                    "toolbar_color": [
+                        219,
+                        134,
+                        37
+                    ]
+                },
+                "tab_class_name": "HelpTab",
+                "tab_name": "Help",
+                "tab_id": "help",
+                "tab_icon": "fa-question",
+                "tab_type": "list",
+                "tab_content": []
+            }
+        ]
+    },
+    "Help_Component": {
+        "id": "Help",
+        "component_name": "HelpComponent",
+        "icon": "fa-book",
+        "status": true,
+        "order": 2,
+        "tab_group_name": "help_tab_group",
+        "tab": [
+            {
+                "toolbar": {
+                    "have_toolbar": false,
+                    "toolbar_color": []
+                },
+                "tab_class_name": "GeneralTab",
+                "tab_name": "General",
+                "tab_id": "general",
+                "tab_icon": "fa-user",
+                "tab_type": "basic",
+                "tab_content": []
+            },
+            {
+                "toolbar": {
+                    "have_toolbar": false,
+                    "toolbar_color": []
+                },
+                "tab_class_name": "AccountTab",
+                "tab_name": "Accounts",
+                "tab_id": "accounts",
+                "tab_icon": "fa-key",
+                "tab_type": "list",
+                "tab_content": [
+                    {
+                        "tab_item_name": "1 First"
+                    },
+                    {
+                        "tab_item_name": "2 Second"
+                    },
+                    {
+                        "tab_item_name": "3 Second"
+                    }
+                ]
+            },
+            {
+                "toolbar": {
+                    "have_toolbar": false,
+                    "toolbar_color": []
+                },
+                "tab_class_name": "HelpTab",
                 "tab_name": "Help",
                 "tab_id": "help",
                 "tab_icon": "fa-question",

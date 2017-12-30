@@ -10,6 +10,9 @@ import os
 from functools import wraps
 from contextlib import contextmanager
 
+def colorScale(input_value):
+    result = input_value/255
+    return result
 
 def _check_internet():
     """

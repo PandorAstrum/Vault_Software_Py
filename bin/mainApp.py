@@ -169,8 +169,8 @@ class MainApp(App):
             "Password": "starwars0"
         })
         config.setdefaults("Component", {
-            "PrimaryComponentList": ("User", "Help"),
-            "SecondaryComponentLocation": [self.local_Store.storage]
+            "PrimaryComponentEntry": ("User", "Help"),
+            "SecondaryComponentEntry": [self.local_Store.storage]
         })
 
     def on_config_change(self, config, section, key, value):

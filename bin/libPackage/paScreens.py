@@ -16,9 +16,10 @@ from kivy.lang import Builder
 from kivy.metrics import dp
 from kivy.properties import ObjectProperty
 from kivy.resources import resource_find
+from kivy.uix.actionbar import ActionToggleButton
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.relativelayout import RelativeLayout
-from kivy.uix.screenmanager import Screen, ScreenManager
+from kivy.uix.screenmanager import Screen, ScreenManager, SlideTransition, SwapTransition
 from kivymd.button import MDRaisedButton
 from kivymd.dialog import MDDialog
 from kivymd.label import MDLabel
@@ -26,7 +27,8 @@ from kivymd.snackbar import Snackbar
 from kivymd.tabs import MDTabbedPanel, MDTab
 from kivymd.textfields import MDTextField
 
-from bin.libPackage.jsonUtility import dump_json
+from bin.libPackage.iconfonts import icon
+from bin.libPackage.jsonUtility import dump_json, get_json_file
 from bin.libPackage.notification import Notification
 from bin.libPackage.cipherRSA import CipherRSA
 from bin.libPackage.localStorage import LocalStorage
@@ -36,32 +38,21 @@ from bin.libPackage.paUtility import threaded
 from bin.libPackage.kvFiles import *
 from data.testclass.MDToggleButton import MDToggleButton
 
-Builder.load_string(launchPadKV + loginScreenKV + newRegistrationKV + errorScreenKV + seperatorKV  + mainScreenKV + loadingScreenKV + mainAppKV)
+Builder.load_string(launchPadKV + loginScreenKV + RegistrationKV + errorScreenKV + seperatorKV  + mainScreenKV + loadingScreenKV + componentBaseKV + tabBaseKV + defaultScreenKV + defaultTabKV)
 
-
-
-class ErrorScreen(Screen):
-
-    def __init__(self, err, **kwargs):
-        super(ErrorScreen, self).__init__(**kwargs)
-        self.name = "errorScreen"
-        self.ids.errorTextBox.text = err
-
-    def tryAgain(self):
-        login = LoginScreen(instance=None)
-        self.manager.clear_widgets()
-        self.manager.add_widget(login)
-        self.manager.current = "loginScreen"
 
 class MainScreen(Screen):
-    def __init__(self, loginName, **kwargs):
+    def __init__(self, login_name, **kwargs):
         super(MainScreen, self).__init__(**kwargs)
         self.name = "mainScreen"
-        self.app_icon = "C:\\Users\\Ana Ash\\Desktop\\Project Software\\KivyPy\\Vault\\res\\logo.png"
-        self.loginName = loginName
-        self.localStorage = LocalStorage(debug=True)
-        self._snackbar("simple", "Logged in as {}".format(self.loginName))
-        self.make()
+        self.app_icon = "res\\logo.png"
+        self.login_name = login_name
+        self.local_storage = LocalStorage(debug=True)
+        self.json_dictionary = {}
+        self.data = None
+        self.src_mngr = ScreenManager(transition=SwapTransition())
+        self._snackbar("simple", f"Logged in as {self.login_name}")
+        self._make()
 
     def _snackbar(self, snack_type, msg):
         if snack_type == 'simple':
@@ -71,59 +62,129 @@ class MainScreen(Screen):
         elif snack_type == 'verylong':
             Snackbar(text="This is a very very very very very very very long snackbar!").show()
 
-    @mainthread
-    def make(self):
+    def _make(self):
         # get all component
         app = App.get_running_app()
-        comp = app.config.get("Component", "PrimaryComponentList")
-        loc = app.config.get("Component", "Loc")
-        component = comp.replace("(", "").replace(")", "").replace("'","").replace(" ", "").split(",")
+        primary_component_entry = app.config.get("Component", "PrimaryComponentEntry")
+        primary_component = primary_component_entry.replace("(", "").replace(")", "").replace("'","").replace(" ", "").split(",")
 
-        # position_y = 1
-        for i in component:
-            # print(i)
-            # btn = MDTab(text=i)
-        #     # btn = MDTabbedPanel(tab_orientation="top",tab_display_mode="text")
-        #     # # btn.allow_no_selection = False
-        #     # # btn.bind(on_press=partial(callback))
-        #     self.ids.tab_panel.add_widget(btn)
-        #     position_y -= 0.09
-            self.initializeComponent(i, self.localStorage.storage)
-        # print(type(ii))
-        # print(ii)
-        pass
+        # get the json file
+        try:
+            self.data = get_json_file(self.local_storage.storage)
+        except FileNotFoundError:
+            for i in primary_component:
+                component_json = self.build_json_default(i)
+                self.json_dictionary[f"{i}_Component"] = component_json
+            dump_json(self.json_dictionary, self.local_storage.storage)
+        finally:
+            self.data = get_json_file(self.local_storage.storage)
 
-    def initializeComponent(self, component_name, loc):
+        component_dict = {}
+        temp_dict_ordered = {}
+
+        for each_component_name, each_component_fields in self.data.items():
+            if each_component_fields["status"] == True:
+                # initialize generic class
+                instance = self.init_component(component_name=each_component_fields["component_name"],
+                                               name=each_component_fields["id"],
+                                               component_id=each_component_fields["id"],
+                                               component_icon=each_component_fields["icon"],
+                                               component_tab_info=each_component_fields["tab"],
+                                               tab_group_name=each_component_fields["tab_group_name"])
+
+                component_dict[each_component_fields["order"]] = instance
+
+        for key in sorted(component_dict):  # Sorting
+            temp_dict_ordered[key] = component_dict[key]
+
+        def spinner_callback(instance):  # spinner button callback
+            self.ids.act_spinner_id.text = instance.text
+            self.src_mngr.current = instance.id
+
+        for key in temp_dict_ordered:  # Spinner button
+            if key != 0:
+                ac_drpdwn_btn = ActionToggleButton(id=temp_dict_ordered[key].component_id,
+                                               markup=True,
+                                               text="%s" % (icon(temp_dict_ordered[key].component_icon, 20)) + "  " + temp_dict_ordered[key].component_id,
+                                               group="component_toggle")
+                ac_drpdwn_btn.allow_no_selection = False
+                ac_drpdwn_btn.bind(on_press=partial(spinner_callback))
+                self.ids.act_spinner_id.add_widget(ac_drpdwn_btn)
+
+        # default behaviour
+        default = DefaultScreen()
+        self.src_mngr.add_widget(default)
+        for key in temp_dict_ordered:  # adding screen widget to screen manager (by order)
+            self.src_mngr.add_widget(temp_dict_ordered[key])
+
+
+        self.ids.src_mngr_level_2_id.add_widget(self.src_mngr)
+
+
+    def build_json_default(self, component_name):
+        """
+        docString
+        :param component_name: str (Component name)
+        :return:
+        """
         COMPONENT_CLASS = f"bin.Component.{component_name}Component.Component"
         module = importlib.import_module(COMPONENT_CLASS, ".")
-        comp = module.Component()
-        return comp.json_settings
+        return module.json_settings
 
-        # dumpJson(js,loc)
-        # print(comp.json_settings)
+    def init_component(self, **kwargs):
+        """
+        docString
+        :param kwargs: all parameter
+        :return:
+        """
+        component_name = kwargs.get("component_name")
+        COMPONENT_CLASS = f"bin.Component.{component_name}.Component"
+        module = importlib.import_module(COMPONENT_CLASS, ".")
+        return module.Component(component_name=kwargs.get("name"),
+                                component_id=kwargs.get("component_id"),
+                                component_icon=kwargs.get("component_icon"),
+                                component_tab_info=kwargs.get("component_tab_info"),
+                                tab_group_name=kwargs.get("tab_group_name"))
 
-class NewRegistrationScreen(Screen):
 
-    def __init__(self, **kwargs):
-        super(NewRegistrationScreen, self).__init__(**kwargs)
-        self.name = "registration"
+class DefaultScreen(Screen):
+    pass
 
-    def registerNew(self):
-        print(self.ids.test)
-        # generate RSA key
-        # take all the details and make a row
-        #encrypt data using RSA key
-        # test = (self.ids.usrname.text, self.ids.fname.text, self.ids.mname.text, self.ids.lname.text, self.ids.passwrd.text, self.ids.email.text, self.ids.ph.text, self.ids.addLines.text, self.ids.city.text, self.ids.country.text)
-        # connect on google sheet and put the row
-        # download the encryption key and store it appdata
-        # back to login page
-        # print(test)
 
-    def backToLogin(self):
-        self.login = LoginScreen(instance=None)
+class ErrorScreen(Screen):
+    """
+    DocString
+    """
+    def __init__(self, err, **kwargs):
+        super(ErrorScreen, self).__init__(**kwargs)
+        self.name = "errorScreen"
+        self.ids.error_msg_id.text = err
+
+    def try_again(self):
+        login_screen = LoginScreen()
         self.manager.clear_widgets()
-        self.manager.add_widget(self.login)
+        self.manager.add_widget(login_screen)
         self.manager.current = "loginScreen"
+
+
+class RegistrationScreen(Screen):
+    """
+    DocString
+    """
+    def __init__(self, **kwargs):
+        super(RegistrationScreen, self).__init__(**kwargs)
+        self.name = "registrationScreen"
+
+    #TODO: need fix
+    def register_new(self):
+        print("New User Created")
+
+    def back_to_login(self):
+        login_screen = LoginScreen()
+        self.manager.clear_widgets()
+        self.manager.add_widget(login_screen)
+        self.manager.current = "loginScreen"
+
 
 class LoginScreen(Screen):
     """
@@ -134,7 +195,8 @@ class LoginScreen(Screen):
         self.name = "loginScreen"
         self.working = False
 
-    def _snackbar(self, snack_type, msg):
+    @staticmethod
+    def _snackbar(snack_type, msg):
         if snack_type == 'simple':
             Snackbar(text=msg).show()
         elif snack_type == 'button':
@@ -150,45 +212,46 @@ class LoginScreen(Screen):
         elif not password:
             self._snackbar("simple", "Password is empty")
         else:
-            if self.ids.chkbox.active:
-                self._offlineLogin()
+            if self.ids.offline_chkbox_id.active:
+                self._offline_login()
             else:
-                self._onlineLogin()
+                self._online_login()
 
-    def newRegister(self):
-        self.registration = NewRegistrationScreen()
+    def new_register(self):
+        registration_screen = RegistrationScreen()
         self.manager.clear_widgets()
-        self.manager.add_widget(self.registration)
-        self.manager.current = "registration"
+        self.manager.add_widget(registration_screen)
+        self.manager.current = "registrationScreen"
 
-    def _onlineLogin(self):
+    def _online_login(self):
         print("Trying Online")
         try:
             # go to google sheet and try to match with username and pass
-            PaUtility()._checkInternet()
+            _check_internet()
         except ConnectionError:
             self._snackbar("simple", "No internet")
         finally:
             # if match then self manager add widget root widget
             # if not then self manager add widget wrong passowrd
-            self.ids.loginbtn.disabled = True
+            # self.ids.loginbtn.disabled = True
+            pass
 
-    def _offlineLogin(self):
+    def _offline_login(self):
         app = App.get_running_app()
         if self.ids.username.text != app.config.get('Client', 'Username'):
-            errScreen = ErrorScreen(err="Username is Incorrect")
+            error_screen = ErrorScreen(err="Username is Incorrect")
             self.manager.clear_widgets()
-            self.manager.add_widget(errScreen)
+            self.manager.add_widget(error_screen)
             self.manager.current = "errorScreen"
         elif self.ids.passwd.text != app.config.get('Client', 'Password'):
-            errScreen = ErrorScreen(err="Password is Incorrect")
+            error_screen = ErrorScreen(err="Password is Incorrect")
             self.manager.clear_widgets()
-            self.manager.add_widget(errScreen)
+            self.manager.add_widget(error_screen)
             self.manager.current = "errorScreen"
         else:
-            mainScreen = MainScreen(loginName=app.config.get('Client', 'Username'))
+            main_screen = MainScreen(login_name=app.config.get('Client', 'Username'))
             self.manager.clear_widgets()
-            self.manager.add_widget(mainScreen)
+            self.manager.add_widget(main_screen)
             self.manager.current = "mainScreen"
 
     # test notification
