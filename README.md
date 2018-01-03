@@ -5,6 +5,7 @@
 
 
 [![Language][py-image]][py-url]
+[![Language][kivy-image]][kivy-url]
 
 
 One to two paragraph statement about your product and what it does.
@@ -65,6 +66,8 @@ Distributed under the XYZ license. See ``LICENSE`` for more information.
 [logo]: https://github.com/PandorAstrum/Vault_Software_Py/blob/master/res/logo.png "PandorAstrum Vault Hub"
 [py-image]: https://img.shields.io/badge/Python-3.6.1-green.svg
 [py-url]: https://www.python.org/
+[kivy-image]: https://img.shields.io/badge/Kivy-1.10.0-green.svg
+[kivy-url]: https://kivy.org/#home
 
 [npm-image]: https://img.shields.io/npm/v/datadog-metrics.svg?style=flat-square
 [npm-url]: https://npmjs.org/package/datadog-metrics
