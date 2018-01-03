@@ -47,7 +47,7 @@ npm test
 
 ## Meta
 
-PandorAstrum – [@YourTwitter](https://twitter.com/PandorAstrum) – primeintegerslab@gmail.com
+PandorAstrum – [@PandorAstrum](https://twitter.com/PandorAstrum) – primeintegerslab@gmail.com
 
 Distributed under the XYZ license. See ``LICENSE`` for more information.
 
