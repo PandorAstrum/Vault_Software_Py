@@ -51,7 +51,7 @@ PandorAstrum – [@PandorAstrum](https://twitter.com/PandorAstrum) – primeinte
 
 Distributed under the XYZ license. See ``LICENSE`` for more information.
 
-[https://github.com/yourname/github-link](https://github.com/dbader/)
+[https://github.com/PandorAstrum/Vault_Software_Py](https://github.com/PandorAstrum/Vault_Software_Py)
 
 ## Contributing
 
