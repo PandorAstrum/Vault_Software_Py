@@ -3,8 +3,32 @@
 __author__ = "Ashiquzzaman Khan"
 __desc__ = "kv design files for all"
 """
+__all__ = [
+    "seperator_kv",
+    "launchPad_kv",
+    "loadingScreen_kv",
+    "loginScreen_kv",
+    "registration_kv",
+    "errorScreen_kv",
+    "mainScreen_kv",
+    "componentBase_kv",
+    "defaultScreen_kv",
+    "tabBase_kv",
+    "defaultTab_kv",
+    "tabWithoutDrawer_kv",
+    "tabWithDrawer_kv"
+]
 
-seperatorKV = """
+testKV = """
+<GeneralTab>:
+    id: content_id
+    orientation: "vertical"
+    Button:
+        text: "Okay"
+"""
+
+
+seperator_kv = """
 <Separator@Widget>:
     canvas:
         Color:
@@ -22,7 +46,7 @@ seperatorKV = """
     height: dp(2)
 """
 
-tabWithDrawerKV = """
+tabWithDrawer_kv = """
 <TabWithDrawer>:
     NavigationLayout:
         id: nav_layout_id
@@ -52,7 +76,7 @@ tabWithDrawerKV = """
             #     Button:
             #         text: "OKAY"
 """
-tabWithoutDrawerKV = """
+tabWithoutDrawer_kv = """
 # <TabBase>:
 #     BoxLayout:
 #         orientation: "vertical"
@@ -63,7 +87,7 @@ tabWithoutDrawerKV = """
 #                 pos: self.pos
 #                 size: self.size
 """
-defaultTabKV = """
+defaultTab_kv = """
 <DefaultTab>:
     BoxLayout:
         id: default_screen_id
@@ -74,7 +98,7 @@ defaultTabKV = """
                 pos: self.pos
                 size: self.size
 """
-tabBaseKV = """
+tabBase_kv = """
 <TabBase>:
     canvas:
         Color:
@@ -110,7 +134,7 @@ tabBaseKV = """
             #     Button:
             #         text: "OKAY"
 """
-componentBaseKV = """
+componentBase_kv = """
 <ComponentBase>:
     BoxLayout:
         id: src_mngr_level_3_id
@@ -128,7 +152,7 @@ componentBaseKV = """
                 pos: self.pos
                 size: self.size
 """
-defaultScreenKV = """
+defaultScreen_kv = """
 <DefaultScreen>:
     BoxLayout:
         id: default_screen_id
@@ -139,7 +163,7 @@ defaultScreenKV = """
                 pos: self.pos
                 size: self.size
 """
-mainScreenKV = """
+mainScreen_kv = """
 # Main Root
 <MainScreen>:
     BoxLayout:
@@ -276,7 +300,7 @@ BoxLayout:
                 markup: True
 """
 # need fix on error_message_id (centralize)
-errorScreenKV = """
+errorScreen_kv = """
 <ErrorScreen>:
     AnchorLayout:
         MDCard:
@@ -305,7 +329,7 @@ errorScreenKV = """
                         on_release: root.try_again()
 """
 #nedd fix button (at most bottom)
-RegistrationKV = """
+registration_kv = """
 <RegistrationScreen>:
     AnchorLayout:
         MDCard:
@@ -403,7 +427,7 @@ RegistrationKV = """
                             pos_hint:{'center_x': 0.4, 'center_y': 0.5}
                             on_release: root.register_new()
 """
-loginScreenKV = """
+loginScreen_kv = """
 <LoginScreen>:
     AnchorLayout:
         MDCard:
@@ -464,12 +488,13 @@ loginScreenKV = """
                     MDRaisedButton:
                         id: login_btn_id
                         text: "                                        Login                                        "
+                        opposite_colors: True
                         size_hint:None, None
 			            size:dp(48), dp(40)
                         pos_hint:{'center_x': 0.5, 'center_y': 0.75}
                         on_release: root.login()
 """
-loadingScreenKV = """
+loadingScreen_kv = """
 <LoadingScreen>:
     MDSpinner:
         id: spinner
@@ -479,7 +504,7 @@ loadingScreenKV = """
         active: True
         color: self.theme_cls.accent_color
 """
-launchPadKV = """
+launchPad_kv = """
 #:import icon bin.libPackage.iconfonts.icon
 #:import C kivy.utils.get_color_from_hex
 #:import Toolbar kivymd.toolbar.Toolbar

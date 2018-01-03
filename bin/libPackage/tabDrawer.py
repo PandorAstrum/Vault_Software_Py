@@ -63,14 +63,14 @@ CustomToolbarKV = """
 # <CustomToolbar>:
 #     size_hint_y: 0.1
 """
-custom_block = """
-<CustomBlock>:
-    id: content_id
-    orientation: "vertical"
-    Button:
-        text: "Okay"
-        on_release: self.parent.testPress()
-"""
+# custom_block = """
+# <CustomBlock>:
+#     id: content_id
+#     orientation: "vertical"
+#     Button:
+#         text: "Okay"
+#         on_release: self.parent.testPress()
+# """
 
 
 

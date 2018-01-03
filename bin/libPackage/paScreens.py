@@ -38,8 +38,6 @@ from bin.libPackage.paUtility import threaded
 from bin.libPackage.kvFiles import *
 from data.testclass.MDToggleButton import MDToggleButton
 
-Builder.load_string(launchPadKV + loginScreenKV + RegistrationKV + errorScreenKV + seperatorKV  + mainScreenKV + loadingScreenKV + componentBaseKV + tabBaseKV + defaultScreenKV + defaultTabKV)
-
 
 class MainScreen(Screen):
     def __init__(self, login_name, **kwargs):
@@ -66,13 +64,17 @@ class MainScreen(Screen):
         # get all component
         app = App.get_running_app()
         primary_component_entry = app.config.get("Component", "PrimaryComponentEntry")
-        primary_component = primary_component_entry.replace("(", "").replace(")", "").replace("'","").replace(" ", "").split(",")
 
+        for ch in ["(", ")", "'", " "]:
+            if ch in primary_component_entry:
+                primary_component_entry = primary_component_entry.replace(ch, "")
+
+        primary_component_entry = primary_component_entry.split(",")
         # get the json file
         try:
             self.data = get_json_file(self.local_storage.storage)
         except FileNotFoundError:
-            for i in primary_component:
+            for i in primary_component_entry:
                 component_json = self.build_json_default(i)
                 self.json_dictionary[f"{i}_Component"] = component_json
             dump_json(self.json_dictionary, self.local_storage.storage)
@@ -327,7 +329,51 @@ class LaunchPad(ScreenManager):
     """
     def __init__(self, **kwargs):
         super(LaunchPad, self).__init__(**kwargs)
+        self.build_kv()
         self._make()
+
+    def build_kv(self):
+        """
+         build all the kv files
+        :return:
+        """
+        # get the base kv files
+        base_kv = (launchPad_kv,
+                   loadingScreen_kv,
+                   loginScreen_kv,
+                   errorScreen_kv,
+                   registration_kv,
+                   seperator_kv,
+                   mainScreen_kv,
+                   componentBase_kv,
+                   defaultScreen_kv,
+                   tabBase_kv,
+                   defaultTab_kv,
+                   tabWithoutDrawer_kv,
+                   tabWithDrawer_kv
+        )
+        all_kv_list = """"""
+        # get base kv files
+        for i in base_kv:
+            all_kv_list += i
+
+        # get component's kv file
+        app = App.get_running_app()
+        primary_component_entry = app.config.get("Component", "PrimaryComponentEntry")
+        for ch in ["(", ")", "'", " "]:
+            if ch in primary_component_entry:
+                primary_component_entry = primary_component_entry.replace(ch, "")
+
+        primary_component_entry = primary_component_entry.split(",")
+
+        for i in primary_component_entry:
+            component_name = i
+            KV_CLASS = f"bin.Component.{component_name}Component.KV"
+            module = importlib.import_module(KV_CLASS, ".")
+
+            all_kv_list += module.kv
+
+        Builder.load_string(all_kv_list)
 
     @mainthread
     def _make(self):
@@ -341,3 +387,6 @@ class LaunchPad(ScreenManager):
         app.config.set('WindowSettings', 'Width', size[0])
         app.config.set('WindowSettings', 'Height', size[1])
         app.config.write()
+
+
+

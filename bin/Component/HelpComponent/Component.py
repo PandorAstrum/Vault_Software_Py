@@ -3,9 +3,8 @@
 __author__ = "Ashiquzzaman Khan"
 __desc__ = "Main Exe file to Run"
 """
-from kivy.uix.boxlayout import BoxLayout
-
 from bin.libPackage.baseComponent import ComponentBase
+from .Tabs import *
 
 json_settings = {
     "id": "Help",
@@ -20,11 +19,11 @@ json_settings = {
                 "have_toolbar": False,
                 "toolbar_color": []
             },
-            "tab_class_name": "GeneralTab",
+            "tab_class_name": "HelpGeneralTab",
             "tab_name": "General",
             "tab_id": "general",
             "tab_icon": "fa-user",
-            "tab_type": "basic",
+            "tab_type": "list",
             "tab_content": []
         },
         {
@@ -32,7 +31,7 @@ json_settings = {
                 "have_toolbar": False,
                 "toolbar_color": []
             },
-            "tab_class_name": "AccountTab",
+            "tab_class_name": "HelpAccountTab",
             "tab_name": "Accounts",
             "tab_id": "accounts",
             "tab_icon": "fa-key",
@@ -54,11 +53,11 @@ json_settings = {
                 "have_toolbar": False,
                 "toolbar_color": []
             },
-            "tab_class_name": "HelpTab",
+            "tab_class_name": "HelpHelpTab",
             "tab_name": "Help",
             "tab_id": "help",
             "tab_icon": "fa-question",
-            "tab_type": "basic",
+            "tab_type": "list",
             "tab_content": []
         }
     ]
@@ -71,47 +70,11 @@ class Component(ComponentBase):
     """
     def __init__(self, **kwargs):
         super(Component, self).__init__()
+        self.name = kwargs.get("component_name")
+        self.component_id = kwargs.get("component_id")
+        self.component_icon = kwargs.get("component_icon")
+        self.component_tab_info = kwargs.get("component_tab_info")
+        self.tab_group_name = kwargs.get("tab_group_name")
         self.default_tab_name = "General"
-        self.kv = """
-<GeneralTab>:
-    BoxLayout:
-        canvas:
-            color:
-                rgb: C('#222222')
-
-<AccountTab>:
-    BoxLayout:
-        canvas:
-            color:
-                rgb: C('#222222')
-
-<HelpTab>:
-    BoxLayout:
-        canvas:
-            color:
-                rgb: C('#222222')
-        """
-        self.tab_class = (GeneralTab(), AccountTab(), HelpTab())
-        self._populate(component_name=kwargs.get("component_name"),
-                       component_id=kwargs.get("component_id"),
-                       component_icon=kwargs.get("component_icon"),
-                       component_tab_info=kwargs.get("component_tab_info"),
-                       tab_group_name=kwargs.get("tab_group_name"),
-                       kv=self.kv,
-                       default_tab_name=self.default_tab_name,
-                       tab_classes=self.tab_class)
-
-class GeneralTab(BoxLayout):
-    def __init__(self, **kwargs):
-        super(GeneralTab, self).__init__(**kwargs)
-        self.name = "GeneralTab"
-
-class AccountTab(BoxLayout):
-    def __init__(self, **kwargs):
-        super(AccountTab, self).__init__(**kwargs)
-        self.name = "AccountTab"
-
-class HelpTab(BoxLayout):
-    def __init__(self, **kwargs):
-        super(HelpTab, self).__init__(**kwargs)
-        self.name = "HelpTab"
+        self.tab_class_collection = [HelpGeneralTab(), HelpAccountTab(), HelpHelpTab()]
+        self._populate()

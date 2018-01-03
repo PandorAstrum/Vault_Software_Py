@@ -7,7 +7,9 @@ from functools import partial
 
 from kivy.lang import Builder
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.button import Button
 from kivy.uix.screenmanager import Screen, ScreenManager, SlideTransition, FadeTransition, FallOutTransition, RiseInTransition
+from kivy.uix.scrollview import ScrollView
 from kivy.uix.togglebutton import ToggleButton
 from kivymd.navigationdrawer import MDNavigationDrawer, NavigationDrawerToolbar, NavigationDrawerIconButton
 from kivymd.toolbar import Toolbar
@@ -22,35 +24,36 @@ class ComponentBase(Screen):
     """
     def __init__(self, **kwargs):
         super(ComponentBase, self).__init__(**kwargs)
+        self.name = ""
+        self.component_id = ""
+        self.component_icon = ""
+        self.component_tab_info = []
+        self.tab_group_name = ""
+        self.default_tab_name = ""
+
         self.src_mngr = ScreenManager(transition=RiseInTransition())
         self.tab_collection = []
 
+        self.tab_class_collection = []
 
-    def _populate(self, **kwargs):
-        self.name = kwargs.get("component_name")
-        self.component_id = kwargs.get("component_id")
-        self.component_icon = kwargs.get("component_icon")
-        self.component_tab_info = kwargs.get("component_tab_info")
-        self.tab_group_name = kwargs.get("tab_group_name")
-        self.kv = kwargs.get("kv")
-        self.build_ui(self.kv)
-        self.tab_classes = kwargs.get("tab_classes")
-        self._make(kwargs.get("default_tab_name"))
 
-    def _make(self, default_tab_name):
+    def _populate(self):
+        self._make()
+
+
+    def _make(self):
         tab_dict = {}
 
         for each_tab in self.component_tab_info:
             tab_dict[each_tab["tab_name"]] = each_tab["tab_icon"]
 
-            for each_tab_class in self.tab_classes:
-                if each_tab_class.name == each_tab["tab_class_name"]:
-                    instance = TabBase(tab_type=each_tab["tab_type"],
-                                       tab_name=each_tab["tab_name"],
-                                       tab_content=each_tab["tab_content"],
-                                       toolbar=each_tab["toolbar"],
-                                       tab_class_instance=each_tab_class)
-                    self.src_mngr.add_widget(instance)
+            instance = TabBase(tab_type=each_tab["tab_type"],
+                               tab_name=each_tab["tab_name"],
+                               tab_content=each_tab["tab_content"],
+                               toolbar=each_tab["toolbar"],
+                               tab_class_name=each_tab["tab_class_name"],
+                               tab_class_collections = self.tab_class_collection)
+            self.src_mngr.add_widget(instance)
 
         self.ids.src_mngr_level_3_id.add_widget(self.src_mngr)
 
@@ -82,16 +85,11 @@ class ComponentBase(Screen):
 
         # default behaviour
         for i in self.tab_collection:
-            if i.id == default_tab_name:
+            if i.id == self.default_tab_name:
                 i.state = "down"
                 self.src_mngr.current = i.id
                 i.size_hint = (1.3, 0.09)
 
-
-
-    @classmethod
-    def build_ui(cls, *args, **kwargs):
-        Builder.load_string(*args)
 
 
 class TabBase(Screen):
@@ -101,7 +99,8 @@ class TabBase(Screen):
         self.tab_content = kwargs.get("tab_content")
         self.toolbar_dict = kwargs.get("toolbar")
         self.tab_type = kwargs.get("tab_type")
-        self.tab_class_instance = kwargs.get("tab_class_instance")
+        self.tab_class_name = kwargs.get("tab_class_name")
+        self.tab_class_collections = kwargs.get("tab_class_collections")
         self._make(self.tab_type)
 
     def _make(self, tab_type):
@@ -114,9 +113,26 @@ class TabBase(Screen):
                 tlbar = CustomToolbar(toolbar_color=self.toolbar_dict["toolbar_color"])
                 self.ids.toolbar_id.add_widget(tlbar)
             #block
-            # block = self.tab_class_instance()
-            # block = CustomBlock()
-            self.ids.toolbar_id.add_widget(self.tab_class_instance)
+
+            # sss = type(self.tab_screen, (Screen,), {})
+
+
+            # block = ScrollView(id=self.name)
+            # block.__name__ = self.tab_screen
+            # blockTest2.add_widget(Button(text=self.tab_screen))
+            # print(self.tab_screen)
+            # block = CustomBlock(tab_screen_name=self.tab_screen)
+            for i in self.tab_class_collections:
+                if i.__name__ == self.tab_class_name:
+
+            # print(f"{type(blockTest2)} & {blockTest2.__name__}")
+                    self.ids.toolbar_id.add_widget(i)
+
+    def factory(self, BaseClass, className):
+        class NewClass(BaseClass): pass
+
+        NewClass.__name__ = "factory_%s" % className.__name__
+        return NewClass
         # elif tab_type == "info":
         #     #drawer (info type)
         #     drawer = TypeListDrawer(drawer_name=self.name, drawer_item_list=self.tab_content)
@@ -151,9 +167,9 @@ class TypeListDrawer(MDNavigationDrawer):
         self.toolbar = DrawerToolbar(drawer_name=kwargs.get("drawer_name"))
         self.add_widget(self.toolbar)
         # add list of buttons
-        for i in self.drawer_item_list:
-            ins = DrawerIconBtn(drawer_item_name=i["tab_item_name"], on_release=print("working"))
-            self.add_widget(ins)
+        # for i in self.drawer_item_list:
+        #     ins = DrawerIconBtn(drawer_item_name=i["tab_item_name"], on_release=print("working"))
+        #     self.add_widget(ins)
 
 class DrawerToolbar(NavigationDrawerToolbar):
     def __init__(self, **kwargs):
@@ -186,9 +202,13 @@ class CustomBasicToolbar(Toolbar):
     def __init__(self, **kwargs):
         super(CustomBasicToolbar, self).__init__()
 
-class CustomBlock(BoxLayout):
+class CustomBlock(ScrollView):
     def __init__(self, **kwargs):
         super(CustomBlock, self).__init__()
+        self.__name__ = kwargs.get("tab_screen_name")
+        # self.name = kwargs.get("tab_screen_name")
+        # btn = Button(text=self.name)
+        # self.add_widget(btn)
         #TODO: import appropriate component class and implement build ui
         # attach the ui to appropriate ids
 

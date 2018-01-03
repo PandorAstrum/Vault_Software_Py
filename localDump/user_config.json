@@ -12,11 +12,11 @@
                     "have_toolbar": false,
                     "toolbar_color": []
                 },
-                "tab_class_name": "GeneralTab",
+                "tab_class_name": "UserGeneralTab",
                 "tab_name": "General",
                 "tab_id": "general",
                 "tab_icon": "fa-user",
-                "tab_type": "basic",
+                "tab_type": "list",
                 "tab_content": []
             },
             {
@@ -24,7 +24,7 @@
                     "have_toolbar": false,
                     "toolbar_color": []
                 },
-                "tab_class_name": "AccountTab",
+                "tab_class_name": "UserAccountTab",
                 "tab_name": "Accounts",
                 "tab_id": "accounts",
                 "tab_icon": "fa-key",
@@ -50,7 +50,7 @@
                         37
                     ]
                 },
-                "tab_class_name": "HelpTab",
+                "tab_class_name": "UserHelpTab",
                 "tab_name": "Help",
                 "tab_id": "help",
                 "tab_icon": "fa-question",
@@ -72,11 +72,11 @@
                     "have_toolbar": false,
                     "toolbar_color": []
                 },
-                "tab_class_name": "GeneralTab",
+                "tab_class_name": "HelpGeneralTab",
                 "tab_name": "General",
                 "tab_id": "general",
                 "tab_icon": "fa-user",
-                "tab_type": "basic",
+                "tab_type": "list",
                 "tab_content": []
             },
             {
@@ -84,7 +84,7 @@
                     "have_toolbar": false,
                     "toolbar_color": []
                 },
-                "tab_class_name": "AccountTab",
+                "tab_class_name": "HelpAccountTab",
                 "tab_name": "Accounts",
                 "tab_id": "accounts",
                 "tab_icon": "fa-key",
@@ -106,11 +106,11 @@
                     "have_toolbar": false,
                     "toolbar_color": []
                 },
-                "tab_class_name": "HelpTab",
+                "tab_class_name": "HelpHelpTab",
                 "tab_name": "Help",
                 "tab_id": "help",
                 "tab_icon": "fa-question",
-                "tab_type": "basic",
+                "tab_type": "list",
                 "tab_content": []
             }
         ]

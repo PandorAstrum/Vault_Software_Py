@@ -3,7 +3,9 @@
 __author__ = "Ashiquzzaman Khan"
 __desc__ = "main app module"
 """
-
+# Available palettes: 'Pink', 'Blue', 'Indigo', 'BlueGrey', 'Brown' ,'LightBlue'
+#                   'Purple', 'Grey', 'Yellow', 'LightGreen', 'DeepOrange', 'Green'
+#                   'Red', 'Teal', 'Orange', 'Cyan', 'Amber', 'DeepPurple', 'Lime'
 from kivy.config import Config
 Config.set('kivy', 'window_icon', 'res/logo.png')
 Config.set('graphics', 'minimum_width', '1000')
@@ -140,6 +142,10 @@ class MainApp(App):
 
         self.title = "Vault Hub"
         self.theme_cls.theme_style = 'Dark'
+        primary_color = config.get("Theme", "PrimaryColor")
+        self.theme_cls.primary_palette = primary_color
+        accent_color = config.get("Theme", "AccentColor")
+        self.theme_cls.accent_palette = accent_color
         self.icon = "res/icon/icon.ico"
         self.root = LaunchPad()
 
@@ -171,6 +177,10 @@ class MainApp(App):
         config.setdefaults("Component", {
             "PrimaryComponentEntry": ("User", "Help"),
             "SecondaryComponentEntry": [self.local_Store.storage]
+        })
+        config.setdefaults("Theme", {
+            "PrimaryColor": "Blue",
+            "AccentColor": "Lime"
         })
 
     def on_config_change(self, config, section, key, value):
