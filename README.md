@@ -4,7 +4,7 @@
 ![alt text][logo]
 
 
-[![Language][py-image]][travis-url]
+[![Language][py-image]][py-url]
 
 
 One to two paragraph statement about your product and what it does.
@@ -73,9 +73,11 @@ Distributed under the XYZ license. See ``LICENSE`` for more information.
 
 <!-- Markdown link & img dfn's -->
 [logo]: https://github.com/PandorAstrum/Vault_Software_Py/blob/master/res/logo.png "PandorAstrum Vault Hub"
+[py-image]: https://img.shields.io/badge/Python-3.6.1-green.svg
+[py-url]: https://www.python.org/
 [npm-image]: https://img.shields.io/npm/v/datadog-metrics.svg?style=flat-square
 [npm-url]: https://npmjs.org/package/datadog-metrics
 [npm-downloads]: https://img.shields.io/npm/dm/datadog-metrics.svg?style=flat-square
-[py-image]: https://img.shields.io/badge/Python-3.6-green.svg
+
 [travis-url]: https://travis-ci.org/dbader/node-datadog-metrics
 [wiki]: https://github.com/yourname/yourproject/wiki
