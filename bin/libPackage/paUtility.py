@@ -61,8 +61,6 @@ def threaded(thread_name=None, callback=None, callback_args=None):
             # thread = BaseThread(target=fn, args=args, kwargs=kwargs, callback=callback, callback_args=callback_args)
             thread = threading.Thread(name=thread_name, target=fn, args=args, kwargs=kwargs)
             thread.start()
-            print(threading.current_thread().getName() + " : Started")
-
             return thread
         return _wrapper
     return _mainDecor

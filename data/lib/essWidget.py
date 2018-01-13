@@ -6,7 +6,7 @@ from kivy.uix.togglebutton import ToggleButton
 from kivymd.navigationdrawer import MDNavigationDrawer, NavigationDrawerToolbar
 from kivymd.toolbar import Toolbar
 
-from bin.libPackage.iconfonts import icon
+from kivy.uix.tabbedpanel import TabbedPanel
 
 layout_base = """
 NavigationLayout:

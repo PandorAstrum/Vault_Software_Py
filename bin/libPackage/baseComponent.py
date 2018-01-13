@@ -14,7 +14,8 @@ from kivy.uix.togglebutton import ToggleButton
 from kivymd.navigationdrawer import MDNavigationDrawer, NavigationDrawerToolbar, NavigationDrawerIconButton
 from kivymd.toolbar import Toolbar
 
-from bin.libPackage.iconfonts import icon
+from utils.iconfonts import icon
+# from bin.libPackage.iconfonts import icon
 from bin.libPackage.paUtility import colorScale
 
 

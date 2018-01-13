@@ -505,7 +505,7 @@ loadingScreen_kv = """
         color: self.theme_cls.accent_color
 """
 launchPad_kv = """
-#:import icon bin.libPackage.iconfonts.icon
+#:import icon utils.iconfonts.icon
 #:import C kivy.utils.get_color_from_hex
 #:import Toolbar kivymd.toolbar.Toolbar
 #:import ThemeManager kivymd.theming.ThemeManager

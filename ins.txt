@@ -2,9 +2,15 @@ python -m PyInstaller --windowed --noconsole --clean --name Vault --icon data\re
 python -m PyInstaller --onefile Vault.spec
 
 new
-python -m PyInstaller --name Vault --icon data\res\icon\icon.ico data\main.py
+1. python -m PyInstaller --name Vault --icon res\icon\icon.ico main.py
 
-pyinstaller.py --windowed --noconsole --clean --onefile maint.py
+2. spec - Edit
+    a) from kivy.deps import sdl2, glew
+    b) add Tree('bin') to collect
+    c) add *[Tree(p) for p in (sdl2.dep_bins + glew.dep_bins)], after a.datas
+
+3. python -m PyInstaller Vault.spec
+
 
 # -*- mode: python -*-
 from kivy.deps import sdl2, glew
