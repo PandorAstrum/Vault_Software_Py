@@ -16,7 +16,8 @@ __all__ = [
     "tabBase_kv",
     "defaultTab_kv",
     "tabWithoutDrawer_kv",
-    "tabWithDrawer_kv"
+    "tabWithDrawer_kv",
+    "miningField_kv"
 ]
 
 testKV = """
@@ -44,6 +45,28 @@ seperator_kv = """
 <HSeparator@Separator>:
     size_hint_y: None
     height: dp(2)
+"""
+miningField_kv = """
+<MiningField>
+    id: mining_field_id
+    size_hint_y: None
+    height: self.minimum_height
+    padding: (dp(20), dp(5))
+
+    MDCard:
+        id: field_mdcard_id
+        size_hint_y: None
+        height: self.minimum_height
+        padding: (dp(20), dp(5))
+        spacing: dp(20)
+        MDTextField:
+            hint_text: "Field Name"
+            color_mode: "accent"
+        MDTextField:
+            hint_text: "Xpath"
+            color_mode: "accent"
+        MDIconButton:
+            icon: "delete"
 """
 
 tabWithDrawer_kv = """

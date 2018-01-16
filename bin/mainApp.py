@@ -194,7 +194,8 @@ class MainApp(App):
             "CPU": self.sys_info["CPU"],
             "GPU": self.sys_info["GPU"],
             "RAM": self.sys_info["RAM"],
-            "DEVICE_NAME": self.sys_info["DEVICE_NAME"]
+            "DEVICE_NAME": self.sys_info["DEVICE_NAME"],
+            "UUID": self.sys_info["UUID"]
         })
         config.setdefaults("Session", {
             "Current": "500"
@@ -208,7 +209,7 @@ class MainApp(App):
             "Role": "Programmer"
         })
         config.setdefaults("Component", {
-            "PrimaryComponentEntry": ("User_PR", "Help_PR"),
+            "PrimaryComponentEntry": ("Mining_PR","User_PR", "Help_PR"),
             "SecondaryComponentEntry": ()
         })
         config.setdefaults("Theme", {

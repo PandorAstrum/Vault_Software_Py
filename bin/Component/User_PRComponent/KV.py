@@ -121,6 +121,7 @@ kv = """
                         text: "Update info"
                     MDFlatButton:
                         text: "Sign Out"
+                        on_release: root.drivers.sign_out()
         # App Info
         MDCard:
             padding: "10dp"
@@ -312,7 +313,6 @@ kv = """
             HSeparator:
 
 
-
 <UserComponentTab>:
     BoxLayout:
 
@@ -321,7 +321,6 @@ kv = """
         height: self.minimum_height
         padding: "20dp"
         spacing: "5dp"
-
         BoxLayout: # Title primary
             size_hint_y: None
             height: dp(30)
@@ -338,6 +337,7 @@ kv = """
                 theme_text_color: "Primary"
 
         BoxLayout: # Component box primary
+            id: component_box_id
             orientation: "vertical"
             size_hint_y:None
             height: self.minimum_height
@@ -493,7 +493,6 @@ kv = """
         height: self.minimum_height
         padding: "20dp"
         spacing: "5dp"
-
         BoxLayout: # Title Theme
             size_hint_y: None
             height: dp(30)
@@ -508,7 +507,6 @@ kv = """
                 halign: "center"
                 font_style: "Title"
                 theme_text_color: "Primary"
-
         BoxLayout: # Theme Card
             size_hint_y: None
             height: sum(x.height for x in self.children)
@@ -525,7 +523,6 @@ kv = """
                         size_hint_x: None
                         width: dp(70)
                         halign: "center"
-
                 BoxLayout: # Settings details
                     BoxLayout: # theme style box
                         orientation: "vertical"
@@ -536,7 +533,7 @@ kv = """
                             font_size: "16"
                         HSeparator:
                         MDLabel:
-                            text: "Dark"
+                            text: f"{app.config.get('Theme','ThemeStyle')}"
                             halign: "center"
                             theme_text_color: "Primary"
                     VSeparator:
@@ -549,7 +546,7 @@ kv = """
                             font_size: "16"
                         HSeparator:
                         MDLabel:
-                            text: " None"
+                            text: f"{app.config.get('Theme','PrimaryColor')}"
                             halign: "center"
                             theme_text_color: "Primary"
                     VSeparator:
@@ -562,7 +559,7 @@ kv = """
                             font_size: "16"
                         HSeparator:
                         MDLabel:
-                            text: "None"
+                            text: f"{app.config.get('Theme','AccentColor')}"
                             halign: "center"
                             theme_text_color: "Primary"
 
@@ -575,8 +572,6 @@ kv = """
                         on_release: MDThemePicker().open()
                         opposite_colors: True
                         pos_hint: {"center_y": 0.5}
-
-
 
 
 <UserHelpTab>:

@@ -4,9 +4,7 @@ __author__ = "Ashiquzzaman Khan"
 __desc__ = "Main Exe file to Run"
 """
 
-import os
+class UserAccountTabDrivers():
+    def sign_out(self):
+        print("Signing out")
 
-__version_info__ = (0, 1, 2)
-__version__ = '0.1.2'
-
-path = os.path.dirname(__file__)

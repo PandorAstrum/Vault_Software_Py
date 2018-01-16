@@ -461,7 +461,8 @@ class LaunchPad(ScreenManager):
                    tabBase_kv,
                    defaultTab_kv,
                    tabWithoutDrawer_kv,
-                   tabWithDrawer_kv
+                   tabWithDrawer_kv,
+                   miningField_kv
                    )
         all_kv = """"""
         for i in base_kv:

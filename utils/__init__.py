@@ -7,6 +7,10 @@ import fnmatch
 import importlib
 import importlib.util
 import os
+import uuid
+import re
+import smtplib
+import dns.resolver
 import requests
 import threading
 import wmi
@@ -19,7 +23,8 @@ __all__ = [
     "module_import_simple",
     "module_import_from_abs",
     "is_empty",
-    "get_sys_info"
+    "get_sys_info",
+    "email_check"
 ]
 
 
@@ -114,6 +119,7 @@ def get_sys_info():
     """
     sys_dict = {}
     computer = wmi.WMI()
+    operatingSystem = os.environ["OS"]
     computer_info = computer.Win32_ComputerSystem()[0]
     os_info = computer.Win32_OperatingSystem()[0]
     proc_info = computer.Win32_Processor()[0]
@@ -123,11 +129,39 @@ def get_sys_info():
     os_name = os_info.Name.split('|')[0]
     os_version = ' '.join([os_info.Version, os_info.BuildNumber])
     system_ram = float(os_info.TotalVisibleMemorySize) / 1048576  # KB to GB
-
+    unique_id = uuid.uuid3(uuid.NAMESPACE_DNS, operatingSystem)
     sys_dict["DEVICE_NAME"] = computer_info.Name
     sys_dict["OS_NAME"] = os_name
     sys_dict["OS_VER"] = os_version
     sys_dict["CPU"] = proc_info.name
     sys_dict["GPU"] = gpu_info.Name
     sys_dict["RAM"] = round(system_ram, 2)
+    sys_dict["UUID"] = unique_id
+
     return sys_dict
+
+
+def email_check(email):
+    # Address used for SMTP MAIL FROM command
+    from_address = 'corn@bt.com'
+    # Get domain for DNS lookup
+    split_address = email.split('@')
+    domain = str(split_address[1])
+    # MX record lookup
+    records = dns.resolver.query(domain, 'MX')
+    mx_record = records[0].exchange
+    mx_record = str(mx_record)
+    # SMTP lib setup (use debug level for full output)
+    server = smtplib.SMTP()
+    server.set_debuglevel(0)
+    # SMTP Conversation
+    server.connect(mx_record)
+    server.helo(server.local_hostname)  # server.local_hostname(Get local server hostname)
+    server.mail(from_address)
+    code, message = server.rcpt(str(email))
+    server.quit()
+
+    if code == 250:
+        return True
+    else:
+        return False

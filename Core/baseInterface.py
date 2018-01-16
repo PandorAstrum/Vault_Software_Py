@@ -3,6 +3,8 @@
 __author__ = "Ashiquzzaman Khan"
 __desc__ = "Main Exe file to Run"
 """
+from kivy.uix.boxlayout import BoxLayout
+
 import utils
 from functools import partial
 
@@ -213,3 +215,17 @@ class TabBase(ScrollView):
         super(TabBase, self).__init__(**kwargs)
         self.__name__ = ""
         self.do_scroll_x= False
+        self.drivers = None
+        self._make()
+
+    def _make(self):
+        pass
+
+class DriverBase:
+    def __init__(self, **kwargs):
+        self.instances = kwargs.get("instances")
+
+class MiningField(BoxLayout):
+    def __init__(self, **kwargs):
+        super(MiningField, self).__init__(**kwargs)
+
