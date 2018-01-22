@@ -18,8 +18,8 @@ import csv
 from functools import wraps
 from datetime import datetime
 from kivy.clock import Clock
-
-from bin.libPackage.localStorage import LocalStorage
+from bin import appSettings
+from utils.appDirs import user_cache_dir
 
 __all__ = [
     "color_scale",
@@ -198,10 +198,8 @@ def clocked(wait_time=0.2, clock="once"):
         return _clocked_interval
 
 
-ls = LocalStorage(debug=True)
-
 def dict_to_csv(filename="test.csv", dict_data=None):
-    writefile = ls.storage + filename
+    writefile = user_cache_dir() + appSettings.FOLDER_TEMP + "\\" + filename
     keys = dict_data.keys()
     with open(writefile, 'w', newline='') as output_file:
         dict_writer = csv.DictWriter(output_file, keys)

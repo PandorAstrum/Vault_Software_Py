@@ -11,17 +11,38 @@ new
 
 3. python -m PyInstaller Vault.spec
 
-
+vault backup
+# -*- mode: python -*-
 # -*- mode: python -*-
 from kivy.deps import sdl2, glew
 block_cipher = None
+added_files = [
+            ('ComponentDrivers', 'ComponentDrivers'),
+            ('Core', 'Core'),
+            ('bin', 'bin'),
 
+            ('dll', 'dll' ),
+            ('res', 'res' ),
+            ('utils', 'utils')
+         ]
+added_pathex = [
+            'C:\\Users\\Ana Ash\\Desktop\\Project Software\\KivyPy\\Vault'
+        ]
 
-a = Analysis(['data\\main.py'],
-             pathex=['C:\\Users\\Ana Ash\\Desktop\\Project Software\\KivyPy\\Vault'],
-             binaries=['C:\\Program Files (x86)\\Windows Kits\\10\\Redist\\ucrt\\DLLs\\x64'],
-             datas=[],
-             hiddenimports=[],
+hidden_imported = [
+            'selenium',
+            'bs4'
+        ]
+
+added_binaries = [
+
+    ]
+
+a = Analysis(['main.py'],
+             pathex=added_pathex,
+             binaries=added_binaries,
+             datas=added_files,
+             hiddenimports=hidden_imported,
              hookspath=[],
              runtime_hooks=[],
              excludes=[],
@@ -37,8 +58,8 @@ exe = EXE(pyz,
           debug=False,
           strip=False,
           upx=True,
-          console=False , icon='data\\res\\icon\\icon.ico')
-coll = COLLECT(exe, Tree('data'),
+          console=True , icon='res\\icon\\icon.ico')
+coll = COLLECT(exe,
                a.binaries,
                a.zipfiles,
                a.datas,

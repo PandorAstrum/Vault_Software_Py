@@ -474,6 +474,30 @@ mining_selenium_tab_kv = """
                             pos_hint: {'center_x': 0.5, 'center_y': 0.5}
                             _active: False
                 HSeparator:
+                BoxLayout: # user agent
+                    size_hint_y: None
+                    height: self.minimum_height
+                    padding: (dp(20), dp(10))
+                    orientation: "vertical"
+                    BoxLayout:
+                        size_hint_y: None
+                        height: self.minimum_height
+                        MDLabel:
+                            size_hint_y: None
+                            height: self.height
+                            text: "Use user agent"
+                            halign: "left"
+                            theme_text_color: "Primary" if user_agent_id.active else "Secondary"
+                        BoxLayout: # gap
+                            size_hint_y: None
+                            height: self.minimum_height
+                        MDSwitch:
+                            id: user_agent_id
+                            size_hint: None, None
+                            size: dp(36), dp(48)
+                            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                            _active: False
+                HSeparator:
                 BoxLayout: # missing link
                     size_hint_y: None
                     height: self.minimum_height

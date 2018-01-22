@@ -7,15 +7,15 @@ import re
 import time
 from os.path import expanduser
 
-from kivymd.snackbar import Snackbar
-
 from selenium import webdriver
 from bs4 import BeautifulSoup
 from Core.baseInterface import DriverBase
 from bin.Component.Mining_PRComponent.reusable import _ScrapField
 import utils
+from Core.ErrorHandling import Snacks
+
 from bin.libPackage.xpop import XFileOpen
-from bin.libPackage.xpop.notification import XMessage, XError, XConfirmation
+from bin.libPackage.xpop.notification import XMessage, XError, XConfirmation, XProgress
 
 
 class MiningHelpTabDrivers:
@@ -26,6 +26,7 @@ class MiningSeleniumTabDrivers(DriverBase):
     def __init__(self, instances, **kwargs):
         super(MiningSeleniumTabDrivers, self).__init__(**kwargs)
         self.instances = instances
+        self.snacks = Snacks()
         self.scrap_field_box = self.instances.ids.scrap_field_box_id
         self.field_instance = []
         self._make()
@@ -36,20 +37,139 @@ class MiningSeleniumTabDrivers(DriverBase):
             scrap_field = _ScrapField(self, "0")
             self.scrap_field_box.add_widget(scrap_field)
 
-    @staticmethod
-    def _snackbar(snack_type, msg):
-        """
-        Creating snack bar type
-        :param snack_type: str type
-        :param msg: str message
-        :return:
-        """
-        if snack_type == 'simple':
-            Snackbar(text=msg).show()
-        elif snack_type == 'button':
-            Snackbar(text="This is a snackbar", button_text="with a button!", button_callback=lambda *args: 2).show()
-        elif snack_type == 'verylong':
-            Snackbar(text="This is a very very very very very very very long snackbar!").show()
+    # Buttons Behave
+    @utils.clocked()
+    def add_new_field(self):
+        num = str(len(self.scrap_field_box.children) + 1)
+        self.scrap_field_box.add_widget(_ScrapField(self, num))
+
+    @utils.threaded(thread_name="email check")
+    def check_email(self, email):
+        # Simple Regex for syntax checking
+        regex = '^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,})$'
+        if email != str:
+            email_address = str(email)
+        else:
+            email_address = email
+        # Syntax check
+        match = re.match(regex, email_address)
+        if match == None:
+            self._xpop("error", msg="Its not an email address!")
+            # raise ValueError('Bad Syntax')
+        else:
+            self.instances.ids.email_check_btn_id.disabled = True
+            _get = utils.email_check(email)
+            if _get:
+                self._xpop("msgbox", msg="Looks Like the Email address is valid", title="Email Found")
+            else:
+                self._xpop("msgbox", msg="It's a fake email address", title="Email not Found")
+
+    @utils.threaded(thread_name="scrapping Thread")
+    def start_scrapping(self):
+        wait_time = round(self.instances.ids.time_id.value,1)
+        driver = None
+        # def _progress_test(self, pdt=None):
+        #     if pop.is_canceled():
+        #         return
+        #
+        #     pop.inc()
+        #     pop.text = 'Progress... (%d / %d)' % \
+        #                          (pop.value, pop.max)
+        #     if pop.value < pop.max:
+        #         Clock.schedule_once(_progress_test, .01)
+        #     else:
+        #         pop.complete()
+        #
+        # pop = XProgress(title='Scrapping In Progress',
+        #           text='Progress...', max=100)
+        # Clock.schedule_once(_progress_test, .1)
+        # check browser settings
+        if self.instances.ids.google_chrome_id.active:
+            driver = webdriver.Chrome(executable_path=".\\dll\\chrome_drivers\\chromedriver.exe")
+        elif self.instances.ids.mozilla_firefox_id.active:
+            driver = webdriver.Firefox(executable_path=".\\dll\\firefox_drivers\\geckodriver.exe")
+        elif self.instances.ids.ie_id.active:
+            driver = webdriver.Ie(executable_path=".\\dll\explorer_drivers\\IEDriverServer.exe")
+        else:
+            self.snacks.snackbar("simple", "Please Choose a Browser")
+
+        if not driver == None:
+            self._collect_login(driver, wait_time)
+            data = self._collect_link(driver, wait_time)
+        #
+            curr = utils.get_computer_date_time()
+            utils.dict_to_csv(filename=f"{curr}_scrap.csv", dict_data=data)
+        #
+        # time.sleep(wait_time)
+        # web_driver.quit()
+
+
+    def _collect_login(self, web_driver, wait_time):
+        if self.instances.ids.login_option_id.active:
+            if self.instances.ids.linkedin_id.active:
+                user_name = self.instances.ids.linkedin_username_id.text
+                pass_word = self.instances.ids.linkedin_password_id.text
+                web_driver.get("https://www.linkedin.com/uas/login?session_redirect=&goback=&trk=hb_signin")
+                time.sleep(wait_time)
+                web_driver.find_element_by_xpath('//*[@id="session_key-login"]').send_keys(user_name)
+                web_driver.find_element_by_xpath('//*[@id="session_password-login"]').send_keys(pass_word)
+                time.sleep(wait_time)
+                web_driver.find_element_by_xpath('//*[@id="btn-primary"]').click()
+                time.sleep(wait_time)
+            elif self.instances.ids.custom_login_id.active:
+                user_name = self.instances.ids.custom_username_id.text
+                pass_word = self.instances.ids.custom_password_id.text
+                url = self.instances.ids.sign_in_url_id.text
+                web_driver.get(url)
+                time.sleep(wait_time)
+                u_xpath = self.instances.ids.custom_username_xpath_id.text
+                p_xpath = self.instances.ids.custom_password_xpath_id.text
+                web_driver.find_element_by_xpath(u_xpath).send_keys(user_name)
+                web_driver.find_element_by_xpath(p_xpath).send_keys(pass_word)
+                time.sleep(wait_time)
+                login_btn_xpath = self.instances.ids.sing_in_btn_xpath_id.text
+                web_driver.find_element_by_xpath(login_btn_xpath).click()
+                time.sleep(wait_time)
+        else:
+            # no need of login
+            pass
+
+    def _collect_link(self, web_driver, wait_time):
+        data = None
+        temp = None
+        if self.instances.ids.single_link_id.active:
+            link_to_scrap = self.instances.ids.link_to_scrap_id.text
+            web_driver.get(link_to_scrap)
+            time.sleep(wait_time)
+            if self.instances.ids.next_page_id.active:
+                xpath = self.instances.ids.next_page_xpath_id.text
+                # loop to click next
+
+                html_doc = web_driver.page_source
+                soup = BeautifulSoup(html_doc, "lxml")
+                temp = self._collect_data_per_page(soup)
+                time.sleep(wait_time)
+                web_driver.find_element_by_xpath(xpath).click()
+                time.sleep(wait_time)
+
+            elif self.instances.ids.continuous_id.active:
+                xpath = self.instances.ids.anchor_tag_xpath_id.text
+                # grab the xpath
+                pass
+            else:
+                html_doc = web_driver.page_source
+                soup = BeautifulSoup(html_doc, "lxml")
+                data = self._collect_data_per_page(soup)
+
+        else:
+            # csv
+            csv_file_path = self.instances.ids.import_csv_file_path_id.text
+
+            pass
+        # process data
+        self._process_generic_parameter()
+        return data
+
 
     def _xpop(self, sid, msg=None, title=None):
         if sid == 'msgbox':
@@ -90,113 +210,17 @@ class MiningSeleniumTabDrivers(DriverBase):
     def import_csv(self):
         self._xpop("fileOpen")
 
-    @utils.clocked()
-    def add_new_field(self):
-        # get the children
-        num = str(len(self.scrap_field_box.children) + 1)
-        self.scrap_field_box.add_widget(_ScrapField(self, num))
-
-    @utils.threaded(thread_name="email check")
-    def check_email(self, email):
-        # Simple Regex for syntax checking
-        regex = '^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,})$'
-        if email != str:
-            email_address = str(email)
-        else:
-            email_address = email
-        # Syntax check
-        match = re.match(regex, email_address)
-        if match == None:
-            self._xpop("error", msg="Its not an email address!")
-            # raise ValueError('Bad Syntax')
-        else:
-            self.instances.ids.email_check_btn_id.disabled = True
-            _get = utils.email_check(email)
-            if _get:
-                self._xpop("msgbox", msg="Looks Like the Email address is valid", title="Email Found")
-            else:
-                self._xpop("msgbox", msg="It's a fake email address", title="Email not Found")
 
 
-    def _collect_browser(self):
-        if self.instances.ids.google_chrome_id.active:
-            return webdriver.Chrome(executable_path="dll/chrome_drivers/chromedriver.exe")
-        elif self.instances.ids.mozilla_firefox_id.active:
-            return webdriver.Firefox(executable_path="dll/firefox_drivers/geckodriver.exe")
-        elif self.instances.ids.ie_id.active:
-            return webdriver.Ie(executable_path="dll/explorer_drivers/IEDriverServer.exe")
-        else:
-            self._snackbar("simple", "Please Select A Browser")
-            return None
 
-    def _collect_login(self, web_driver, wait_time):
-        if self.instances.ids.login_option_id.active:
-            # check for linkedin
-            if self.instances.ids.linkedin_id.active:
-                user_name = self.instances.ids.linkedin_username_id.text
-                pass_word = self.instances.ids.linkedin_password_id.text
-                # get the login url
-                web_driver.get("https://www.linkedin.com/uas/login?session_redirect=&goback=&trk=hb_signin")
-                time.sleep(wait_time)
-                # sending keys
-                web_driver.find_element_by_xpath('//*[@id="session_key-login"]').send_keys(user_name)
-                web_driver.find_element_by_xpath('//*[@id="session_password-login"]').send_keys(pass_word)
-                time.sleep(wait_time)
-                # click login button
-                web_driver.find_element_by_xpath('//*[@id="btn-primary"]').click()
-                time.sleep(wait_time)
-            # check for custom
-            elif self.instances.ids.custom_login_id.active:
-                user_name = self.instances.ids.custom_username_id.text
-                pass_word = self.instances.ids.custom_password_id.text
-                url = self.instances.ids.sign_in_url_id.text
-                web_driver.get(url)
-                time.sleep(wait_time)
-                u_xpath = self.instances.ids.custom_username_xpath_id.text
-                p_xpath = self.instances.ids.custom_password_xpath_id.text
-                web_driver.find_element_by_xpath(u_xpath).send_keys(user_name)
-                web_driver.find_element_by_xpath(p_xpath).send_keys(pass_word)
-                time.sleep(wait_time)
-                login_btn_xpath = self.instances.ids.sing_in_btn_xpath_id.text
-                web_driver.find_element_by_xpath(login_btn_xpath).click()
-                time.sleep(wait_time)
-        else:
-            #check success
-            pass
 
-    def _collect_link(self, web_driver, wait_time):
-        data = None
-        temp = None
-        if self.instances.ids.single_link_id.active:
-            link_to_scrap = self.instances.ids.link_to_scrap_id.text
-            web_driver.get(link_to_scrap)
-            time.sleep(wait_time)
-            if self.instances.ids.next_page_id.active:
-                xpath = self.instances.ids.next_page_xpath_id.text
-                # loop to click next
 
-                html_doc = web_driver.page_source
-                soup = BeautifulSoup(html_doc, "lxml")
-                temp = self._collect_data_per_page(soup)
-                time.sleep(wait_time)
-                web_driver.find_element_by_xpath(xpath).click()
-                time.sleep(wait_time)
 
-            elif self.instances.ids.continuous_id.active:
-                xpath = self.instances.ids.anchor_tag_xpath_id.text
-                # grab the xpath
-                pass
-            else:
-                html_doc = web_driver.page_source
-                soup = BeautifulSoup(html_doc, "lxml")
-                data = self._collect_data_per_page(soup)
 
-        else:
-            # csv
-            csv_file_path = self.instances.ids.import_csv_file_path_id.text
 
-            pass
-        return data
+    def _process_generic_parameter(self):
+        pass
+
 
     def _check_selector_parameter(self, tag_selector):
         if tag_selector.cls_selector_chk.active:
@@ -325,25 +349,14 @@ class MiningSeleniumTabDrivers(DriverBase):
     def _collect_parameter(self):
         pass
 
-    @utils.threaded(thread_name="scrapping Thread")
-    def start_scrapping(self):
-        # set timer
-        wait_time = round(self.instances.ids.time_id.value,1)
 
-        # check browser settings
-        web_driver = self._collect_browser()
-        self._collect_login(web_driver, wait_time)
-        data = self._collect_link(web_driver, wait_time)
-
-        print(data)
-        curr = utils.get_computer_date_time()
-        utils.dict_to_csv(filename=f"{curr}_scrap.csv", dict_data=data)
-
-        time.sleep(wait_time)
-        # web_driver.quit()
 
 
 
 class MiningScrapyTabDrivers(DriverBase):
     pass
 
+
+from utils.appDirs import get_current_directory
+
+print(get_current_directory())
