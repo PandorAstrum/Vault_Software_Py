@@ -405,16 +405,19 @@ class LoadingScreen(Screen):
         :return:
         """
         time.sleep(0.5)
-        internet = utils.check_internet()
+        self.manager.add_widget(self.login)
+        self.manager.current = "loginScreen"
 
-        if internet:
+        # internet = utils.check_internet()
+
+        # if internet:
             # self._check_updates()
             # self._auto_login()
-            self.manager.add_widget(self.login)
-            self.manager.current = "loginScreen"
-        else:
-            self.manager.add_widget(self.login)
-            self.manager.current = "loginScreen"
+            # self.manager.add_widget(self.login)
+            # self.manager.current = "loginScreen"
+        # else:
+        #     self.manager.add_widget(self.login)
+        #     self.manager.current = "loginScreen"
 
     def _auto_login(self):
         """

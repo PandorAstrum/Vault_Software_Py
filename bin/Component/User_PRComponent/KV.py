@@ -27,7 +27,7 @@ kv = """
                     source:"res\\me.png"
                 MDLabel:
                     markup:True
-                    text:f"{(icon('fa-key', 15))} Logged in as"
+                    text:f"{(icon('fa-key', 15, font_name='font_awesome'))} Logged in as"
                     theme_text_color: "Primary"
                     halign:"center"
                 MDLabel:
@@ -351,7 +351,7 @@ kv = """
                     padding: (dp(20), 0)
                     MDLabel: # component icon
                         markup: True
-                        text: f"{(icon('fa-plug', 30))}"
+                        text: f"{(icon('fa-plug', 30, font_name='font_awesome'))}"
                         theme_text_color: "Primary"
                         size_hint_x: None
                         width: dp(70)
@@ -387,7 +387,7 @@ kv = """
                     padding: (dp(20), 0)
                     MDLabel: # component icon
                         markup: True
-                        text: f"{(icon('fa-plug', 30))}"
+                        text: f"{(icon('fa-plug', 30, font_name='font_awesome'))}"
                         theme_text_color: "Primary"
                         size_hint_x: None
                         width: dp(70)
@@ -444,7 +444,7 @@ kv = """
                     padding: (dp(20), 0)
                     MDLabel: # component icon
                         markup: True
-                        text: f"{(icon('fa-plug', 30))}"
+                        text: f"{(icon('fa-plug', 30, font_name='font_awesome'))}"
                         theme_text_color: "Primary"
                         size_hint_x: None
                         width: dp(70)
@@ -518,7 +518,7 @@ kv = """
                     padding: (dp(5), 0)
                     MDLabel: # icon
                         markup: True
-                        text: f"{(icon('fa-paint-brush', 30))}"
+                        text: f"{(icon('fa-paint-brush', 30, font_name='font_awesome'))}"
                         theme_text_color: "Primary"
                         size_hint_x: None
                         width: dp(70)

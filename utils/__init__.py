@@ -14,7 +14,12 @@ import dns.resolver
 import requests
 import threading
 import wmi
+import csv
 from functools import wraps
+from datetime import datetime
+from kivy.clock import Clock
+
+from bin.libPackage.localStorage import LocalStorage
 
 __all__ = [
     "color_scale",
@@ -24,7 +29,10 @@ __all__ = [
     "module_import_from_abs",
     "is_empty",
     "get_sys_info",
-    "email_check"
+    "email_check",
+    "clocked",
+    "dict_to_csv",
+    "get_computer_date_time"
 ]
 
 
@@ -165,3 +173,47 @@ def email_check(email):
         return True
     else:
         return False
+
+
+def clocked(wait_time=0.2, clock="once"):
+    if clock == "once":
+        def _clocked_once(fn):
+            @wraps(fn)
+            def _delayed_func(*args, **kwargs):
+                def _callback_func(dt):
+                    fn(*args, **kwargs)
+                Clock.schedule_once(_callback_func, wait_time)
+
+            return _delayed_func
+        return _clocked_once
+    elif clock == "interval":
+        def _clocked_interval(fn):
+            @wraps(fn)
+            def _delayed_func(*args, **kwargs):
+                def _callback_func(dt):
+                    fn(*args, **kwargs)
+                Clock.schedule_interval(_callback_func, wait_time)
+
+            return _delayed_func
+        return _clocked_interval
+
+
+ls = LocalStorage(debug=True)
+
+def dict_to_csv(filename="test.csv", dict_data=None):
+    writefile = ls.storage + filename
+    keys = dict_data.keys()
+    with open(writefile, 'w', newline='') as output_file:
+        dict_writer = csv.DictWriter(output_file, keys)
+        dict_writer.writeheader()
+        keys, values = zip(*dict_data.items())
+        for values in zip(*values):
+            dict_writer.writerow(dict(zip(keys, values)))
+
+
+
+def get_computer_date_time(format=None):
+    if not format == None:
+        pass
+    else:
+        return datetime.now().strftime("%Y_%b_%d_%H_%M_%S")

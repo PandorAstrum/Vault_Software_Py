@@ -4,7 +4,7 @@ __author__ = "Ashiquzzaman Khan"
 __desc__ = "Main Exe file to Run"
 """
 from Core.baseInterface import ComponentBase, TabBase
-from ComponentDrivers.miningDrivers import MiningSeleniumTabDrivers
+from bin.Component.Mining_PRComponent.miningDrivers import MiningSeleniumTabDrivers
 
 __all__ = [
     "Component",
@@ -78,7 +78,7 @@ json_settings = {
     ]
 }
 
-
+# main Component ----------------------------------------
 class Component(ComponentBase):
     """
     docString
@@ -109,7 +109,6 @@ class MiningSeleniumTab(TabBase):
         super(MiningSeleniumTab, self).__init__(**kwargs)
         self.__name__ = "MiningSeleniumTab"
         self.drivers = MiningSeleniumTabDrivers(instances=self)
-
 
 class MiningHelpTab(TabBase):
     def __init__(self, **kwargs):

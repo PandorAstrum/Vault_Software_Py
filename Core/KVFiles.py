@@ -30,7 +30,11 @@ testKV = """
 
 
 seperator_kv = """
-<Separator@Widget>:
+<Gap>:
+    size_hint: (None, None)
+    height: self.minimum_height if self.height_dp == None else self.height_dp
+    width: self.minimum_width if self.width_dp == None else self.width_dp
+<Separator>:
     canvas:
         Color:
             rgba: app.theme_cls.divider_color
@@ -38,11 +42,11 @@ seperator_kv = """
             pos: self.pos
             size: self.size
 
-<VSeparator@Separator>:
+<VSeparator>:
     size_hint_x: None
     width: dp(2)
 
-<HSeparator@Separator>:
+<HSeparator>:
     size_hint_y: None
     height: dp(2)
 """
@@ -197,22 +201,22 @@ mainScreen_kv = """
                 ActionGroup:
                     id: act_spinner_id
                     markup:True
-                    text: f"{(icon('fa-chevron-circle-down', 20))} Select"
+                    text: f"{(icon('fa-chevron-circle-down', 20, font_name='font_awesome'))} Select"
                     mode: 'spinner'
                     size_hint_x: None
 
                 ActionButton:
                     halign: "center"
                     markup: True
-                    text:f"{(icon('fa-bell', 20))}"
+                    text:f"{(icon('fa-bell', 20, font_name='font_awesome'))}"
                 ActionButton:
                     halign: "center"
                     markup: True
-                    text:f"{(icon('fa-flag', 20))}"
+                    text:f"{(icon('fa-flag', 20, font_name='font_awesome'))}"
                 ActionButton:
                     halign: "center"
                     markup: True
-                    text:f"{(icon('fa-user', 20))}"
+                    text:f"{(icon('fa-user', 20, font_name='font_awesome'))}"
 
     #Main screen Manager ---------------------------------------------------------
 
@@ -471,6 +475,7 @@ loginScreen_kv = """
                         size_hint:None, None
 	    		        size:dp(48), dp(48)
 		    	        pos_hint:{'center_x': 0.35, 'center_y': 0.15}
+		    	        color: self.theme_cls.accent_color if offline_chkbox_id.active else self.theme_cls.secondary_text_color
                     MDLabel:
                         theme_text_color: 'Primary'
                         size_hint: None, None
