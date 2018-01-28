@@ -16,7 +16,6 @@ from kivy.uix.screenmanager import Screen, ScreenManager, SwapTransition
 from kivymd.dialog import MDDialog
 from kivymd.label import MDLabel
 from kivymd.snackbar import Snackbar
-from selenium import webdriver
 
 import utils
 from utils.iconfonts import icon
@@ -370,8 +369,6 @@ class LoginScreen(Screen):
                                       action=lambda *x: self.dialog.dismiss())
         self.dialog.open()
 
-    def test_webdriver(self):
-        webdriver.Chrome(executable_path=".\\dll\\chrome_drivers\\chromedriver.exe")
     # test notification
     def show_notification(self, *args):
         # open default notification

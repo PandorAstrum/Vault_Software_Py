@@ -24,6 +24,7 @@ __desc__ = "main core file that builds kivy app
 """
 
 from kivy.config import Config
+
 Config.set('kivy', 'window_icon', 'res/logo.png')
 Config.set('graphics', 'minimum_width', '1000')
 Config.set('graphics', 'minimum_height', '500')
@@ -42,6 +43,7 @@ os.environ['KIVY_GL_BACKEND'] = 'sdl2'
 
 # lib import
 import utils
+from selenium import webdriver
 from utils import appDirs
 from bin import appSettings
 from Core.Screens import LaunchPad
@@ -201,8 +203,8 @@ class MainApp(App):
             "Current": "500"
         })
         config.setdefaults("User", {
-            "Username": "dreadlordn",
-            "Password": "starwars0",
+            "Username": "a",
+            "Password": "a",
             "Email": "dreadlordn@gmail.com",
             "FirstName": "Ashiquzzaman",
             "LastName": "Khan",
@@ -223,6 +225,8 @@ class MainApp(App):
 
     # TODO: Design the app start and close behaviour
     def on_start(self):
+        def initial_load():
+            webdriver.Chrome(executable_path=".\\dll\\chrome_drivers\\chromedriver.exe")
         pass
 
     def on_pause(self):

@@ -311,7 +311,7 @@ class XProgress(XNotifyBase):
         layout.add_widget(self._progress)
         return layout
 
-    def complete(self, text=_('Complete'), show_time=2):
+    def complete(self, text=_('Complete'), show_time=2, func=None):
         """
         Sets the progress to 100%, hides the button(s) and automatically
         closes the popup.
@@ -327,6 +327,8 @@ class XProgress(XNotifyBase):
         self.value = n
         self.text = text
         self.buttons = []
+        if func is not None:
+            func()
         Clock.schedule_once(self.dismiss, show_time)
 
     def inc(self, pn_delta=1):

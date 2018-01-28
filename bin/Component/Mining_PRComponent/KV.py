@@ -26,11 +26,19 @@ mining_selenium_tab_kv = """
         height: self.minimum_height
         padding: dp(20)
         spacing: dp(5)
-        BoxLayout:
+        BoxLayout: # title box
             size_hint_y: None
-            height: sum(x.height for x in self.children)
-            MDCard:
-                orientation: "vertical"
+            height: self.minimum_height
+            padding: (5)
+            BoxLayout:
+                size_hint_y: None
+                height: self.minimum_height
+                canvas:
+                    Color:
+                        rgba: app.theme_cls.primary_color
+                    Rectangle:
+                        size: self.size
+                        pos: self.pos
                 MDLabel: # Title
                     size_hint_y: None
                     height: dp(30)
@@ -38,11 +46,12 @@ mining_selenium_tab_kv = """
                     theme_text_color: "Primary"
                     font_style: "Body2"
                     halign: "center"
-                BoxLayout: # separator
-                    padding: (dp(40), 0)
-                    size_hint_y:None
-                    height: self.minimum_height
-                    HSeparator:
+        BoxLayout:
+            size_hint_y: None
+            height: sum(x.height for x in self.children)
+            MDCard:
+                orientation: "vertical"
+                padding: (dp(40), 0)
                 BoxLayout: # checker box
                     size_hint: None, None
                     height: self.minimum_height
@@ -86,6 +95,26 @@ mining_selenium_tab_kv = """
                         text: "Internet Explorer"
                         theme_text_color: "Primary" if ie_id.active else "Secondary"
 
+        BoxLayout: # title box
+            size_hint_y: None
+            height: self.minimum_height
+            padding: (5)
+            BoxLayout:
+                size_hint_y: None
+                height: self.minimum_height
+                canvas:
+                    Color:
+                        rgba: app.theme_cls.primary_color
+                    Rectangle:
+                        size: self.size
+                        pos: self.pos
+                MDLabel: # Title
+                    size_hint_y: None
+                    height: dp(30)
+                    text:"Login (Optional)"
+                    theme_text_color: "Primary"
+                    font_style: "Body2"
+                    halign: "center"
         BoxLayout: # Login box
             size_hint_y: None
             height: self.minimum_height
@@ -94,18 +123,6 @@ mining_selenium_tab_kv = """
                 size_hint: None, None
                 size: self.parent.width, self.minimum_height
                 padding: (dp(40), 0)
-                MDLabel: # Title
-                    size_hint_y: None
-                    height: dp(30)
-                    text:"Login (Optional)"
-                    theme_text_color: "Primary"
-                    font_style: "Body2"
-                    halign: "center"
-                BoxLayout: # separator
-                    padding: (dp(40), 0)
-                    size_hint_y:None
-                    height: self.minimum_height
-                    HSeparator:
                 BoxLayout: # login enabler
                     size_hint: None, None
                     height: self.minimum_height
@@ -225,6 +242,26 @@ mining_selenium_tab_kv = """
                         disabled: False if custom_login_id.active else True
                         color_mode: "accent"
 
+        BoxLayout: # title box
+            size_hint_y: None
+            height: self.minimum_height
+            padding: (5)
+            BoxLayout:
+                size_hint_y: None
+                height: self.minimum_height
+                canvas:
+                    Color:
+                        rgba: app.theme_cls.primary_color
+                    Rectangle:
+                        size: self.size
+                        pos: self.pos
+                MDLabel: # Title
+                    size_hint_y: None
+                    height: dp(30)
+                    text:"Scrap Link"
+                    theme_text_color: "Primary"
+                    font_style: "Body2"
+                    halign: "center"
         BoxLayout: # link box
             size_hint_y: None
             height: self.minimum_height
@@ -233,19 +270,6 @@ mining_selenium_tab_kv = """
                 size_hint: None, None
                 size: self.parent.width, self.minimum_height
                 padding: (dp(40), 0)
-                MDLabel: # Title
-                    size_hint_y: None
-                    height: dp(30)
-                    text:"Scrap Link"
-                    theme_text_color: "Primary"
-                    font_style: "Body2"
-                    halign: "center"
-                BoxLayout: # separator
-                    padding: (dp(20), 0)
-                    size_hint_y: None
-                    height: self.minimum_height
-                    HSeparator:
-
                 BoxLayout:
                     size_hint: None, None
                     height: dp(60)
@@ -277,6 +301,7 @@ mining_selenium_tab_kv = """
                     size_hint_y:None
                     height: self.minimum_height
                     padding: (dp(20), dp(5))
+                    spacing: dp(10)
                     MDCheckbox:
                         id: next_page_id
                         size_hint: None, None
@@ -287,13 +312,36 @@ mining_selenium_tab_kv = """
                     MDLabel:
                         size_hint_x: None
                         width: self.width
-                        text: "Continuous (Next Page)"
+                        text: "Next Page"
                         theme_text_color: "Primary" if next_page_id.active else "Secondary"
                     MDTextField:
-                        id: next_page_xpath_id
-                        hint_text: "Next Button Xpath" if next_page_id.active else "Disabled"
+                        id: next_page_tag_id
+                        hint_text: "tag" if next_page_id.active else "Disabled"
                         color_mode: "accent"
                         disabled: False if next_page_id.active else True
+                        text: "button" if next_page_btn_id.active else ""
+                    MDTextField:
+                        id: next_page_class_id
+                        hint_text: "class" if next_page_id.active else "Disabled"
+                        color_mode: "accent"
+                        disabled: False if next_page_id.active else True
+                    MDTextField:
+                        id: next_page_final_id
+                        hint_text: "final tag" if next_page_id.active else "Disabled"
+                        color_mode: "accent"
+                        disabled: False if next_page_id.active else True
+                    MDCheckbox:
+                        id: next_page_btn_id
+                        size_hint: None, None
+                        size: dp(48), dp(48)
+                        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                        color: self.theme_cls.accent_color if self.active else self.theme_cls.secondary_text_color
+                        disabled: False if next_page_id.active else True
+                    MDLabel:
+                        size_hint_x: None
+                        width: self.width
+                        text: "Button"
+                        theme_text_color: "Primary" if next_page_btn_id.active else "Secondary"
                 BoxLayout: # link parameter Continuous page
                     size_hint_y:None
                     height: self.minimum_height
@@ -353,10 +401,31 @@ mining_selenium_tab_kv = """
                         id: import_csv_file_path_id
                         text: "File Path"
                         theme_text_color: "Primary" if multi_link_id.active else "Secondary"
+                        halign: "center"
                 BoxLayout: # gap
                     size_hint_y: None
                     height: dp(30)
 
+        BoxLayout: # title box
+            size_hint_y: None
+            height: self.minimum_height
+            padding: (5)
+            BoxLayout:
+                size_hint_y: None
+                height: self.minimum_height
+                canvas:
+                    Color:
+                        rgba: app.theme_cls.primary_color
+                    Rectangle:
+                        size: self.size
+                        pos: self.pos
+                MDLabel: # Title
+                    size_hint_y: None
+                    height: dp(30)
+                    text:"What to Scrap"
+                    theme_text_color: "Primary"
+                    font_style: "Body2"
+                    halign: "center"
         BoxLayout: # scrap Field box
             size_hint_y: None
             height: self.minimum_height
@@ -365,18 +434,6 @@ mining_selenium_tab_kv = """
                 size_hint: None, None
                 size: self.parent.width, self.minimum_height
                 padding: (dp(40), 0)
-                MDLabel: # Title
-                    size_hint_y: None
-                    height: dp(30)
-                    text:"What to Scrap"
-                    theme_text_color: "Primary"
-                    font_style: "Body2"
-                    halign: "center"
-                BoxLayout: # separator
-                    padding: (dp(20), 0)
-                    size_hint_y:None
-                    height: self.minimum_height
-                    HSeparator:
                 BoxLayout: # scrap field helper buttons
                     size_hint: None, None
                     height: self.minimum_height
@@ -401,6 +458,26 @@ mining_selenium_tab_kv = """
                     size_hint_y: None
                     height: dp(30)
 
+        BoxLayout: # title box
+            size_hint_y: None
+            height: self.minimum_height
+            padding: (5)
+            BoxLayout:
+                size_hint_y: None
+                height: self.minimum_height
+                canvas:
+                    Color:
+                        rgba: app.theme_cls.primary_color
+                    Rectangle:
+                        size: self.size
+                        pos: self.pos
+                MDLabel: # Title
+                    size_hint_y: None
+                    height: dp(30)
+                    text:"Generic Parameter"
+                    theme_text_color: "Primary"
+                    font_style: "Body2"
+                    halign: "center"
         BoxLayout: # Parameter box
             size_hint_y: None
             height: self.minimum_height
@@ -409,27 +486,13 @@ mining_selenium_tab_kv = """
                 size_hint: None, None
                 size: self.parent.width, self.minimum_height
                 padding: (dp(40), 0)
-                MDLabel: # Title
-                    size_hint_y: None
-                    height: dp(30)
-                    text:"Generic Parameter"
-                    theme_text_color: "Primary"
-                    font_style: "Body2"
-                    halign: "center"
-                BoxLayout: # separator
-                    padding: (dp(20), 0)
-                    size_hint_y:None
-                    height: self.minimum_height
-                    HSeparator:
-
                 BoxLayout: # timer
                     size_hint_y: None
                     height: self.minimum_height
                     padding: (dp(20), dp(10))
                     spacing: dp(40)
                     MDLabel:
-                        size_hint: None, None
-                        height: self.height
+                        size_hint_x: None
                         width: self.width
                         text: "Time to wait between action"
                         halign: "right"
@@ -437,14 +500,13 @@ mining_selenium_tab_kv = """
                     MDSlider:
                         id: time_id
                         size_hint_y: None
-                        height: self.height
+                        height: dp(40)
                         min:0.1
                         max:10
                         value: 2.0
                         show_off: False
                     MDLabel:
-                        size_hint: None, None
-                        height: self.height
+                        size_hint_x: None
                         width: self.width
                         text: str(round(time_id.value, 1)) +" Seconds"
                         theme_text_color: "Primary"
@@ -459,9 +521,7 @@ mining_selenium_tab_kv = """
                         size_hint_y: None
                         height: self.minimum_height
                         MDLabel:
-                            size_hint_y: None
-                            height: self.height
-                            text: "Email Checker if any scrapping field named Email"
+                            text: "Check Email validity if any field marked Email"
                             halign: "left"
                             theme_text_color: "Primary" if email_cheker_id.active else "Secondary"
                         BoxLayout: # gap
@@ -483,8 +543,6 @@ mining_selenium_tab_kv = """
                         size_hint_y: None
                         height: self.minimum_height
                         MDLabel:
-                            size_hint_y: None
-                            height: self.height
                             text: "Use user agent"
                             halign: "left"
                             theme_text_color: "Primary" if user_agent_id.active else "Secondary"
@@ -508,13 +566,13 @@ mining_selenium_tab_kv = """
                         height: self.minimum_height
                         spacing: dp(40)
                         MDLabel:
-                            size_hint: None, None
-                            height: self.height
+                            size_hint_x: None
                             width: self.width
                             text: "Fill missing link in href"
                             halign: "left"
                             theme_text_color: "Primary" if missing_link_id.active else "Secondary"
                         MDTextField:
+                            id: missing_link_text_id
                             pos_hint: {"center_x": 0.5, "center_y": 0.5}
                             hint_text: "Domain Name" if missing_link_id.active else "Disabled"
                             color_mode: "accent"
@@ -530,6 +588,59 @@ mining_selenium_tab_kv = """
                             pos_hint: {'center_x': 0.5, 'center_y': 0.5}
                             _active: False
                 HSeparator:
+                BoxLayout: # scroll to bottom
+                    size_hint_y: None
+                    height: self.minimum_height
+                    padding: (dp(20), dp(10))
+                    orientation: "vertical"
+                    BoxLayout:
+                        size_hint_y: None
+                        height: self.minimum_height
+                        MDLabel:
+                            text: "Scroll to bottom to load page"
+                            halign: "left"
+                            theme_text_color: "Primary" if scroll_to_bottom_id.active else "Secondary"
+                        BoxLayout: # gap
+                            size_hint_y: None
+                            height: self.minimum_height
+                        MDSwitch:
+                            id: scroll_to_bottom_id
+                            size_hint: None, None
+                            size: dp(36), dp(48)
+                            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                            _active: False
+                HSeparator:
+                BoxLayout: # limiter
+                    size_hint_y: None
+                    height: self.minimum_height
+                    padding: (dp(20), dp(10))
+                    orientation: "vertical"
+                    BoxLayout:
+                        size_hint_y: None
+                        height: self.minimum_height
+                        MDLabel:
+                            size_hint_x: None
+                            width: self.width
+                            text: "Set Limit"
+                            halign: "left"
+                            theme_text_color: "Primary" if limiter_id.active else "Secondary"
+                        MDTextField:
+                            id: limiter_text_id
+                            pos_hint: {"center_x": 0.5, "center_y": 0.5}
+                            hint_text: "Limit Number" if limiter_id.active else "Disabled"
+                            color_mode: "accent"
+                            disabled: False if limiter_id.active else True
+                        BoxLayout: # gap
+                            size_hint: None, None
+                            height: self.minimum_height
+                            width: dp(40)
+                        MDSwitch:
+                            id: limiter_id
+                            size_hint: None, None
+                            size: dp(36), dp(48)
+                            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                            _active: False
+                HSeparator:
                 BoxLayout: # string fix
                     size_hint_y: None
                     height: self.minimum_height
@@ -539,8 +650,6 @@ mining_selenium_tab_kv = """
                         size_hint_y: None
                         height: self.minimum_height
                         MDLabel:
-                            size_hint_y: None
-                            height: self.height
                             text: "Fix text gap"
                             halign: "left"
                             theme_text_color: "Primary" if fix_text_id.active else "Secondary"
@@ -595,6 +704,11 @@ mining_selenium_tab_kv = """
             MDRaisedButton:
                 id: start_scrapping_btn_id
                 text: "Start Scrapping"
+                on_release: root.drivers.start_scrapping()
+            MDRaisedButton:
+                id: view_data_btn_id
+                text: "View Data"
+                disabled: True
                 on_release: root.drivers.start_scrapping()
 """
 mining_help_tab = """

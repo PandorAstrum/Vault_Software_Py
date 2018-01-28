@@ -32,7 +32,9 @@ __all__ = [
     "email_check",
     "clocked",
     "dict_to_csv",
-    "get_computer_date_time"
+    "get_computer_date_time",
+    "combine_dict",
+    "run_once"
 ]
 
 
@@ -85,6 +87,9 @@ def threaded(thread_name=None, callback=None, callback_args=None):
         return _wrapper
     return _mainDecor
 
+
+def stop_thread_all():
+    stop = threading.Event()
 
 def module_import_simple(component_class):
     """
@@ -209,9 +214,17 @@ def dict_to_csv(filename="test.csv", dict_data=None):
             dict_writer.writerow(dict(zip(keys, values)))
 
 
+def get_computer_date_time(strft="%Y_%b_%d_%H.%M.%S"):
+    return datetime.now().strftime(strft)
 
-def get_computer_date_time(format=None):
-    if not format == None:
-        pass
-    else:
-        return datetime.now().strftime("%Y_%b_%d_%H_%M_%S")
+
+def combine_dict(*args):
+    result = {}
+    for dic in args:
+        for key in (result.keys() | dic.keys()):
+            if key in dic:
+                result.setdefault(key, []).extend(dic[key])
+    return result
+
+def run_once(func, interval=.1):
+    Clock.schedule_once(func, interval)

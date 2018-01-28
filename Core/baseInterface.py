@@ -22,7 +22,7 @@ from kivy.uix.scrollview import ScrollView
 from kivy.uix.togglebutton import ToggleButton
 from kivymd.navigationdrawer import MDNavigationDrawer, NavigationDrawerToolbar, NavigationDrawerIconButton
 from kivymd.toolbar import Toolbar
-from kivy.properties import BoundedNumericProperty, ReferenceListProperty, Clock, ObjectProperty
+from kivy.properties import BoundedNumericProperty, ReferenceListProperty, ObjectProperty
 from kivy.metrics import dp
 
 from utils.iconfonts import icon
@@ -342,3 +342,11 @@ class Gap(BoxLayout):
     width_dp = ObjectProperty(None, allownone=True)
     def __init__(self, **kwargs):
         super(Gap, self).__init__(**kwargs)
+
+
+# class CustomToggleButtonTest(ToggleButton, MouseOver):
+#     def on_hover(self):
+#         self.opacity = .8
+#
+#     def on_exit(self):
+#         self.opacity = 1
