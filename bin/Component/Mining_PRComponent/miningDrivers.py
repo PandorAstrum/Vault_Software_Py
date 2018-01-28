@@ -4,6 +4,7 @@ __author__ = "Ashiquzzaman Khan"
 __desc__ = "Main Exe file to Run"
 """
 import re
+from functools import partial
 import threading
 import time
 from os.path import expanduser
@@ -35,8 +36,8 @@ class MiningSeleniumTabDrivers(DriverBase):
         self.spawn = Spawn()
         self.scrap_field_box = self.instances.ids.scrap_field_box_id
         self.field_instance = []
-
         self.progress_bar = None
+        self.driver = None
         self._make()
 
     def _make(self):
@@ -88,8 +89,6 @@ class MiningSeleniumTabDrivers(DriverBase):
 
     @utils.threaded(thread_name="scrapping Thread")
     def start_scrapping(self):
-        # callbacks open progressbar
-
         # internal
         def _collect_link():
             """
@@ -97,6 +96,7 @@ class MiningSeleniumTabDrivers(DriverBase):
             :return: list of scrapping link
             """
             if self.instances.ids.single_link_id.active:
+                self.update_progress("Checking Single Link...", 2)
                 return [self.instances.ids.link_to_scrap_id.text]
             # csv link
             elif self.instances.ids.multi_link_id.active:
@@ -104,9 +104,9 @@ class MiningSeleniumTabDrivers(DriverBase):
                 with open(csv_file_path, newline='') as csvfile:
                     firstColumn = [line.split(',')[0] for line in csvfile]
                     firstColumn.pop(0)
+                    self.update_progress("Checking multiple link...", 2)
                     return firstColumn
             else:
-                self.snacks.snackbar("simple", "Please Select An option on Link")
                 return None
 
         def _collect_login(driver, wait_time):
@@ -135,6 +135,7 @@ class MiningSeleniumTabDrivers(DriverBase):
                     login_btn_xpath = self.instances.ids.sing_in_btn_xpath_id.text
                     driver.find_element_by_xpath(login_btn_xpath).click()
                     time.sleep(wait_time)
+                self.update_progress("Checking Login....", 3)
             else:
                 # no need of login
                 pass
@@ -393,37 +394,38 @@ class MiningSeleniumTabDrivers(DriverBase):
             :param wait_time: get from wait time
             :return: single dict or combined dict from single page or all page
             """
+            main_dict = {}
             # collect browser
             if self.instances.ids.google_chrome_id.active:
                 _scrap_link_list = _collect_link()
-                if _scrap_link_list == None:
-                    self.snacks.snackbar("simple", "Please Provide Link")
+                if _scrap_link_list is None:
+                    self.snacks.snackbar("simple", "Please select an option in Scrap Link")
+                    return None
                 elif _scrap_link_list == [""]:
                     self.snacks.snackbar("simple", "No link to scrap")
+                    return None
                 else:
-                    driver = webdriver.Chrome(executable_path=".\\dll\\chrome_drivers\\chromedriver.exe")
+                    self.instances.ids.start_scrapping_btn_id.disabled = True
+                    self.driver = webdriver.Chrome(executable_path=".\\dll\\chrome_drivers\\chromedriver.exe")
                     # calling pop up
                     self.progress()
-                    total = 100
-                    total_call = 5
 
-                    self.update_progress("Collected Browser", 10)
+                    self.update_progress("Collected Browser", 2)
 
-                    _collect_login(driver, wait_time)
-
-                    self.update_progress("Collected Login Info", 5)
-
-                    main_dict = {}
+                    _collect_login(self.driver, wait_time)
                     for link in _scrap_link_list:
                         # check for next
-                        driver.get(link)
-                        time.sleep(wait_time)
+                        try:
+                            self.driver.get(link)
+                            self.update_progress("Opening Page...", 5)
+                            time.sleep(wait_time)
+                        except:
+                            self.driver = None
 
-                        self.update_progress("Getting Link", 5)
-
-                        _next = _process_next(driver, wait_time)
-
-                        self.update_progress("Checking Next page", 5)
+                        try:
+                            _next = _process_next(self.driver, wait_time)
+                        except:
+                            _next = None
 
                         if _next is not None:
                             _dict_list = []
@@ -431,66 +433,60 @@ class MiningSeleniumTabDrivers(DriverBase):
                             while _next is not None:
                                 if limit_count == _get_parameter_limiter():
                                     break
-                                _soup(driver, wait_time, _dict=_dict_list)
+                                _soup(self.driver, wait_time, _dict=_dict_list)
                                 _next.click()
                                 time.sleep(wait_time)
-                                _next = _process_next(driver, wait_time)
+                                _next = _process_next(self.driver, wait_time)
                                 limit_count += 1
                             # last page
-                            _soup(driver, wait_time, _dict=_dict_list)
+                            _soup(self.driver, wait_time, _dict=_dict_list)
                             # finally merge all dict into one
                             main_dict = utils.combine_dict(*_dict_list)
 
                         else:
                             if self.instances.ids.multi_link_id.active:
                                 dict_list = []
-                                dict_list.append(_soup(driver, wait_time, _s_dict=True))
+                                dict_list.append(_soup(self.driver, wait_time, _s_dict=True))
                                 main_dict = utils.combine_dict(*dict_list)
                             else:
-                                _single_dict = _soup(driver, wait_time, _s_dict=True)
+                                try:
+                                    _single_dict = _soup(self.driver, wait_time, _s_dict=True)
+                                except:
+                                    _single_dict = None
                                 main_dict = _single_dict
-                    driver.quit()
+                    self.driver.quit()
                     return main_dict
 
             elif self.instances.ids.mozilla_firefox_id.active:
-                driver = webdriver.Firefox(executable_path=".\\dll\\firefox_drivers\\geckodriver.exe")
-                self._collect_login(driver, wait_time)
+                self.driver = webdriver.Firefox(executable_path=".\\dll\\firefox_drivers\\geckodriver.exe")
+                self._collect_login(self.driver, wait_time)
             elif self.instances.ids.ie_id.active:
-                driver = webdriver.Ie(executable_path=".\\dll\explorer_drivers\\IEDriverServer.exe")
-                self._collect_login(driver, wait_time)
+                self.driver = webdriver.Ie(executable_path=".\\dll\explorer_drivers\\IEDriverServer.exe")
+                self._collect_login(self.driver, wait_time)
             else:
                 self.snacks.snackbar("simple", "Please Choose a Browser")
                 return None
 
         wait_time = round(self.instances.ids.time_id.value, 1)
-        self.instances.ids.start_scrapping_btn_id.disabled = True
 
         raw_data = _collector(wait_time)
 
         # process
-        _get_parameter_missing_link(raw_data)
-        _get_parameter_string_fix(raw_data)
-        _get_parameter_email_fix(raw_data)
+        if raw_data is not None:
+            _get_parameter_missing_link(raw_data)
+            _get_parameter_string_fix(raw_data)
+            _get_parameter_email_fix(raw_data)
+            self.update_progress(progress_text="Organizing Data...", pn_delta=10)
 
 
+            # data write
+            # if not raw_data == None:
+            #     curr = utils.get_computer_date_time()
+            #     utils.dict_to_csv(filename=f"{curr}_scrap.csv", dict_data=raw_data)
+            self.update_progress("Finalizing...", 10)
 
-        # data write
-        # if not raw_data == None:
-        #     curr = utils.get_computer_date_time()
-        #     utils.dict_to_csv(filename=f"{curr}_scrap.csv", dict_data=raw_data)
 
-
-
-        # threading.Thread(target=self.infinite_loop).start()
-    def infinite_loop(self):
-        iteration = 0
-        while True:
-            if self.stop.is_set():
-                # Stop running this thread so the main Python process can exit.
-                return
-            iteration += 1
-            print('Infinite loop, iteration {}.'.format(iteration))
-            time.sleep(1)
+            # threading.Thread(target=self.infinite_loop).start()
 
     def import_csv(self):
         # callback
@@ -513,45 +509,55 @@ class MiningSeleniumTabDrivers(DriverBase):
 
     @mainthread
     def progress(self):
-        # set max value according to criteria
-        # from browser 10
-
-        # from login info 5
-        # from link 15
-            # from single link 1
-                # next page 1
-            # from multi link 1
-        # what to scrap 50
-        # parameter 20
-
-
-        self.progress_bar =  self.pop_up._xpop("progress", title="Scrapping in progress",
-                                     text="Processing", max_value=100,
-                                               complete_callback=self.on_complete_progress_callback,
-                                               cancel_callback=self.on_cancel_callback)
-
+        self.progress_bar = self.pop_up.pop_progress(title="Scrapping In Progress", text="",
+                                                     max_value=100, cancel_callback=self.on_cancel_callback)
+        Clock.schedule_once(lambda dt: self.update_progress(progress_text="initializing....", pn_delta=0), .1)
     def on_complete_progress_callback(self):
-        # release button scrapping
-        # enable view data button
-
         self.instances.ids.view_data_btn_id.disabled = False
         self.instances.ids.start_scrapping_btn_id.disabled = False
+        self.snacks.snackbar("simple", "Scrapping finished in 2.0s")
         print("Completed")
         pass
 
-    def on_cancel_callback(self):
+    def on_cancel_callback(self, instance):
         self.instances.ids.start_scrapping_btn_id.disabled = False
+        if self.driver is not None:
+            self.driver.quit()
+        self.snacks.snackbar("simple", "Scrapping Canceled")
+
 
     @mainthread
     def update_progress(self, progress_text, pn_delta):
-        # totalcall/maxvalue
-        self.progress_bar.inc(pn_delta=pn_delta)
-        self.progress_bar.text = progress_text
+        if self.progress_bar is not None:
+            cv = self.progress_bar.value
+            total_in = cv+pn_delta
+            if self.progress_bar.is_canceled():
+                return
+            v = "{0: .0f} % ".format(1./3 * self.progress_bar.max)
+            self.progress_bar.text = f"{str(progress_text)} {int(self.progress_bar.value)} / {int(self.progress_bar.max)}"
+            if self.progress_bar.value < self.progress_bar.max:
+                if self.progress_bar.value < total_in:
+                    self.progress_bar.inc()
+                    Clock.schedule_once(lambda dt: self.update_progress(progress_text=progress_text, pn_delta=pn_delta-1), .01)
+                else:
+                    return
+            else:
+                self.progress_bar.complete(func=self.on_complete_progress_callback)
 
 
 
 
 
+    def max_setter(self):
+        if self.instances.ids.login_option_id.active:
+            browser = 2
+            login = 3
+            link = 2
+        else:
+            browser = 5
+            login = 0
+            link = 2
+        total = 100
 
 
 
@@ -562,6 +568,19 @@ class MiningSeleniumTabDrivers(DriverBase):
             return
 
 
+    def view_data(self):
+        # get the csv or data file
+        # create a modal with scrollview
+        # create the grid with data
+        # attach it to scrollview
+        # bind buttons with functions
+        # show
+        print("viewing Data")
+
+    def export_to_csv(self):
+        pass
+    def export_to_excel(self):
+        pass
 
 
 

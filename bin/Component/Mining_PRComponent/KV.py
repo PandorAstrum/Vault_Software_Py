@@ -709,7 +709,7 @@ mining_selenium_tab_kv = """
                 id: view_data_btn_id
                 text: "View Data"
                 disabled: True
-                on_release: root.drivers.start_scrapping()
+                on_release: root.drivers.view_data()
 """
 mining_help_tab = """
 <MiningHelpTab>:

@@ -34,9 +34,14 @@ class Snacks:
 # xpop
 
 class PopUp:
+    def pop_progress(self, title=None, text=None, max_value=None, cancel_callback=None):
+        self.progress = XProgress(title=title,text=text, max=max_value)
+        self.progress.bind(on_dismiss=cancel_callback)
+        return self.progress
+
     def _xpop(self, sid, msg=None, title=None,
               on_dismiss_callback=None, check_callback=None,
-              text=None, max_value=None, buttons=None, complete_callback=None, cancel_callback=None):
+              text=None, max_value=None, buttons=None, complete_callback=None, cancel_callback=None, update_call=None):
         if sid == 'msgbox':
             XMessage(text=msg, title=title, on_dismiss=on_dismiss_callback)
         elif sid == 'error':
@@ -48,24 +53,7 @@ class PopUp:
             XFileOpen(on_dismiss=on_dismiss_callback, path=expanduser(u'~'),
                       multiselect=False)
         elif sid == 'progress':
-            self._o_popup = XProgress(title=title,
-                                      text=text, max=max_value)
-
-            def _progress(on_complete_callback=complete_callback, on_cancel_callback=cancel_callback, pdt=None):
-                if self._o_popup.is_canceled():
-                    if on_cancel_callback is not None:
-                        on_cancel_callback()
-                    return
-
-                # self._o_popup.inc()
-                self._o_popup.text = 'Processing (%d / %d)' % \
-                                     (self._o_popup.value, self._o_popup.max)
-                if self._o_popup.value < self._o_popup.max:
-                    Clock.schedule_once(_progress, .01)
-                else:
-                    self._o_popup.complete(func=on_complete_callback)
-            # XProgress(title=title, text=text, max=max_value)
-            Clock.schedule_once(_progress, .1)
+            self._o_popup = XProgress(title=title, text=text, max=max_value)
             return self._o_popup
 
         elif sid == "loading":
