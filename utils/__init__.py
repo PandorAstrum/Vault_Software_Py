@@ -10,6 +10,11 @@ import os
 import uuid
 import re
 import smtplib
+from email import encoders
+from email.mime.base import MIMEBase
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
 import dns.resolver
 import requests
 import threading
@@ -20,6 +25,7 @@ from datetime import datetime
 from kivy.clock import Clock
 from bin import appSettings
 from utils.appDirs import user_cache_dir
+from bin.appSettings import APP_EMAIL
 
 __all__ = [
     "color_scale",
@@ -34,7 +40,8 @@ __all__ = [
     "dict_to_csv",
     "get_computer_date_time",
     "combine_dict",
-    "run_once"
+    "run_once",
+    "send_a_mail"
 ]
 
 
@@ -204,7 +211,8 @@ def clocked(wait_time=0.2, clock="once"):
 
 
 def dict_to_csv(filename="test.csv", dict_data=None):
-    writefile = user_cache_dir() + appSettings.FOLDER_TEMP + "\\" + filename
+    writefile = appDirs.get_desktop() + "\\" + filename
+    # writefile = user_cache_dir() + appSettings.FOLDER_TEMP + "\\" + filename
     keys = dict_data.keys()
     with open(writefile, 'w', newline='') as output_file:
         dict_writer = csv.DictWriter(output_file, keys)
@@ -228,3 +236,35 @@ def combine_dict(*args):
 
 def run_once(func, interval=.1):
     Clock.schedule_once(func, interval)
+
+def send_a_mail(email_subject="Subject",
+                send_to="primeintegerslab@gmail.com",
+                email_body="None",
+                login_pass="",
+                attachment=None):
+    from_addr = APP_EMAIL
+    to_addr = send_to
+    msg = MIMEMultipart()
+    msg['From'] = from_addr
+    msg['To'] = to_addr
+    msg['Subject'] = email_subject
+
+    body = email_body
+    msg.attach(MIMEText(body, 'plain'))
+
+    if attachment is not None:
+        _file_name = "NAME OF THE FILE WITH ITS EXTENSION" # attachment[0] name.txt
+        _attachment = open("PATH OF THE FILE", "rb") # attachment[1] C:\...\name.txt
+        part = MIMEBase('application', 'octet-stream')
+        part.set_payload((_attachment).read())
+        encoders.encode_base64(part)
+        part.add_header('Content-Disposition', "attachment; filename= %s" % _file_name)
+
+        msg.attach(part)
+
+    server = smtplib.SMTP('smtp.gmail.com', 587)
+    server.starttls()
+    server.login(from_addr, login_pass)
+    text = msg.as_string()
+    server.sendmail(from_addr, to_addr, text)
+    server.quit()

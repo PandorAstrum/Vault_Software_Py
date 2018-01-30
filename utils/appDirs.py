@@ -52,6 +52,9 @@ def check_make_dir(path):
     if not os.path.exists(path):
         os.makedirs(path)
 
+def get_desktop():
+    return os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
+
 def user_data_dir(appname=None, appauthor=None, version=None, roaming=False):
     r"""Return full path to the user-specific data dir for this application.
         "appname" is the name of application.

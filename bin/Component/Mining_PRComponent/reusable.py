@@ -155,9 +155,9 @@ class _TagSelectorField(CustomLayout):
         self.add_widget(self.tag_selector_box)
 
 
-class _ScrapField(CustomLayout):
+class ScrapField(CustomLayout):
     def __init__(self, main_instance, getter_group, **kwargs):
-        super(_ScrapField, self).__init__(**kwargs)
+        super(ScrapField, self).__init__(**kwargs)
         self.main_instance = main_instance
         self.scrap_field_holder_id = main_instance.scrap_field_box
         self.getter_group = getter_group + "_getter_group"

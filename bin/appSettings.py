@@ -24,3 +24,6 @@ FOLDER_TEMP = "\\Temp"
 APP_VERSION = '0.0.1'
 APP_NAME = "Vault"
 APP_AUTHOR = "PandorAstrum"
+
+# Copyrights
+APP_EMAIL = "primeintegerslab@gmail.com"
