@@ -22,9 +22,10 @@ from utils.iconfonts import icon
 from utils.jsonUtility import dump_json, get_json_file
 from utils import appDirs
 from bin import appSettings
-from Core.KVFiles import *
+from Core.kvfiles import kv
 
 from bin.libPackage.notification import Notification
+from Core.snacksbar import Snacks
 
 
 class MainScreen(Screen):
@@ -38,6 +39,7 @@ class MainScreen(Screen):
         self.login_name = login_name
         self.json_default_dictionary = {}
         self.data = None
+        self.snacks = Snacks()
         self.app = App.get_running_app()
         self.user_dir = appDirs.user_config_dir(appname=appSettings.APP_NAME,
                                            appauthor=appSettings.APP_AUTHOR)
@@ -47,23 +49,8 @@ class MainScreen(Screen):
         appDirs.check_make_dir(self.se_component_dir)
 
         self.src_mngr = ScreenManager(transition=SwapTransition())
-        self._snackbar("simple", f"Logged in as {self.login_name}")
+        self.snacks.snacks("simple", f"Logged in as {self.login_name}")
         self._make()
-
-    @staticmethod
-    def _snackbar(snack_type, msg):
-        """
-        Creating Snackbar type
-        :param snack_type: str Type
-        :param msg: str message
-        :return:
-        """
-        if snack_type == 'simple':
-            Snackbar(text=msg).show()
-        elif snack_type == 'button':
-            Snackbar(text="This is a snackbar", button_text="with a button!", button_callback=lambda *args: 2).show()
-        elif snack_type == 'verylong':
-            Snackbar(text="This is a very very very very very very very long snackbar!").show()
 
     def _make(self):
         """
@@ -253,21 +240,7 @@ class LoginScreen(Screen):
         super(LoginScreen, self).__init__(**kwargs)
         self.name = "loginScreen"
         self.working = False
-
-    @staticmethod
-    def _snackbar(snack_type, msg):
-        """
-        Creating snack bar type
-        :param snack_type: str type
-        :param msg: str message
-        :return:
-        """
-        if snack_type == 'simple':
-            Snackbar(text=msg).show()
-        elif snack_type == 'button':
-            Snackbar(text="This is a snackbar", button_text="with a button!", button_callback=lambda *args: 2).show()
-        elif snack_type == 'verylong':
-            Snackbar(text="This is a very very very very very very very long snackbar!").show()
+        self.snacks = Snacks()
 
     def login(self):
         """
@@ -277,9 +250,9 @@ class LoginScreen(Screen):
         username = self.ids.username.text
         password = self.ids.passwd.text
         if not username:
-            self._snackbar("simple", "Username is empty")
+            self.snacks.snacks("simple", "Username is empty")
         elif not password:
-            self._snackbar("simple", "Password is empty")
+            self.snacks.snacks("simple", "Password is empty")
         else:
             if self.ids.offline_chkbox_id.active:
                 self._offline_login()
@@ -296,7 +269,7 @@ class LoginScreen(Screen):
             # go to google sheet and try to match with username and pass
             utils.check_internet()
         except ConnectionError:
-            self._snackbar("simple", "No internet")
+            self.snacks.snacks("simple", "No internet")
         finally:
             # if match then self manager add widget main screen
             # if not then self manager add widget wrong password
@@ -449,26 +422,7 @@ class LaunchPad(ScreenManager):
          build all the kv files imported from core and components
         :return:
         """
-        # get the base kv files
-        base_kv = (launchPad_kv,
-                   loadingScreen_kv,
-                   loginScreen_kv,
-                   errorScreen_kv,
-                   registration_kv,
-                   seperator_kv,
-                   mainScreen_kv,
-                   componentBase_kv,
-                   defaultScreen_kv,
-                   tabBase_kv,
-                   defaultTab_kv,
-                   tabWithoutDrawer_kv,
-                   tabWithDrawer_kv,
-                   miningField_kv
-                   )
-        all_kv = """"""
-        for i in base_kv:
-            all_kv += i
-
+        all_kv = kv
         # get component's kv file
         app = App.get_running_app()
         primary_component_entry = app.config.get("Component", "PrimaryComponentEntry")

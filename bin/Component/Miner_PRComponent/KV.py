@@ -7,8 +7,8 @@ __all__ = [
     "kv"
 ]
 
-mining_scrapy_tab_kv = """
-<MiningScrapyTab>:
+Miner_scrapy_tab_kv = """
+<MinerScrapyTab>:
     BoxLayout:
         orientation: "vertical"
         size_hint_y:None
@@ -16,10 +16,10 @@ mining_scrapy_tab_kv = """
         padding: "20dp"
         spacing: "5dp"
         Button:
-            text: "Mining Scrapy Tab"
+            text: "Miner Scrapy Tab"
 """
-mining_selenium_tab_kv = """
-<MiningSeleniumTab>:
+Miner_selenium_tab_kv = """
+<MinerSeleniumTab>:
     BoxLayout:
         orientation: "vertical"
         size_hint_y: None
@@ -711,8 +711,8 @@ mining_selenium_tab_kv = """
                 disabled: True
                 on_release: root.drivers.view_data()
 """
-mining_help_tab = """
-<MiningHelpTab>:
+Miner_grabber_tab = """
+<MinerGrabberTab>:
     BoxLayout:
         orientation: "vertical"
         size_hint_y: None
@@ -720,46 +720,33 @@ mining_help_tab = """
         padding: "20dp"
         spacing: "5dp"
         Button:
-            text: "Mining Help Tab"
+            text: "Miner Grabber Tab"
+"""
+Miner_utility_tab = """
+<MinerUtilityTab>:
+    BoxLayout:
+        orientation: "vertical"
+        size_hint_y: None
+        height: self.minimum_height
+        padding: "20dp"
+        spacing: "5dp"
+        Button:
+            text: "Miner Utility Tab"
+"""
+Miner_wiki_tab = """
+<MinerWikiTab>:
+    BoxLayout:
+        orientation: "vertical"
+        size_hint_y: None
+        height: self.minimum_height
+        padding: "20dp"
+        spacing: "5dp"
+        Button:
+            text: "Miner wiki Tab"
 """
 
-scrap_field_kv = """
-<_ScrapField>:
-    # size_hint_y: None
-    # height: self.minimum_height
-    # padding: (dp(20), dp(5))
-
-    # MDCard:
-    #     size_hint_y: None
-    #     height: self.minimum_height
-    #     padding: (dp(20), dp(5))
-    #     spacing: dp(20)
-    #     BoxLayout:
-    #         size_hint_y: None
-    #         height: self.minimum_height
-    #         orientation: "vertical"
-    #
-    #         BoxLayout: # buttons helper
-    #             size_hint: None, None
-    #             height: self.minimum_height
-    #             width: self.minimum_width
-    #             pos_hint: {"center_x": 0.95, "center_y": 0.5}
-    #             MDIconButton:
-    #                 icon: "arrow-down-bold-hexagon-outline"
-    #             MDIconButton:
-    #                 icon: "delete"
-    #
-    #         MDTextField:
-    #             hint_text: "Field Name"
-    #             color_mode: "accent"
-    #
-    #         BoxLayout: # holder
-    #             id: root.holder_id
-    #             size_hint_y: None
-    #             height: self.minimum_height
-    #             orientation: "vertical"
-
-"""
-
-
-kv = scrap_field_kv+ mining_scrapy_tab_kv + mining_selenium_tab_kv + mining_help_tab
+kv = Miner_scrapy_tab_kv \
+     + Miner_selenium_tab_kv \
+     + Miner_grabber_tab \
+     + Miner_utility_tab \
+     + Miner_wiki_tab

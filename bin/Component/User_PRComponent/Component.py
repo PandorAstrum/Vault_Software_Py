@@ -4,7 +4,7 @@ __author__ = "Ashiquzzaman Khan"
 __desc__ = "Main Exe file to Run"
 """
 from Core.baseInterface import ComponentBase, TabBase
-from ComponentDrivers.userDrivers import UserAccountTabDrivers
+
 __all__ = [
     "Component",
     "json_settings"
@@ -113,19 +113,18 @@ class Component(ComponentBase):
                                      UserHelpTab()]
         self._populate()
 
+
 # Tabs --------------------------------------------------
 class UserAccountTab(TabBase):
     def __init__(self, **kwargs):
         super(UserAccountTab, self).__init__(**kwargs)
         self.__name__ = "UserAccountTab"
-        self.drivers = UserAccountTabDrivers()
+
 
 class UserComponentTab(TabBase):
     def __init__(self, **kwargs):
         super(UserComponentTab, self).__init__(**kwargs)
         self.__name__ = "UserComponentTab"
-
-
 
 
 class UserPreferenceTab(TabBase):

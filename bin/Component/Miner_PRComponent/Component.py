@@ -4,7 +4,7 @@ __author__ = "Ashiquzzaman Khan"
 __desc__ = "Main Exe file to Run"
 """
 from Core.baseInterface import ComponentBase, TabBase
-from bin.Component.Mining_PRComponent.miningDrivers import MiningSeleniumTabDrivers
+from bin.Component.Miner_PRComponent import MinerSeleniumTabDrivers
 
 __all__ = [
     "Component",
@@ -12,19 +12,20 @@ __all__ = [
 ]
 
 json_settings = {
-    "id": "Mining",
-    "component_name": "Mining_PRComponent",
+    "id": "Miner",
+    "component_name": "Miner_PRComponent",
     "icon": "fa-gg",
     "status": True,
     "order": 3,
-    "tab_group_name": "mining_tab_group",
+    "version": "1.0",
+    "tab_group_name": "miner_tab_group",
     "tab": [
         {
             "toolbar": {
                 "have_toolbar": False,
                 "toolbar_color": []
             },
-            "tab_class_name": "MiningScrapyTab",
+            "tab_class_name": "MinerScrapyTab",
             "tab_name": "Scrapy",
             "tab_id": "Scrapy",
             "tab_icon": "fa-globe",
@@ -36,7 +37,7 @@ json_settings = {
                 "have_toolbar": False,
                 "toolbar_color": []
             },
-            "tab_class_name": "MiningSeleniumTab",
+            "tab_class_name": "MinerSeleniumTab",
             "tab_name": "Selenium",
             "tab_id": "selenium",
             "tab_icon": "fa-chrome",
@@ -58,9 +59,33 @@ json_settings = {
                 "have_toolbar": False,
                 "toolbar_color": []
             },
-            "tab_class_name": "MiningHelpTab",
-            "tab_name": "Help",
-            "tab_id": "help",
+            "tab_class_name": "MinerGrabberTab",
+            "tab_name": "Grabber",
+            "tab_id": "Grabber",
+            "tab_icon": "fa-globe",
+            "tab_type": "list",
+            "tab_content": []
+        },
+        {
+            "toolbar": {
+                "have_toolbar": False,
+                "toolbar_color": []
+            },
+            "tab_class_name": "MinerUtilityTab",
+            "tab_name": "Utility",
+            "tab_id": "Utility",
+            "tab_icon": "fa-globe",
+            "tab_type": "list",
+            "tab_content": []
+        },
+        {
+            "toolbar": {
+                "have_toolbar": False,
+                "toolbar_color": []
+            },
+            "tab_class_name": "MinerWikiTab",
+            "tab_name": "Wiki",
+            "tab_id": "wiki",
             "tab_icon": "fa-question",
             "tab_type": "list",
             "tab_content": [
@@ -92,25 +117,37 @@ class Component(ComponentBase):
         self.tab_group_name = kwargs.get("tab_group_name")
         self.default_tab_name = "Scrapy"
 
-        self.tab_class_collection = [MiningScrapyTab(),
-                                     MiningSeleniumTab(),
-                                     MiningHelpTab()
+        self.tab_class_collection = [MinerScrapyTab(),
+                                     MinerSeleniumTab(),
+                                     MinerGrabberTab(),
+                                     MinerUtilityTab(),
+                                     MinerWikiTab()
                                      ]
         self._populate()
 
 # Tabs --------------------------------------------------
-class MiningScrapyTab(TabBase):
+class MinerScrapyTab(TabBase):
     def __init__(self, **kwargs):
-        super(MiningScrapyTab, self).__init__(**kwargs)
-        self.__name__ = "MiningScrapyTab"
+        super(MinerScrapyTab, self).__init__(**kwargs)
+        self.__name__ = "MinerScrapyTab"
 
-class MiningSeleniumTab(TabBase):
+class MinerSeleniumTab(TabBase):
     def __init__(self, **kwargs):
-        super(MiningSeleniumTab, self).__init__(**kwargs)
-        self.__name__ = "MiningSeleniumTab"
-        self.drivers = MiningSeleniumTabDrivers(instances=self)
+        super(MinerSeleniumTab, self).__init__(**kwargs)
+        self.__name__ = "MinerSeleniumTab"
+        self.drivers = MinerSeleniumTabDrivers(instances=self)
 
-class MiningHelpTab(TabBase):
+class MinerGrabberTab(TabBase):
     def __init__(self, **kwargs):
-        super(MiningHelpTab, self).__init__(**kwargs)
-        self.__name__ = "MiningHelpTab"
+        super(MinerGrabberTab, self).__init__(**kwargs)
+        self.__name__ = "MinerGrabberTab"
+
+class MinerUtilityTab(TabBase):
+    def __init__(self, **kwargs):
+        super(MinerUtilityTab, self).__init__(**kwargs)
+        self.__name__ = "MinerUtilityTab"
+
+class MinerWikiTab(TabBase):
+    def __init__(self, **kwargs):
+        super(MinerWikiTab, self).__init__(**kwargs)
+        self.__name__ = "MinerWikiTab"

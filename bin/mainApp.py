@@ -211,7 +211,7 @@ class MainApp(App):
             "Role": "Programmer"
         })
         config.setdefaults("Component", {
-            "PrimaryComponentEntry": ("Mining_PR","User_PR", "Help_PR"),
+            "PrimaryComponentEntry": ("Miner_PR","User_PR", "Help_PR"),
             "SecondaryComponentEntry": ()
         })
         config.setdefaults("Theme", {

@@ -38,5 +38,9 @@ APP_EMAIL = "primeintegerslab@gmail.com"
 
 # directory and files relative to root
 SOFTWARE_ROOT = os.path.normpath(os.path.abspath(os.path.dirname(__file__)) + os.sep + os.pardir)
+CORE_ROOT = os.path.join(SOFTWARE_ROOT, "Core")
+BIN_ROOT = os.path.join(SOFTWARE_ROOT, "bin")
 DLL_ROOT = os.path.join(SOFTWARE_ROOT, "dll")
-UTILS_ROOT = os.path.join(SOFTWARE_ROOT, 'utils', '__init__')
+RESOURCE_ROOT = os.path.join(SOFTWARE_ROOT, "res")
+UTILS_ROOT = os.path.join(SOFTWARE_ROOT, 'utils')
+

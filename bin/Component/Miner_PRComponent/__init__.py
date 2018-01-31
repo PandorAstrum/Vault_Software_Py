@@ -1,33 +1,55 @@
 # -*- coding: utf-8 -*-
 """
 __author__ = "Ashiquzzaman Khan"
-__desc__ = "Main Exe file to Run"
+__desc__ = "Listed all the drivers here with functions"
 """
 import re
-from functools import partial
-import threading
 import time
+import urllib.request as urllib2
 
-from kivy.clock import mainthread, Clock
-from kivy.factory import Factory
 from selenium import webdriver
 from bs4 import BeautifulSoup
 
-from bin.Component.Mining_PRComponent.reusable import ScrapField
 import utils
 from Core.baseInterface import DriverBase
-from Core.spawner import Spawn
-from Core.snacksbar import Snacks
-from Core.popups import Popups
+from bin.Component.Miner_PRComponent.reusable import ScrapField
 
+__all__ = [
+    "MinerScrapyTabDrivers",
+    "MinerSeleniumTabDrivers"
+]
 
-class MiningSeleniumTabDrivers(DriverBase):
+class MinerScrapyTabDrivers(DriverBase):
+    pass
+
+    # check for robots or sitemap in the website
+        # if exists then settings delay and other from that
+
+    # check the website with builtswith
+
+    # check the owner with python-whois
+
+    # check if the slug is important or not
+
+    # download a webpage
+    def download(self, url, user_agent='wswp', num_retries=2):
+        print('Progress bar -> Downloading:', url)
+        headers = {'User-agent': user_agent}
+        request = urllib2.Request(url, headers=headers)
+        try:
+            html = urllib2.urlopen(request).read()
+        except urllib2.URLError as e:
+            print('Progress bar -> Download error:', e.reason)
+            html = None
+            if num_retries > 0:
+                if hasattr(e, 'code') and 500 <= e.code < 600:  # recursively retry 5xx HTTP errors
+                    return self.download(url, user_agent, num_retries-1)
+        return html
+
+class MinerSeleniumTabDrivers(DriverBase):
     def __init__(self, instances, **kwargs):
-        super(MiningSeleniumTabDrivers, self).__init__(**kwargs)
+        super(MinerSeleniumTabDrivers, self).__init__(**kwargs)
         self.instances = instances
-        self.snacks = Snacks()
-        self.pop = Popups()
-        self.spawn = Spawn()
         self.scrap_field_box = self.instances.ids.scrap_field_box_id
         self.field_instance = []
         self.scrapping_progress = None

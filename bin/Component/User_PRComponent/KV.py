@@ -3,8 +3,11 @@
 __author__ = "Ashiquzzaman Khan"
 __desc__ = "Main Exe file to Run"
 """
+__all__ = [
+    "kv"
+]
 
-kv = """
+user_account_tab_kv = """
 <UserAccountTab>:
     BoxLayout:
         orientation: "vertical"
@@ -121,7 +124,7 @@ kv = """
                         text: "Update info"
                     MDFlatButton:
                         text: "Sign Out"
-                        on_release: root.drivers.sign_out()
+                        on_release: print("set drivers")
         # App Info
         MDCard:
             padding: "10dp"
@@ -311,8 +314,8 @@ kv = """
                 halign: "center"
                 theme_text_color: "Primary"
             HSeparator:
-
-
+"""
+user_component_tab_kv = """
 <UserComponentTab>:
     BoxLayout:
 
@@ -486,6 +489,8 @@ kv = """
 
 
 
+"""
+user_preference_tab_kv = """
 <UserPreferenceTab>:
     BoxLayout:
         orientation: "vertical"
@@ -572,10 +577,15 @@ kv = """
                         on_release: MDThemePicker().open()
                         opposite_colors: True
                         pos_hint: {"center_y": 0.5}
-
-
-<UserHelpTab>:
+"""
+user_wiki_tab_kv = """
+<UserWikiTab>:
     BoxLayout:
         Button:
             text: "Coming Soon Help Tab"
 """
+
+kv = user_account_tab_kv \
+     + user_component_tab_kv \
+     + user_preference_tab_kv \
+     + user_wiki_tab_kv
