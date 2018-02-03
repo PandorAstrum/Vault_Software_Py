@@ -13,4 +13,6 @@ if __name__ == "__main__":
     # web-fonts icons
     iconfonts.register('font_awesome', DATA_PATH + '\\res\\font\\fontawesome-webfont.ttf',
                        DATA_PATH + '\\res\\font\\font-awesome.fontd')
+    iconfonts.register('wb1', DATA_PATH + '\\res\\font\\wb1.ttf',
+                       DATA_PATH + '\\res\\font\\wb1.fontd')
     mainApp.MainApp().run()

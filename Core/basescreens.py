@@ -15,7 +15,7 @@ from kivy.uix.actionbar import ActionToggleButton
 from kivy.uix.screenmanager import Screen, ScreenManager, SwapTransition
 from kivymd.dialog import MDDialog
 from kivymd.label import MDLabel
-from kivymd.snackbar import Snackbar
+
 
 import utils
 from utils.iconfonts import icon
@@ -42,7 +42,7 @@ class MainScreen(Screen):
         self.snacks = Snacks()
         self.app = App.get_running_app()
         self.user_dir = appDirs.user_config_dir(appname=appSettings.APP_NAME,
-                                           appauthor=appSettings.APP_AUTHOR)
+                                                appauthor=appSettings.APP_AUTHOR)
         self.component_conf_dir = self.user_dir+f"\\{appSettings.FOLDER_CONFIG}"
         appDirs.check_make_dir(self.component_conf_dir)
         self.se_component_dir = self.user_dir+f"\\{appSettings.FOLDER_SECONDARY_COMPONENT}"
@@ -59,10 +59,10 @@ class MainScreen(Screen):
         """
         # get all component
         primary_component_entry = self.app.config.get("Component",
-                                                 "PrimaryComponentEntry")
+                                                      "PrimaryComponentEntry")
         secondary_component_entry = self.app.config.get("Component",
-                                                 "SecondaryComponentEntry")
-
+                                                        "SecondaryComponentEntry")
+        # cleaning string name
         for ch in ["(", ")", "'", " "]:
             if ch in primary_component_entry:
                 primary_component_entry = primary_component_entry.replace(ch, "")
@@ -71,12 +71,12 @@ class MainScreen(Screen):
             else:
                 if ch in secondary_component_entry:
                     secondary_component_entry = secondary_component_entry.replace(ch, "")
-
         primary_component_entry = primary_component_entry.split(",")
         if utils.is_empty(secondary_component_entry):
             pass
         else:
             secondary_component_entry = secondary_component_entry.split(",")
+
         # get json file
         if utils.is_empty(secondary_component_entry):
             for i in primary_component_entry:
@@ -86,7 +86,6 @@ class MainScreen(Screen):
             for i in [*primary_component_entry, *secondary_component_entry]:
                 component_json = self._build_json_default(i)
                 self.json_default_dictionary[f"{i}Component"] = component_json
-
         try:
             self.data = get_json_file(appSettings.FILE_CONFIG_COMPONENT,
                                       self.component_conf_dir)
@@ -97,19 +96,26 @@ class MainScreen(Screen):
         finally:
             self.data = get_json_file(appSettings.FILE_CONFIG_COMPONENT,
                                       self.component_conf_dir)
+        # matching json.. if not matched then update
+        if not self.data == self.json_default_dictionary:
+            dump_json(self.json_default_dictionary,
+                      appSettings.FILE_CONFIG_COMPONENT,
+                      self.component_conf_dir)
+            self.data = get_json_file(appSettings.FILE_CONFIG_COMPONENT,
+                                      self.component_conf_dir)
 
+        # Component class initialization
         component_dict = {}
         temp_dict_ordered = {}
 
-        # Component class initialization
         for each_component_name, each_component_fields in self.data.items():
             if each_component_fields["status"]:
                 instance = self._init_component(component_name=each_component_fields["component_name"],
-                                               name=each_component_fields["id"],
-                                               component_id=each_component_fields["id"],
-                                               component_icon=each_component_fields["icon"],
-                                               component_tab_info=each_component_fields["tab"],
-                                               tab_group_name=each_component_fields["tab_group_name"])
+                                                name=each_component_fields["id"],
+                                                component_id=each_component_fields["id"],
+                                                component_icon=each_component_fields["icon"],
+                                                component_tab_info=each_component_fields["tab"],
+                                                tab_group_name=each_component_fields["tab_group_name"])
 
                 component_dict[each_component_fields["order"]] = instance
 
@@ -172,10 +178,10 @@ class MainScreen(Screen):
             full_path = f"{self.se_component_dir}\\{component_name}\\"
             module = utils.module_import_from_abs(full_path, "*Component.py")
             return module.Component(component_name=kwargs.get("name"),
-                                component_id=kwargs.get("component_id"),
-                                component_icon=kwargs.get("component_icon"),
-                                component_tab_info=kwargs.get("component_tab_info"),
-                                tab_group_name=kwargs.get("tab_group_name"))
+                                    component_id=kwargs.get("component_id"),
+                                    component_icon=kwargs.get("component_icon"),
+                                    component_tab_info=kwargs.get("component_tab_info"),
+                                    tab_group_name=kwargs.get("tab_group_name"))
 
 class DefaultScreen(Screen):
     """
@@ -472,14 +478,3 @@ class LaunchPad(ScreenManager):
         self.add_widget(loading)
         self.current = "loadingScreen"
 
-    @staticmethod
-    def resize_window(size):
-        """
-        Call back Functions from KV window resize
-        :param size: int height and int width from kv
-        :return:
-        """
-        app = App.get_running_app()
-        app.config.set('WindowSettings', 'Width', size[0])
-        app.config.set('WindowSettings', 'Height', size[1])
-        app.config.write()

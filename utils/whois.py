@@ -1,4 +1,3 @@
-
 """
 __author__ = "Ashiquzzaman Khan"
 __desc__ = "Returns who is for a website"
@@ -7,27 +6,26 @@ from __future__ import print_function
 from __future__ import absolute_import
 from __future__ import unicode_literals
 from __future__ import division
-from future import standard_library
-standard_library.install_aliases()
-from builtins import *
+
 import re
 import sys
 import os
 import subprocess
 import socket
-from builtins import object
 import optparse
-# from .parser import WhoisEntry
-# from .whois import NICClient
+import json
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import *
+from builtins import object
 from builtins import str
 from past.builtins import basestring
-
-import json
 from datetime import datetime
+from bin.appSettings import DLL_ROOT
+
 try:
     import dateutil.parser as dp
-    # from .time_zones import tz_data
     DATEUTIL = True
 except ImportError:
     DATEUTIL = False
@@ -120,6 +118,7 @@ def datetime_parse(s):
         except ValueError as e:
             pass  # Wrong format, keep trying
     return s
+
 
 def cast_date(s, dayfirst=False, yearfirst=False):
     """Convert any date string found in WHOIS to a datetime object.
@@ -355,14 +354,14 @@ class WhoisOrg(WhoisEntry):
     regex = {
         'domain_name':      'Domain Name: *(.+)',
         'registrar':        'Registrar: *(.+)',
-        'whois_server':     'Whois Server: *(.+)', # empty usually
-        'referral_url':     'Referral URL: *(.+)', # http url of whois_server: empty usually
+        'whois_server':     'Whois Server: *(.+)',  # empty usually
+        'referral_url':     'Referral URL: *(.+)',  # http url of whois_server: empty usually
         'updated_date':     'Updated Date: *(.+)',
         'creation_date':    'Creation Date: *(.+)',
         'expiration_date':  'Registry Expiry Date: *(.+)',
-        'name_servers':     'Name Server: *(.+)', # list of name servers
-        'status':           'Status: *(.+)', # list of statuses
-        'emails':           EMAIL_REGEX, # list of email addresses
+        'name_servers':     'Name Server: *(.+)',  # list of name servers
+        'status':           'Status: *(.+)',  # list of statuses
+        'emails':           EMAIL_REGEX,  # list of email addresses
     }
 
     def __init__(self, domain, text):
@@ -961,14 +960,14 @@ class WhoisInfo(WhoisEntry):
     regex = {
         'domain_name':      'Domain Name: *(.+)',
         'registrar':        'Registrar: *(.+)',
-        'whois_server':     'Whois Server: *(.+)', # empty usually
-        'referral_url':     'Referral URL: *(.+)', # http url of whois_server: empty usually
+        'whois_server':     'Whois Server: *(.+)',  # empty usually
+        'referral_url':     'Referral URL: *(.+)',  # http url of whois_server: empty usually
         'updated_date':     'Updated Date: *(.+)',
         'creation_date':    'Creation Date: *(.+)',
         'expiration_date':  'Registry Expiry Date: *(.+)',
-        'name_servers':     'Name Server: *(.+)', # list of name servers
-        'status':           'Status: *(.+)', # list of statuses
-        'emails':           EMAIL_REGEX, # list of email addresses
+        'name_servers':     'Name Server: *(.+)',  # list of name servers
+        'status':           'Status: *(.+)',  # list of statuses
+        'emails':           EMAIL_REGEX,  # list of email addresses
         'name':             'Registrant Name: *(.+)',
         'org':              'Registrant Organization: *(.+)',
         'address':          'Registrant Street: *(.+)',
@@ -986,7 +985,7 @@ class WhoisInfo(WhoisEntry):
 
 
 class WhoisRf(WhoisRu):
-    """Whois parser for .su domains
+    """ Whois parser for .su domains
     """
     def __init__(self, domain, text):
         WhoisRu.__init__(self, domain, text)
@@ -1084,7 +1083,7 @@ class WhoisIo(WhoisEntry):
     regex = {
         'status':           'Status\s*: *(.+)',
         'name_servers':     'NS \d?\s*: *(.+)',
-        #'owner':            'Owner\s*: *(.+)',
+        # 'owner':            'Owner\s*: *(.+)',
         'owner':            'Owner OrgName\s*: *(.+)',
         'expiration_date':  'Expiry\s*: *(.+)',
         'domain_name':      'Domain\s*: *(.+)',
@@ -1130,6 +1129,7 @@ class WhoisKg(WhoisEntry):
         'updated_date':                   'Record last updated on\s*(.+)',
 
     }
+
     def __init__(self, domain, text):
         if 'Data not found. This domain is available for registration' in text:
             raise PywhoisError(text)
@@ -1149,7 +1149,8 @@ class WhoisChLi(WhoisEntry):
         'tech-c':                           'Technical contact:\n*([\n\s\S]+)\nRegistrar:',
         'name_servers':                     'Name servers:\n *([\n\S\s]+)'
     }
-    def __init__(self,domain,text):
+
+    def __init__(self, domain, text):
         if 'We do not have an entry in our database matching your query.' in text:
             raise PywhoisError(text)
         else:
@@ -1334,7 +1335,7 @@ class WhoisIl(WhoisEntry):
         'name_servers':    'nserver: *(.+)',
         'emails':          'e-mail: *(.+)',
         'phone':           'phone: *(.+)',
-        'name_servers':    'nserver: *(.+)',
+        # 'name_servers':    'nserver: *(.+)',
         'registrar':       'registrar name: *(.+)',
         'referral_url':    'registrar info: *(.+)',
     }
@@ -1446,7 +1447,7 @@ class NICClient(object):
     WHOIS_RECURSE = 0x01
     WHOIS_QUICK = 0x02
 
-    ip_whois = [LNICHOST, RNICHOST, PNICHOST, BNICHOST,PANDIHOST]
+    ip_whois = [LNICHOST, RNICHOST, PNICHOST, BNICHOST, PANDIHOST]
 
     def __init__(self):
         self.use_qnichost = False
@@ -1456,7 +1457,7 @@ class NICClient(object):
         whois server for getting contact details.
         """
         nhost = None
-        match = re.compile('Domain Name: ' + query + '\s*.*?Whois Server: (.*?)\s', flags=re.IGNORECASE|re.DOTALL).search(buf)
+        match = re.compile('Domain Name: ' + query + '\s*.*?Whois Server: (.*?)\s', flags=re.IGNORECASE | re.DOTALL).search(buf)
         if match:
             nhost = match.groups()[0]
             # if the whois address is domain.tld/something then
@@ -1469,7 +1470,6 @@ class NICClient(object):
                     nhost = nichost
                     break
         return nhost
-
 
     def whois(self, query, hostname, flags, many_results=False):
         """Perform initial lookup with TLD whois server
@@ -1496,7 +1496,7 @@ class NICClient(object):
                 query_bytes = '=' + query
             else:
                 query_bytes = query
-            s.send(bytes(query_bytes,'utf-8') + b"\r\n")
+            s.send(bytes(query_bytes, 'utf-8') + b"\r\n")
             # recv returns bytes
             while True:
                 d = s.recv(4096)
@@ -1649,19 +1649,19 @@ def parse_command_line(argv):
 #     print(nic_client.whois_lookup(options.__dict__, args[1], flags))
 
 # init.py
-def whois(url, command=False):
+def whois(_url, command=False):
     # clean domain to expose netloc
-    ip_match = re.match(r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$", url)
+    ip_match = re.match(r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$", _url)
     if ip_match:
-        domain = url
+        domain = _url
         try:
-            result = socket.gethostbyaddr(url)
+            result = socket.gethostbyaddr(_url)
         except socket.herror as e:
             pass
         else:
             domain = result[0]
     else:
-        domain = extract_domain(url)
+        domain = extract_domain(_url)
     if command:
         # try native whois command
         r = subprocess.Popen(['whois', domain], stdout=subprocess.PIPE)
@@ -1674,6 +1674,8 @@ def whois(url, command=False):
 
 
 suffixes = None
+
+
 def extract_domain(url):
     """Extract the domain from the given URL
 
@@ -1704,7 +1706,7 @@ def extract_domain(url):
     global suffixes
     if not suffixes:
         # downloaded from https://publicsuffix.org/list/public_suffix_list.dat
-        tlds_path = os.path.join(os.getcwd(), os.path.dirname(__file__), 'data', 'public_suffix_list.dat')
+        tlds_path = os.path.join(DLL_ROOT, "public_suffix_list.dat")
         with open(tlds_path, encoding='utf-8') as tlds_fp:
             suffixes = set(line.encode('utf-8') for line in tlds_fp.read().splitlines() if line and not line.startswith('//'))
 

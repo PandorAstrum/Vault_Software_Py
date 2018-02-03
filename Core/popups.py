@@ -3,10 +3,13 @@
 __author__ = "Ashiquzzaman Khan"
 __desc__ = "Main Exe file to Run"
 """
+from os.path import expanduser
+
 from kivy.clock import mainthread, Clock
 from kivy.metrics import dp
 from kivymd.dialog import MDDialog
 
+from bin.libPackage.xpop import XFileOpen
 from bin.libPackage.xpop import XProgress
 import queue
 
@@ -100,3 +103,7 @@ class Popups:
                 self.dialog.dismiss(callback())
             else:
                 self.dialog.dismiss()
+
+    def open_pop(self, import_callback):
+        XFileOpen(on_dismiss=import_callback, path=expanduser(u'~'),
+                      multiselect=False)

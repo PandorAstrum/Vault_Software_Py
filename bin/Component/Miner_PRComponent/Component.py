@@ -15,9 +15,10 @@ json_settings = {
     "id": "Miner",
     "component_name": "Miner_PRComponent",
     "icon": "fa-gg",
+    "icon_class": "",
     "status": True,
     "order": 3,
-    "version": "1.0",
+    "version": "0.2",
     "tab_group_name": "miner_tab_group",
     "tab": [
         {
@@ -29,6 +30,7 @@ json_settings = {
             "tab_name": "Scrapy",
             "tab_id": "Scrapy",
             "tab_icon": "fa-globe",
+            "tab_icon_class": "font_awesome",
             "tab_type": "list",
             "tab_content": []
         },
@@ -41,6 +43,7 @@ json_settings = {
             "tab_name": "Selenium",
             "tab_id": "selenium",
             "tab_icon": "fa-chrome",
+            "tab_icon_class": "font_awesome",
             "tab_type": "list",
             "tab_content": [
                 {
@@ -62,7 +65,8 @@ json_settings = {
             "tab_class_name": "MinerGrabberTab",
             "tab_name": "Grabber",
             "tab_id": "Grabber",
-            "tab_icon": "fa-globe",
+            "tab_icon": "fa-hand-grab-o",
+            "tab_icon_class": "font_awesome",
             "tab_type": "list",
             "tab_content": []
         },
@@ -74,7 +78,8 @@ json_settings = {
             "tab_class_name": "MinerUtilityTab",
             "tab_name": "Utility",
             "tab_id": "Utility",
-            "tab_icon": "fa-globe",
+            "tab_icon": "fa-user-secret",
+            "tab_icon_class": "font_awesome",
             "tab_type": "list",
             "tab_content": []
         },
@@ -86,7 +91,8 @@ json_settings = {
             "tab_class_name": "MinerWikiTab",
             "tab_name": "Wiki",
             "tab_id": "wiki",
-            "tab_icon": "fa-question",
+            "tab_icon": "fa-book",
+            "tab_icon_class": "font_awesome",
             "tab_type": "list",
             "tab_content": [
                 {

@@ -16,6 +16,7 @@ from kivymd.theming import ThemableBehavior
 
 import utils
 from functools import partial
+from Core.mouseOver import MouseOver
 
 from kivy.uix.screenmanager import Screen, ScreenManager, SlideTransition, RiseInTransition
 from kivy.uix.scrollview import ScrollView
@@ -56,7 +57,7 @@ class ComponentBase(Screen):
         tab_dict = {}
 
         for each_tab in self.component_tab_info:
-            tab_dict[each_tab["tab_name"]] = each_tab["tab_icon"]
+            tab_dict[each_tab["tab_name"]] = [each_tab["tab_icon"], each_tab["tab_icon_class"]]
 
             instance = _Tab(tab_type=each_tab["tab_type"],
                             tab_name=each_tab["tab_name"],
@@ -80,12 +81,13 @@ class ComponentBase(Screen):
 
         position_y = 1
         for key, value in tab_dict.items():
-            btn = ToggleButton(id=key,
+            btn = TabToggleButton(id=key,
                                markup=True,
                                state="normal",
-                               font_size=10,
+                               font_size= 10,
                                halign="center",
-                               text="%s\n%s" % ((icon(value, 18)), key),
+                               valign="center",
+                               text="%s\n%s" % ((icon(value[0], 18, font_name=value[1])), key),
                                size_hint=(1, 0.09),
                                pos_hint={"x": 0, "top": position_y},
                                group=self.tab_group_name)
@@ -233,13 +235,12 @@ class TabBase(ScrollView):
     def _make(self):
         pass
 
-class DriverBase(ThemableBehavior):
+class DriverBase:
     def __init__(self, **kwargs):
-        super(DriverBase, self).__init__(**kwargs)
-        self.instances = kwargs.get("instances")
+        # super(DriverBase, self).__init__(**kwargs)
+        # self.instances = instances
         self.pop = Popups()
         self.snacks = Snacks()
-        self.spawn = Spawn()
 
 
 class MiningField(BoxLayout):
@@ -248,10 +249,9 @@ class MiningField(BoxLayout):
 
 
 
-class CustomLayout(ThemableBehavior, BoxLayout):
+class CustomLayout(Spawn, BoxLayout):
     def __init__(self, **kwargs):
         super(CustomLayout, self).__init__(**kwargs)
-        self.spawn = Spawn()
         self.size_hint_y = None
         self.padding = (dp(20), dp(5))
         self.bind(minimum_height=self.setter('height'))
@@ -345,3 +345,24 @@ class CustomLayout(ThemableBehavior, BoxLayout):
 #
 #     def on_exit(self):
 #         self.opacity = 1
+
+
+class TabToggleButton(ToggleButton, MouseOver):
+    def __init__(self, **kwargs):
+        super(TabToggleButton, self).__init__(**kwargs)
+
+    def on_hover(self):
+        if self.state == "normal":
+        # size increase
+            self.size_hint = (1.5, 0.09)
+        # text add
+        #     self.text += self.id
+        pass
+
+    def on_exit(self):
+        if self.state == "normal":
+            self.size_hint = (1, 0.09)
+        else:
+            self.size_hint = (1.3, 0.09)
+
+

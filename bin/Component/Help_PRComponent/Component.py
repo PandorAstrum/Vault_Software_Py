@@ -14,8 +14,10 @@ json_settings = {
     "id": "Help",
     "component_name": "Help_PRComponent",
     "icon": "fa-book",
+    "icon_class": "",
     "status": True,
     "order": 1,
+    "version": "0.0",
     "tab_group_name": "help_tab_group",
     "tab": [
         {
@@ -26,7 +28,8 @@ json_settings = {
             "tab_class_name": "HelpGeneralTab",
             "tab_name": "General",
             "tab_id": "general",
-            "tab_icon": "fa-user",
+            "tab_icon": "wb1-screwdriver",
+            "tab_icon_class": "wb1",
             "tab_type": "list",
             "tab_content": []
         },
@@ -38,7 +41,8 @@ json_settings = {
             "tab_class_name": "HelpAccountTab",
             "tab_name": "Accounts",
             "tab_id": "accounts",
-            "tab_icon": "fa-key",
+            "tab_icon": "wb1-screwdriver",
+            "tab_icon_class": "wb1",
             "tab_type": "list",
             "tab_content": [
                 {
@@ -60,7 +64,8 @@ json_settings = {
             "tab_class_name": "HelpHelpTab",
             "tab_name": "Help",
             "tab_id": "help",
-            "tab_icon": "fa-question",
+            "tab_icon": "wb1-screwdriver",
+            "tab_icon_class": "wb1",
             "tab_type": "list",
             "tab_content": []
         }

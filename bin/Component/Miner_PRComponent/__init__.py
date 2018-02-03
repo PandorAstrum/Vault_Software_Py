@@ -12,6 +12,7 @@ from bs4 import BeautifulSoup
 
 import utils
 from Core.baseInterface import DriverBase
+from Core.spawner import Spawn
 from bin.Component.Miner_PRComponent.reusable import ScrapField
 
 __all__ = [
@@ -46,7 +47,7 @@ class MinerScrapyTabDrivers(DriverBase):
                     return self.download(url, user_agent, num_retries-1)
         return html
 
-class MinerSeleniumTabDrivers(DriverBase):
+class MinerSeleniumTabDrivers(Spawn, DriverBase):
     def __init__(self, instances, **kwargs):
         super(MinerSeleniumTabDrivers, self).__init__(**kwargs)
         self.instances = instances
@@ -98,7 +99,7 @@ class MinerSeleniumTabDrivers(DriverBase):
             self.instances.ids.email_check_btn_id.disabled = True
             _get = utils.email_check(email)
             if _get:
-                content = self.spawn.add_md_label(font_style="Body1",
+                content = self.add_md_label(font_style="Body1",
                                                   text="Looks like the Email is valid",
                                                   halign="center")
                 self.pop.pop_modal(size_hint_x=0.5, size_hint_y=None, height=200,
@@ -106,7 +107,7 @@ class MinerSeleniumTabDrivers(DriverBase):
                                    final_button="Okay", content=content,
                                    custom_callback=on_finish_callback)
             else:
-                content = self.spawn.add_md_label(font_style="Body1",
+                content = self.add_md_label(font_style="Body1",
                                                   text="Oops the Email seems fake",
                                                   halign="center")
                 self.pop.pop_modal(size_hint_x=0.5, size_hint_y=None, height=200,

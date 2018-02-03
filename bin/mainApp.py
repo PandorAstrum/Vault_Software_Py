@@ -46,7 +46,7 @@ import utils
 from selenium import webdriver
 from utils import appDirs
 from bin import appSettings
-from Core.Screens import LaunchPad
+from Core.basescreens import LaunchPad
 
 # json test
 USER_SETTINGS_JSON = {

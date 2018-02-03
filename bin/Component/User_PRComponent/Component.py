@@ -14,8 +14,10 @@ json_settings = {
     "id": "Users",
     "component_name": "User_PRComponent",
     "icon": "fa-home",
+    "icon_class": "",
     "status": True,
     "order": 2,
+    "version": "0.1",
     "tab_group_name": "user_tab_group",
     "tab": [
         {
@@ -27,6 +29,7 @@ json_settings = {
             "tab_name": "Account",
             "tab_id": "account",
             "tab_icon": "fa-key",
+            "tab_icon_class": "font_awesome",
             "tab_type": "list",
             "tab_content": []
         },
@@ -39,6 +42,7 @@ json_settings = {
             "tab_name": "Component",
             "tab_id": "component",
             "tab_icon": "fa-plug",
+            "tab_icon_class": "font_awesome",
             "tab_type": "list",
             "tab_content": [
                 {
@@ -60,7 +64,8 @@ json_settings = {
             "tab_class_name": "UserPreferenceTab",
             "tab_name": "Preference",
             "tab_id": "preference",
-            "tab_icon": "fa-cogs",
+            "tab_icon": "fa-cog",
+            "tab_icon_class": "font_awesome",
             "tab_type": "list",
             "tab_content": [
                 {
@@ -83,10 +88,11 @@ json_settings = {
                     37
                 ]
             },
-            "tab_class_name": "UserHelpTab",
-            "tab_name": "Help",
-            "tab_id": "help",
-            "tab_icon": "fa-question",
+            "tab_class_name": "UserWikiTab",
+            "tab_name": "Wiki",
+            "tab_id": "wiki",
+            "tab_icon": "fa-book",
+            "tab_icon_class": "font_awesome",
             "tab_type": "list",
             "tab_content": []
         }

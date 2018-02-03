@@ -1,3 +1,3 @@
-from bin.libPackage import iconfonts
+from utils.iconfonts import create_fontdict_file
 
-iconfonts.create_fontdict_file('font-awesome.css', 'font-awesome.fontd')
+create_fontdict_file('wb1.css', 'wb1.fontd')

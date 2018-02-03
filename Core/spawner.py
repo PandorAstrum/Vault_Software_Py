@@ -16,7 +16,7 @@ from kivymd.textfields import MDTextField
 from kivymd.theming import ThemableBehavior
 
 
-class Spawn:
+class Spawn(ThemableBehavior):
     # def __init__(self, **kwargs):
     #     super(Spawn, self).__init__(**kwargs)
     def add_md_label(self, font_style="Body1", theme_text_color="Secondary",

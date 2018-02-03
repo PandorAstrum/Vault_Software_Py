@@ -193,7 +193,7 @@ launchPad_kv = """
 #:import MDRaisedButton kivymd.button
 <LaunchPad>:
     id: mainRoot
-    on_size: self.resize_window(self.size)
+    on_size: app.resize_window(self.size)
 """
 loadingScreen_kv = """
 <LoadingScreen>:
@@ -413,6 +413,7 @@ defaultScreen_kv = """
 mainScreen_kv = """
 # Main Root
 <MainScreen>:
+    on_size: app.resize_window(self.size)
     BoxLayout:
         orientation: "vertical"
 
