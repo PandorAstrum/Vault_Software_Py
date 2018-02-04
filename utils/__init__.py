@@ -175,11 +175,15 @@ def email_check(email):
     server = smtplib.SMTP()
     server.set_debuglevel(0)
     # SMTP Conversation
-    server.connect(mx_record)
-    server.helo(server.local_hostname)  # server.local_hostname(Get local server hostname)
-    server.mail(from_address)
-    code, message = server.rcpt(str(email))
-    server.quit()
+    try:
+        server.connect(mx_record)
+        server.helo(server.local_hostname)  # server.local_hostname(Get local server hostname)
+        server.mail(from_address)
+    except:
+        pass
+    finally:
+        code, message = server.rcpt(str(email))
+        server.quit()
 
     if code == 250:
         return True

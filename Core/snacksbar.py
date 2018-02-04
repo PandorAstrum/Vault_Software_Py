@@ -6,7 +6,8 @@ __desc__ = "Main Exe file to Run"
 from kivymd.snackbar import Snackbar
 
 
-class Snacks:
+class Snacks(object):
+
     def snacks(self, type, message):
         if type == 'simple':
             Snackbar(text=message).show()

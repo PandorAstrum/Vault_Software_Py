@@ -28,7 +28,7 @@ from bin.libPackage.notification import Notification
 from Core.snacksbar import Snacks
 
 
-class MainScreen(Screen):
+class MainScreen(Screen, Snacks):
     """
     Main Screen where everything will load ... attach to Launchpad
     """
@@ -39,7 +39,7 @@ class MainScreen(Screen):
         self.login_name = login_name
         self.json_default_dictionary = {}
         self.data = None
-        self.snacks = Snacks()
+        # self.snacks = Snacks()
         self.app = App.get_running_app()
         self.user_dir = appDirs.user_config_dir(appname=appSettings.APP_NAME,
                                                 appauthor=appSettings.APP_AUTHOR)
@@ -49,7 +49,7 @@ class MainScreen(Screen):
         appDirs.check_make_dir(self.se_component_dir)
 
         self.src_mngr = ScreenManager(transition=SwapTransition())
-        self.snacks.snacks("simple", f"Logged in as {self.login_name}")
+        self.snacks("simple", f"Logged in as {self.login_name}")
         self._make()
 
     def _make(self):
@@ -238,7 +238,7 @@ class RegistrationScreen(Screen):
         self.manager.current = "loginScreen"
 
 
-class LoginScreen(Screen):
+class LoginScreen(Screen, Snacks):
     """
     Login Screen ... attach to Launchpad
     """
@@ -246,7 +246,6 @@ class LoginScreen(Screen):
         super(LoginScreen, self).__init__(**kwargs)
         self.name = "loginScreen"
         self.working = False
-        self.snacks = Snacks()
 
     def login(self):
         """
@@ -256,9 +255,9 @@ class LoginScreen(Screen):
         username = self.ids.username.text
         password = self.ids.passwd.text
         if not username:
-            self.snacks.snacks("simple", "Username is empty")
+            self.snacks("simple", "Username is empty")
         elif not password:
-            self.snacks.snacks("simple", "Password is empty")
+            self.snacks("simple", "Password is empty")
         else:
             if self.ids.offline_chkbox_id.active:
                 self._offline_login()
@@ -275,7 +274,7 @@ class LoginScreen(Screen):
             # go to google sheet and try to match with username and pass
             utils.check_internet()
         except ConnectionError:
-            self.snacks.snacks("simple", "No internet")
+            self.snacks("simple", "No internet")
         finally:
             # if match then self manager add widget main screen
             # if not then self manager add widget wrong password

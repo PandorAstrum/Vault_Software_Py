@@ -8,9 +8,7 @@ from os.path import expanduser
 from kivy.clock import mainthread, Clock
 from kivy.metrics import dp
 from kivymd.dialog import MDDialog
-
-from bin.libPackage.xpop import XFileOpen
-from bin.libPackage.xpop import XProgress
+from Core.xpop import XProgress, XFileOpen
 import queue
 
 class Popups:
@@ -104,6 +102,6 @@ class Popups:
             else:
                 self.dialog.dismiss()
 
-    def open_pop(self, import_callback):
+    def pop_open_file(self, import_callback):
         XFileOpen(on_dismiss=import_callback, path=expanduser(u'~'),
                       multiselect=False)

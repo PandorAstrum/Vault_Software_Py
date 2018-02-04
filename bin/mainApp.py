@@ -24,10 +24,13 @@ __desc__ = "main core file that builds kivy app
 """
 
 from kivy.config import Config
-
+Config.set('graphics', 'multisamples', '0')
 Config.set('kivy', 'window_icon', 'res/logo.png')
 Config.set('graphics', 'minimum_width', '1000')
 Config.set('graphics', 'minimum_height', '500')
+from bin.appSettings import DLL_ROOT
+Config.add_section('translator')
+Config.set('translator', 'locale_file', DLL_ROOT + '/english.mo')
 
 import kivy
 kivy.require("1.10.0")
@@ -47,96 +50,6 @@ from selenium import webdriver
 from utils import appDirs
 from bin import appSettings
 from Core.basescreens import LaunchPad
-
-# json test
-USER_SETTINGS_JSON = {
-    "component": [
-        {
-            "User_component": {
-                "id": "Users",
-                "icon": "fa-home",
-                "status": True,
-                "order": 1,
-                "tab_group_name": "user_tab_group",
-                "tab": [
-                    {
-                        "tab_name": "General",
-                        "tab_id": "general",
-                        "tab_icon": "fa-user",
-                        "tab_type": "basic",
-                        "tab_content": []
-                    },
-                    {
-                        "tab_name": "Accounts",
-                        "tab_id": "accounts",
-                        "tab_icon": "fa-key",
-                        "tab_type": "list",
-                        "tab_content": [
-                            {
-                                "tab_item_name": "1 First"
-                            },
-                            {
-                                "tab_item_name": "2 Second"
-                            },
-                            {
-                                "tab_item_name": "3 Second"
-                            }
-                        ]
-                    },
-                    {
-                        "tab_name": "Help",
-                        "tab_id": "help",
-                        "tab_icon": "fa-question",
-                        "tab_type": "basic",
-                        "tab_content": []
-                    }
-                ]
-            }
-        },
-        {
-            "Help_component": {
-                "id": "Help",
-                "icon": "fa-question",
-                "status": True,
-                "order": 2,
-                "tab_group_name": "help_tab_group",
-                "tab": [
-                    {
-                        "tab_name": "General",
-                        "tab_id": "general",
-                        "tab_icon": "fa-user",
-                        "tab_type": "basic",
-                        "tab_content": []
-                    },
-                    {
-                        "tab_name": "Guides",
-                        "tab_id": "guides",
-                        "tab_icon": "fa-key",
-                        "tab_type": "list",
-                        "tab_content": []
-                    }
-                ]
-            }
-        },
-        {
-            "Test_component": {
-                "id": "Test",
-                "icon": "fa-question",
-                "status": False,
-                "order": 3,
-                "tab": []
-            }
-        }
-    ],
-    "settings": [
-        {
-            "window_size": {
-                "window_width": 1000,
-                "window_height": 500
-            }
-        }
-    ]
-}
 
 
 class MainApp(App):
@@ -242,3 +155,15 @@ class MainApp(App):
         # self.root.stop.set()
         # Validate Json Data and pass it
         pass
+
+    @staticmethod
+    def resize_window(size):
+        """
+        Call back Functions from KV window resize
+        :param size: int height and int width from kv
+        :return:
+        """
+        app = App.get_running_app()
+        app.config.set('WindowSettings', 'Width', size[0])
+        app.config.set('WindowSettings', 'Height', size[1])
+        app.config.write()
