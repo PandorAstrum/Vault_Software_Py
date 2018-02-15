@@ -1,52 +1,56 @@
 # -*- coding: utf-8 -*-
-"""
-__author__ = "Ashiquzzaman Khan"
-__desc__ = "Main Exe file to Run"
-__map__ =
-   -MDCard (card)
-       -BoxLayout (card_inner_box)
-           -BoxLayout (button_box)
-               -MDCheckbox
-               -MDLabel
-               -MDIConButton
-           -MDTextField (Field Name)
+from kivy.metrics import dp
 
-           -BoxLayout (tag_selector_box_holder)
-               -BoxLayout (tag_selector_buttons_box)
-                   -MDIconButton
-                   -MDIconButton
-               -BoxLayout (Separator)
-                   -VSeparator
-               -BoxLayout (tag_selector_box)
-                   -BoxLayout (tag_box)
-                       -MDTextField
-                       -MDCheckbox
-                       -MDLabel
-                       -MDCheckbox
-                       -MDLabel
-                       -MDCheckbox
-                       -MDLabel
-                   -BoxLayout (selector_box)
-                       -MDTextField
-                       -MDCheckbox
-                       -MDLabel
-                       -MDCheckbox
-                       -MDLabel
-                       -MDCheckbox
-                       -MDLabel
-           -HSeparator
-           -BoxLayout
-               -MDLabel
-               -MDCheckbox
-               -MDLabel
-               -MDCheckbox
-               -MDLabel
-               -MDCheckbox
-               -MDLabel
-"""
 import utils
 
 from Core.baseInterface import CustomLayout
+from utils import download
+
+__author__      = "Ashiquzzaman Khan"
+__copyright__   = "2018 GPL"
+__desc__        = """ Reusable file only for Miner Component
+MAP OF THE DESIGN
+-MDCard (card)
+  -BoxLayout (card_inner_box)
+    -BoxLayout (button_box)
+      -MDCheckbox
+      -MDLabel
+      -MDIConButton
+    -MDTextField (Field Name)
+
+    -BoxLayout (tag_selector_box_holder)
+      -BoxLayout (tag_selector_buttons_box)
+        -MDIconButton
+        -MDIconButton
+      -BoxLayout (Separator)
+        -VSeparator
+      -BoxLayout (tag_selector_box)
+        -BoxLayout (tag_box)
+          -MDTextField
+          -MDCheckbox
+          -MDLabel
+          -MDCheckbox
+          -MDLabel
+          -MDCheckbox
+          -MDLabel
+        -BoxLayout (selector_box)
+          -MDTextField
+          -MDCheckbox
+          -MDLabel
+          -MDCheckbox
+          -MDLabel
+          -MDCheckbox
+          -MDLabel
+    -HSeparator
+    -BoxLayout
+      -MDLabel
+      -MDCheckbox
+      -MDLabel
+      -MDCheckbox
+      -MDLabel
+      -MDCheckbox
+      -MDLabel
+                """
 
 
 class _TagSelectorField(CustomLayout):
@@ -96,10 +100,13 @@ class _TagSelectorField(CustomLayout):
         @utils.clocked()
         def delete_tag_selector_field(instance):
             if len(self.tag_selector_holder.children) < 2:
-                self.snackbar("simple", "Need atleast one field")
+                self.snacks("simple", "Need atleast one tag selector field")
             else:
                 self.tag_selector_holder.remove_widget(self)
                 self.scrap_field_instance.tag_selector_list.remove(self)
+                print(self.scrap_field_instance.tag_selector_list)
+                one_step_up = len(self.scrap_field_instance.tag_selector_list) - 1
+                self.scrap_field_instance.tag_selector_list[0].add_new_tag_selector_field_btn.disabled = True
 
         self.tag_selector_box.size_hint_y = None
         self.tag_selector_box.bind(minimum_height=self.tag_selector_box.setter("height"))
@@ -170,24 +177,25 @@ class ScrapField(CustomLayout):
         self.HSeparator = self.add_HSeparator()
         self.get_value_box = self.add_BoxLayout()
 
-        self.mark_text_lbl = self.add_MDLabel("String")
+        self.mark_text_lbl = self.add_MDLabel("Fix String")
         self.mark_text_chk = self.add_MDCheckbox(self.mark_text_lbl, self.top_group)
-        self.mark_link_lbl = self.add_MDLabel("Link")
+        self.mark_link_lbl = self.add_MDLabel("Fix Link")
         self.mark_link_chk = self.add_MDCheckbox(self.mark_link_lbl, self.top_group)
-        self.mark_email_lbl = self.add_MDLabel("Email")
+        self.mark_email_lbl = self.add_MDLabel("Check Email")
         self.mark_email_chk = self.add_MDCheckbox(self.mark_email_lbl, self.top_group)
+        self.check_field_btn = self.add_MDIconButton("check-all")
         self.delete_field_btn = self.add_MDIconButton("delete")
 
-        self.get_lbl = self.add_MDLabel("Get")
-        self.get_value_lbl = self.add_MDLabel("Value")
+        self.get_lbl = self.add_MDLabel("Get", width=40)
+        self.get_value_lbl = self.add_MDLabel("Value", width=40)
         self.get_value_chk = self.add_MDCheckbox(self.get_value_lbl, self.getter_group)
-        self.get_href_lbl = self.add_MDLabel("href")
+        self.get_href_lbl = self.add_MDLabel("href", width=40)
         self.get_href_chk = self.add_MDCheckbox(self.get_href_lbl, self.getter_group)
-        self.get_str_lbl = self.add_MDLabel("text")
+        self.get_str_lbl = self.add_MDLabel("text", width=40)
         self.get_str_chk = self.add_MDCheckbox(self.get_str_lbl, self.getter_group)
-        self.get_title_lbl = self.add_MDLabel("title")
+        self.get_title_lbl = self.add_MDLabel("title", width=40)
         self.get_title_chk = self.add_MDCheckbox(self.get_title_lbl, self.getter_group)
-        self.get_src_lbl = self.add_MDLabel("src")
+        self.get_src_lbl = self.add_MDLabel("src", width=40)
         self.get_src_chk = self.add_MDCheckbox(self.get_src_lbl, self.getter_group)
         self.tag_selector_list = []
 
@@ -197,14 +205,25 @@ class ScrapField(CustomLayout):
     def _make(self):
         # Buttons callback
         @utils.clocked()
-        def delete_button_callback(instance):
+        def _delete_button_callback(instance):
             if len(self.scrap_field_holder_id.children) < 2:
-                self.snackbar("simple", "Need atleast one field")
+                self.snacks("simple", "Need atleast one field to scrap")
             else:
                 self.scrap_field_holder_id.remove_widget(self)
                 self.main_instance.field_instance.remove(self)
 
-        self.delete_field_btn.bind(on_release=delete_button_callback)
+        def _check_button_callback(instance):
+
+            # grab the length of tag_slector_child
+            ss = len(self.tag_selector_box_holder.children)
+
+            # download html and make it a beautiful soup
+            # download()
+            # from soup find one
+            print(ss)
+
+        self.delete_field_btn.bind(on_release=_delete_button_callback)
+        self.check_field_btn.bind(on_release=_check_button_callback)
 
         self.card.size_hint_y = None
         self.card.bind(minimum_height=self.card.setter('height'))
@@ -226,8 +245,9 @@ class ScrapField(CustomLayout):
             num = self.getter_group + "0"
             self.tag_selector_box_holder.add_widget(_TagSelectorField(self, num))
 
-        self.get_value_box.size_hint_y = None
-        self.get_value_box.bind(minimum_height=self.get_value_box.setter("height"))
+        self.get_value_box.size_hint = (None, None)
+        self.get_value_box.bind(minimum_height=self.get_value_box.setter("height"),
+                                minimum_width=self.get_value_box.setter("width"))
         self.get_value_box.pos_hint = {"center_x": 0.5, "center_y": 0.5}
 
         self.card_inner_btn_box.add_widget(self.mark_link_chk)
@@ -236,7 +256,14 @@ class ScrapField(CustomLayout):
         self.card_inner_btn_box.add_widget(self.mark_text_lbl)
         self.card_inner_btn_box.add_widget(self.mark_email_chk)
         self.card_inner_btn_box.add_widget(self.mark_email_lbl)
+        self.card_inner_btn_box.add_widget(self.check_field_btn)
         self.card_inner_btn_box.add_widget(self.delete_field_btn)
+
+        # self.get_lbl.size_hint_x = None
+        # self.get_lbl.width = dp(40)
+        #
+        # self.get_value_lbl.size_hint_x = None
+        # self.get_value_lbl.width = dp(40)
 
         self.get_value_box.add_widget(self.get_lbl)
         self.get_value_box.add_widget(self.get_value_chk)

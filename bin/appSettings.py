@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
-"""
-__author__ = "Ashiquzzaman Khan"
-__desc__ = "Main Exe file to Run"
-"""
 from __future__ import unicode_literals
 
 
 
 # File names
 import os
+
+__author__      = "Ashiquzzaman Khan"
+__copyright__   = "2018 GPL"
+__desc__        = """App Settings"""
 
 FILE_CONFIG_APP = "config.cfg"
 FILE_CONFIG_COMPONENT = "component_config.json"

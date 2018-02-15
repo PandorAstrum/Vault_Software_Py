@@ -1,27 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-__author__ = "Ashiquzzaman Khan"
-__desc__ = "main core file that builds kivy app
-            Available palettes: 'Pink',
-                                'Blue',
-                                'Indigo',
-                                'BlueGrey',
-                                'Brown',
-                                'LightBlue'
-                                'Purple',
-                                'Grey',
-                                'Yellow',
-                                'LightGreen',
-                                'DeepOrange',
-                                'Green',
-                                'Red',
-                                'Teal',
-                                'Orange',
-                                'Cyan',
-                                'Amber',
-                                'DeepPurple',
-                                'Lime'
-"""
 
 from kivy.config import Config
 Config.set('graphics', 'multisamples', '0')
@@ -51,6 +28,14 @@ from utils import appDirs
 from bin import appSettings
 from Core.basescreens import LaunchPad
 
+__author__      = "Ashiquzzaman Khan"
+__copyright__   = "2018 GPL"
+__desc__        = """ Main core file that builds kivy app
+                Available palettes: 'Pink', 'Blue', 'Indigo', 'BlueGrey', 'Brown',
+                                    'LightBlue', 'Purple', 'Grey', 'Yellow', 'LightGreen',
+                                    'DeepOrange', 'Green', 'Red', 'Teal', 'Orange', 'Cyan',
+                                    'Amber', 'DeepPurple', 'Lime'
+                """
 
 class MainApp(App):
     def __init__(self):

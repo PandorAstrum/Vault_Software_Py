@@ -9,6 +9,7 @@ from os.path import expanduser
 from kivy.metrics import dp
 from kivy.properties import ObjectProperty
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.gridlayout import GridLayout
 from kivy.uix.widget import Widget
 from kivymd.button import MDIconButton
 from kivymd.card import MDCard
@@ -37,6 +38,9 @@ class Spawn(ThemableBehavior):
     def __init__(self, **kwargs):
         super(Spawn, self).__init__(**kwargs)
 
+    def add_grid_layout(self):
+        grd_lt = GridLayout()
+        return grd_lt
     # md modal
     def show_pop_modal(self, size_hint_x=.9,
                        size_hint_y=.9, height=200,
@@ -176,12 +180,14 @@ class Spawn(ThemableBehavior):
             chk.group = group
         return chk
 
-    def add_MDLabel(self, text):
+    def add_MDLabel(self, text, width=None):
         lbl = MDLabel()
         lbl.size_hint_x= None
         lbl.bind(width=lbl.setter("width"))
         lbl.text= text
         lbl.theme_text_color = "Primary"
+        if width is not None:
+            lbl.width = dp(width)
         return lbl
 
     def add_MDIconButton(self, icon_name):

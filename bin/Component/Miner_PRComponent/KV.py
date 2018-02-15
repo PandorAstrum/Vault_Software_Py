@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-"""
-__author__ = "Ashiquzzaman Khan"
-__desc__ = "Main Exe file to Run"
-"""
+
 __all__ = [
     "kv"
 ]
+__author__      = "Ashiquzzaman Khan"
+__copyright__   = "2018 GPL"
+__desc__        = """Miner KV Design File"""
 
 Miner_scrapy_tab_kv = """
 <MinerScrapyTab>:
@@ -316,32 +316,9 @@ Miner_selenium_tab_kv = """
                         theme_text_color: "Primary" if next_page_id.active else "Secondary"
                     MDTextField:
                         id: next_page_tag_id
-                        hint_text: "tag" if next_page_id.active else "Disabled"
+                        hint_text: "Next page Button or link XPath" if next_page_id.active else "Disabled"
                         color_mode: "accent"
                         disabled: False if next_page_id.active else True
-                        text: "button" if next_page_btn_id.active else ""
-                    MDTextField:
-                        id: next_page_class_id
-                        hint_text: "class" if next_page_id.active else "Disabled"
-                        color_mode: "accent"
-                        disabled: False if next_page_id.active else True
-                    MDTextField:
-                        id: next_page_final_id
-                        hint_text: "final tag" if next_page_id.active else "Disabled"
-                        color_mode: "accent"
-                        disabled: False if next_page_id.active else True
-                    MDCheckbox:
-                        id: next_page_btn_id
-                        size_hint: None, None
-                        size: dp(48), dp(48)
-                        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-                        color: self.theme_cls.accent_color if self.active else self.theme_cls.secondary_text_color
-                        disabled: False if next_page_id.active else True
-                    MDLabel:
-                        size_hint_x: None
-                        width: self.width
-                        text: "Button"
-                        theme_text_color: "Primary" if next_page_btn_id.active else "Secondary"
                 BoxLayout: # link parameter Continuous page
                     size_hint_y:None
                     height: self.minimum_height
@@ -491,6 +468,7 @@ Miner_selenium_tab_kv = """
                     height: self.minimum_height
                     padding: (dp(20), dp(10))
                     spacing: dp(40)
+                    # wait time between actions
                     MDLabel:
                         size_hint_x: None
                         width: self.width
@@ -498,7 +476,7 @@ Miner_selenium_tab_kv = """
                         halign: "right"
                         theme_text_color: "Primary"
                     MDSlider:
-                        id: time_id
+                        id: action_time_id
                         size_hint_y: None
                         height: dp(40)
                         min:0.1
@@ -508,8 +486,29 @@ Miner_selenium_tab_kv = """
                     MDLabel:
                         size_hint_x: None
                         width: self.width
-                        text: str(round(time_id.value, 1)) +" Seconds"
+                        text: str(round(action_time_id.value, 1)) +" Seconds"
                         theme_text_color: "Primary"
+                    # page load maximum wait time
+                    MDLabel:
+                        size_hint_x: None
+                        width: self.width
+                        text: "Maximum Page load time"
+                        halign: "right"
+                        theme_text_color: "Primary"
+                    MDSlider:
+                        id: pageload_time_id
+                        size_hint_y: None
+                        height: dp(40)
+                        min: 2.0
+                        max: 240.0
+                        value: 60.0
+                        show_off: False
+                    MDLabel:
+                        size_hint_x: None
+                        width: self.width
+                        text: str(int(round(pageload_time_id.value, 1))) +" Seconds"
+                        theme_text_color: "Primary"
+
 
                 HSeparator:
                 BoxLayout: # email check
@@ -610,7 +609,7 @@ Miner_selenium_tab_kv = """
                             pos_hint: {'center_x': 0.5, 'center_y': 0.5}
                             _active: False
                 HSeparator:
-                BoxLayout: # limiter
+                BoxLayout: # set limit
                     size_hint_y: None
                     height: self.minimum_height
                     padding: (dp(20), dp(10))
@@ -623,19 +622,19 @@ Miner_selenium_tab_kv = """
                             width: self.width
                             text: "Set Limit"
                             halign: "left"
-                            theme_text_color: "Primary" if limiter_id.active else "Secondary"
+                            theme_text_color: "Primary" if limit_id.active else "Secondary"
                         MDTextField:
-                            id: limiter_text_id
+                            id: limit_text_id
                             pos_hint: {"center_x": 0.5, "center_y": 0.5}
-                            hint_text: "Limit Number" if limiter_id.active else "Disabled"
+                            hint_text: "Limit Number" if limit_id.active else "Disabled"
                             color_mode: "accent"
-                            disabled: False if limiter_id.active else True
+                            disabled: False if limit_id.active else True
                         BoxLayout: # gap
                             size_hint: None, None
                             height: self.minimum_height
                             width: dp(40)
                         MDSwitch:
-                            id: limiter_id
+                            id: limit_id
                             size_hint: None, None
                             size: dp(36), dp(48)
                             pos_hint: {'center_x': 0.5, 'center_y': 0.5}
@@ -650,50 +649,27 @@ Miner_selenium_tab_kv = """
                         size_hint_y: None
                         height: self.minimum_height
                         MDLabel:
-                            text: "Fix text gap"
+                            size_hint_x: None
+                            width: self.width
+                            text: "Fix text"
                             halign: "left"
                             theme_text_color: "Primary" if fix_text_id.active else "Secondary"
+                        MDTextField:
+                            id: string_fix_text_id
+                            pos_hint: {"center_x": 0.5, "center_y": 0.5}
+                            hint_text: "Exclusion text with commas" if fix_text_id.active else "Disabled"
+                            color_mode: "accent"
+                            disabled: False if fix_text_id.active else True
                         BoxLayout: # gap
-                            size_hint_y: None
+                            size_hint: None, None
                             height: self.minimum_height
+                            width: dp(40)
                         MDSwitch:
                             id: fix_text_id
                             size_hint: None, None
                             size: dp(36), dp(48)
                             pos_hint: {'center_x': 0.5, 'center_y': 0.5}
                             _active: False
-                HSeparator:
-                BoxLayout:
-                    size_hint_y: None
-                    height: self.minimum_height
-                    spacing: dp(20)
-                    MDCheckbox:
-                        id: single_email_check_id
-                        size_hint: None, None
-                        size: dp(48), dp(48)
-                        color: self.theme_cls.accent_color if self.active else self.theme_cls.secondary_text_color
-                        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-                        active: False
-                    MDLabel:
-                        size_hint: None, None
-                        height: self.height
-                        width: self.width
-                        text: "Check email Now"
-                        theme_text_color: "Primary" if single_email_check_id.active else "Secondary"
-                    MDTextField:
-                        id: single_email_text_id
-                        size_hint_y:None
-                        height: self.height
-                        pos_hint: {"center_x": 0.5, "center_y": 0.5}
-                        hint_text: "Email address to check" if single_email_check_id.active else "Disabled"
-                        disabled: False if single_email_check_id.active else True
-                        color_mode: "accent"
-                    MDRaisedButton:
-                        id: email_check_btn_id
-                        text: "Check"
-                        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-                        disabled: False if single_email_check_id.active else True
-                        on_release: root.drivers.check_email(single_email_text_id.text)
 
         BoxLayout: # Buttons
             size_hint: None, None
@@ -728,10 +704,105 @@ Miner_utility_tab = """
         orientation: "vertical"
         size_hint_y: None
         height: self.minimum_height
-        padding: "20dp"
-        spacing: "5dp"
-        Button:
-            text: "Miner Utility Tab"
+        padding: dp(20)
+        spacing: dp(5)
+        BoxLayout: # title box
+            size_hint_y: None
+            height: self.minimum_height
+            padding: (5)
+            BoxLayout:
+                size_hint_y: None
+                height: self.minimum_height
+                canvas:
+                    Color:
+                        rgba: app.theme_cls.primary_color
+                    Rectangle:
+                        size: self.size
+                        pos: self.pos
+                MDLabel: # Title
+                    size_hint_y: None
+                    height: dp(30)
+                    text:"Utility Tools"
+                    theme_text_color: "Primary"
+                    font_style: "Body2"
+                    halign: "center"
+        BoxLayout:
+            size_hint_y: None
+            height: self.minimum_height
+            MDCard:
+                orientation: "vertical"
+                padding: (dp(40), 0)
+                size_hint_y: None
+                height: self.minimum_height
+                BoxLayout:
+                    size_hint_y: None
+                    height: self.minimum_height
+                    spacing: dp(20)
+                    MDLabel:
+                        size_hint: None, None
+                        height: self.height
+                        width: self.width
+                        text: "Check email Now"
+                        theme_text_color: "Primary"
+                    MDTextField:
+                        id: check_email_text_id
+                        size_hint_y:None
+                        height: self.height
+                        pos_hint: {"center_x": 0.5, "center_y": 0.5}
+                        hint_text: "Email address to check"
+                        color_mode: "accent"
+                    MDRaisedButton:
+                        id: check_email_btn_id
+                        text: "Check"
+                        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                        on_release: root.drivers.email_check(check_email_text_id.text)
+                HSeparator:
+                BoxLayout:
+                    size_hint_y: None
+                    height: self.minimum_height
+                    spacing: dp(20)
+                    MDLabel:
+                        size_hint: None, None
+                        height: self.height
+                        width: self.width
+                        text: "Check Website Framework"
+                        theme_text_color: "Primary"
+                    MDTextField:
+                        id: check_website_text_id
+                        size_hint_y:None
+                        height: self.height
+                        pos_hint: {"center_x": 0.5, "center_y": 0.5}
+                        hint_text: "Website to check"
+                        color_mode: "accent"
+                    MDRaisedButton:
+                        id: check_website_btn_id
+                        text: "Check"
+                        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                        on_release: root.drivers.website_check(check_website_text_id.text)
+
+                HSeparator:
+                BoxLayout:
+                    size_hint_y: None
+                    height: self.minimum_height
+                    spacing: dp(20)
+                    MDLabel:
+                        size_hint: None, None
+                        height: self.height
+                        width: self.width
+                        text: "Check Who is"
+                        theme_text_color: "Primary"
+                    MDTextField:
+                        id: check_whois_text_id
+                        size_hint_y:None
+                        height: self.height
+                        pos_hint: {"center_x": 0.5, "center_y": 0.5}
+                        hint_text: "Who is (Website URL)"
+                        color_mode: "accent"
+                    MDRaisedButton:
+                        id: check_whois_btn_id
+                        text: "Check"
+                        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                        on_release: root.drivers.whois_check(check_whois_text_id.text)
 """
 Miner_wiki_tab = """
 <MinerWikiTab>:

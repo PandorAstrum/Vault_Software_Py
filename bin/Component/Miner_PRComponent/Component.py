@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
-"""
-__author__ = "Ashiquzzaman Khan"
-__desc__ = "Main Exe file to Run"
-"""
+
 from Core.baseInterface import ComponentBase, TabBase
 from bin.Component.Miner_PRComponent import MinerSeleniumTabDrivers
+from bin.Component.Miner_PRComponent import MinerUtilityTabDrivers
 
 __all__ = [
     "Component",
     "json_settings"
 ]
+__author__      = "Ashiquzzaman Khan"
+__copyright__   = "2018 GPL"
+__desc__        = """Miner Component"""
 
 json_settings = {
     "id": "Miner",
@@ -152,6 +153,7 @@ class MinerUtilityTab(TabBase):
     def __init__(self, **kwargs):
         super(MinerUtilityTab, self).__init__(**kwargs)
         self.__name__ = "MinerUtilityTab"
+        self.drivers = MinerUtilityTabDrivers(instances=self)
 
 class MinerWikiTab(TabBase):
     def __init__(self, **kwargs):

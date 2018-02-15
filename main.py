@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-"""
-__author__ = "Ashiquzzaman Khan"
-__desc__ = "Main Exe file to Run"
-"""
 
 from bin import mainApp
 from utils import iconfonts, appDirs
+
+__author__      = "Ashiquzzaman Khan"
+__copyright__   = "2018 GPL"
+__desc__        = """Main Exe File to run"""
 
 if __name__ == "__main__":
 

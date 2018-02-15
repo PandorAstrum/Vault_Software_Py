@@ -10,6 +10,7 @@ import os
 import uuid
 import re
 import smtplib
+import urllib.request as urllib2
 from email import encoders
 from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
@@ -41,7 +42,8 @@ __all__ = [
     "get_computer_date_time",
     "combine_dict",
     "run_once",
-    "send_a_mail"
+    "send_a_mail",
+    "download"
 ]
 
 
@@ -272,3 +274,17 @@ def send_a_mail(email_subject="Subject",
     text = msg.as_string()
     server.sendmail(from_addr, to_addr, text)
     server.quit()
+
+def download(url, user_agent='wswp', num_retries=2):
+    print('Progress bar -> Downloading:', url)
+    headers = {'User-agent': user_agent}
+    request = urllib2.Request(url, headers=headers)
+    try:
+        html = urllib2.urlopen(request).read()
+    except urllib2.URLError as e:
+        print('Progress bar -> Download error:', e.reason)
+        html = None
+        if num_retries > 0:
+            if hasattr(e, 'code') and 500 <= e.code < 600:  # recursively retry 5xx HTTP errors
+                return download(url, user_agent, num_retries-1)
+    return html

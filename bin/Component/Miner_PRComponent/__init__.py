@@ -1,24 +1,27 @@
 # -*- coding: utf-8 -*-
-"""
-__author__ = "Ashiquzzaman Khan"
-__desc__ = "Listed all the drivers here with functions"
-"""
+
 import re
 import time
 import urllib.request as urllib2
 
 from selenium import webdriver
+from selenium.common.exceptions import TimeoutException
 from bs4 import BeautifulSoup
 
 import utils
 from Core.baseInterface import DriverBase
-from Core.spawner import Spawn
 from bin.Component.Miner_PRComponent.reusable import ScrapField
+from utils.webcheck import parse
+from utils.whois import whois
 
-__all__ = [
+__all__         = [
     "MinerScrapyTabDrivers",
-    "MinerSeleniumTabDrivers"
+    "MinerSeleniumTabDrivers",
+    "MinerUtilityTabDrivers"
 ]
+__author__      = "Ashiquzzaman Khan"
+__copyright__   = "2018 GPL"
+__desc__        = """Miner Drivers"""
 
 class MinerScrapyTabDrivers(DriverBase):
     pass
@@ -46,6 +49,7 @@ class MinerScrapyTabDrivers(DriverBase):
                 if hasattr(e, 'code') and 500 <= e.code < 600:  # recursively retry 5xx HTTP errors
                     return self.download(url, user_agent, num_retries-1)
         return html
+
 
 class MinerSeleniumTabDrivers(DriverBase):
     def __init__(self, instances, **kwargs):
@@ -83,39 +87,7 @@ class MinerSeleniumTabDrivers(DriverBase):
         :param email: str from single_email_text_id.text
         :return:
         """
-        def _on_dismiss_callback():
-            self.instances.ids.email_check_btn_id.disabled = False
 
-        # Simple Regex for syntax checking
-        regex = '^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,})$'
-        if email != str:
-            email_address = str(email)
-        else:
-            email_address = email
-
-        # Syntax check
-        match = re.match(regex, email_address)
-        if match == None:
-            self.snacks("simple", "Please Provide an Email address")
-        else:
-            self.instances.ids.email_check_btn_id.disabled = True
-            _get = utils.email_check(email)
-            if _get:
-                content = self.add_md_label(font_style="Body1",
-                                            text="Looks like the Email is valid",
-                                            halign="center")
-                self.show_pop_modal(size_hint_x=0.5, size_hint_y=None,
-                                    height=200, title_align="center", title_colors=True,
-                                    dialog_title="Email Found", content=content,
-                                    dismiss_callback=_on_dismiss_callback)
-            else:
-                content = self.add_md_label(font_style="Body1",
-                                            text="Oops the Email seems fake",
-                                            halign="center")
-                self.show_pop_modal(size_hint_x=0.5, size_hint_y=None,
-                                    height=200, title_align="center", title_colors=True,
-                                    dialog_title="Email Not Found", content=content,
-                                    dismiss_callback=_on_dismiss_callback)
 
     @utils.threaded(thread_name="scrapping Thread")
     def start_scrapping(self):
@@ -123,6 +95,83 @@ class MinerSeleniumTabDrivers(DriverBase):
         start_scrapping_btn_id callback
         :return:
         """
+        # generic parameters
+        def _get_parameter_scroll(driver, wait_time):
+            """
+             Generic parameter "Scroll to bottom of the page"
+            :param driver: webdriver object
+            :param wait_time: float get from time_id.value Slider
+            :return:
+            """
+            if self.instances.ids.scroll_to_bottom_id.active:  # check if this is active
+                last_height = driver.execute_script("return document.body.scrollHeight")  # Get scroll height
+
+                while True:
+                    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")  # Scroll down to bottom
+                    time.sleep(wait_time)  # Wait to load page
+                    new_height = driver.execute_script("return document.body.scrollHeight")  # Calculate new scroll height and compare with last scroll height
+                    if new_height == last_height:
+                        break
+                    last_height = new_height
+
+            else:
+                return  # pass
+
+        def _get_parameter_limit():
+            """
+            Generic parameter "Set Limit"
+            :return:
+            """
+            if self.instances.ids.limit_id.active:  # check if its active
+                return int(self.instances.ids.limit_text_id.text) - 1
+            else:
+                return int(0)
+
+        def _get_parameter_missing_link(raw_data):
+            """
+            Generic parameter "Fill missing link"
+            :param raw_data:
+            :return:
+            """
+            if self.instances.ids.missing_link_id.active:  # check if its active
+                tmp = []
+                missing_link = self.instances.ids.missing_link_text_id.text
+                for scrap_field in self.instances.ids.scrap_field_box_id.children:
+                    if scrap_field.mark_link_chk.active:
+                        field_name = scrap_field.field_name.text
+                        if field_name in raw_data.keys():
+                            for i in raw_data[field_name]:
+                                tmp.append(f"{missing_link}{i}")
+                            raw_data[field_name] = tmp
+            else:
+                return  # pass
+
+        def _get_parameter_string_fix(raw_data):
+            """
+            Generic parameter "Fix text" replace the value with regex
+            :param raw_data:
+            :return:
+            import re
+            line = re.sub('[!@#$]', '', line)
+            """
+            if self.instances.ids.fix_text_id.active:  # check if its active
+                tmp = []
+                replace_text = f"{self.instances.ids.string_fix_text_id.text}".split(',')
+
+                for scrap_field in self.instances.ids.scrap_field_box_id.children:
+                    if scrap_field.mark_text_chk.active:
+                        field_name = scrap_field.field_name.text
+                        if field_name in raw_data.keys():
+                            for i in raw_data[field_name]:
+                                for ch in replace_text:
+                                    if ch in i:
+                                        i = i.replace(ch, "")
+                                tmp.append(i.strip())
+                            raw_data[field_name] = tmp
+            else:
+                return  # pass
+
+
         def _collect_link():
             """
             docstring
@@ -171,55 +220,7 @@ class MinerSeleniumTabDrivers(DriverBase):
                 # no need of login
                 pass
 
-        def _get_parameter_scroll(driver, wait_time):
-            if self.instances.ids.scroll_to_bottom_id.active:
-                # Get scroll height
-                last_height = driver.execute_script("return document.body.scrollHeight")
-                while True:
-                    # Scroll down to bottom
-                    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-                    # Wait to load page
-                    time.sleep(wait_time)
-                    # Calculate new scroll height and compare with last scroll height
-                    new_height = driver.execute_script("return document.body.scrollHeight")
-                    if new_height == last_height:
-                        break
-                    last_height = new_height
-            else:
-                pass
 
-        def _get_parameter_limiter():
-            if self.instances.ids.limiter_id.active:
-                return int(self.instances.ids.limiter_text_id.text) - 1
-            else:
-                return 0
-
-        def _get_parameter_missing_link(raw_data):
-            if self.instances.ids.missing_link_id.active:
-                tmp = []
-                missing_link = self.instances.ids.missing_link_text_id.text
-                for scrap_field in self.instances.ids.scrap_field_box_id.children:
-                    if scrap_field.mark_link_chk.active:
-                        field_name = scrap_field.field_name.text
-                        if field_name in raw_data.keys():
-                            for i in raw_data[field_name]:
-                                tmp.append(f"{missing_link}{i}")
-                            raw_data[field_name] = tmp
-            else:
-                pass
-
-        def _get_parameter_string_fix(raw_data):
-            if self.instances.ids.fix_text_id.active:
-                tmp = []
-                for scrap_field in self.instances.ids.scrap_field_box_id.children:
-                    if scrap_field.mark_text_chk.active:
-                        field_name = scrap_field.field_name.text
-                        if field_name in raw_data.keys():
-                            for i in raw_data[field_name]:
-                                tmp.append(i.strip())
-                            raw_data[field_name] = tmp
-            else:
-                pass
 
         def _get_parameter_email_fix(raw_data):
             if self.instances.ids.email_cheker_id.active:
@@ -244,39 +245,18 @@ class MinerSeleniumTabDrivers(DriverBase):
             :return: driver next element to click
             """
             if self.instances.ids.next_page_id.active:
-                next_page_tag = self.instances.ids.next_page_tag_id.text
-                next_page_tag_class = self.instances.ids.next_page_class_id.text
-                next_page_final_tag = self.instances.ids.next_page_final_id.text
-                if self.instances.ids.next_page_btn_id.active:
-                    # process as buttons
+                next_page_xpath = self.instances.ids.next_page_tag_id.text
+                if not next_page_xpath == "":
                     try:
                         _get_parameter_scroll(driver, wait_time)
-                        _next = driver.find_element_by_xpath(f"//button[@class='{next_page_tag_class}']")
+                        _next = driver.find_element_by_xpath(f"{next_page_xpath}")
                     except:
-                        _next = None
-                    finally:
-                        return _next
-                else:
-                    # process without buttons
-                    if not next_page_final_tag == "":
-                        try:
-                            _get_parameter_scroll(driver, wait_time)
-                            _next = driver.find_element_by_xpath(
-                                f"//{next_page_tag}[@class='{next_page_tag_class}']/child::{next_page_final_tag}")
-                        except:
-                            _next = None
-                        finally:
-                            return _next
-                    else:
-                        try:
-                            _get_parameter_scroll(driver, wait_time)
-                            _next = driver.find_element_by_xpath(f"//{next_page_tag}[@class='{next_page_tag_class}']")
-                        except:
-                            _next = None
-                        finally:
-                            return _next
+                        self.snacks("simple", "Next link not found")
+                        return None
+
 
             elif self.instances.ids.continuous_id.active:
+                # TODO: implementation of continuous comment
                 pass
             else:
                 # no continue
@@ -289,26 +269,11 @@ class MinerSeleniumTabDrivers(DriverBase):
                     return soup.find_all(tag_field)
                 else:
                     if selector_parameter == "cls":
-                        try:
-                            s = soup.find_all(tag_field, {"class": selector_text})
-                        except:
-                            s = None
-                        finally:
-                            return s
+                        return soup.find_all(tag_field, {"class": selector_text})
                     elif selector_parameter == "id":
-                        try:
-                            s = soup.find_all(tag_field, {"id": selector_text})
-                        except:
-                            s = None
-                        finally:
-                            return s
+                        return soup.find_all(tag_field, {"id": selector_text})
                     elif selector_parameter == "str":
-                        try:
-                            s = soup.find_all(tag_field, string=selector_text)
-                        except:
-                            s = None
-                        finally:
-                            return s
+                        return soup.find_all(tag_field, string=selector_text)
                     elif selector_parameter == "default":
                         return soup.find_all(tag_field)
             else:
@@ -316,28 +281,13 @@ class MinerSeleniumTabDrivers(DriverBase):
                     return soup.find(tag_field)
                 else:
                     if selector_parameter == "cls":
-                        try:
-                            s = soup.find(tag_field, {"class": selector_text})
-                        except:
-                            s = None
-                        finally:
-                            return s
+                        return soup.find(tag_field, {"class": selector_text})
                     elif selector_parameter == "id":
-                        try:
-                            s = soup.find(tag_field, {"id": selector_text})
-                        except:
-                            s = None
-                        finally:
-                            return s
+                        return soup.find(tag_field, {"id": selector_text})
                     elif selector_parameter == "str":
                         pass
                     else:
-                        try:
-                            s = soup.find(tag_field)
-                        except:
-                            s = None
-                        finally:
-                            return s
+                        return soup.find(tag_field)
 
         def _check_selector_text(tag_selector):
             if not utils.is_empty(tag_selector.selector_field.text):
@@ -385,6 +335,7 @@ class MinerSeleniumTabDrivers(DriverBase):
                     return tmp
 
         def _check_field_value(scrap_field, data):
+            # print(data)
             temp = []
             if scrap_field.get_value_chk.active:
                 for d in data:
@@ -404,6 +355,7 @@ class MinerSeleniumTabDrivers(DriverBase):
             else:
                 for d in data:
                     temp.append(d)
+
             return temp
 
         def _collect_data_per_page(soup):
@@ -412,7 +364,7 @@ class MinerSeleniumTabDrivers(DriverBase):
             :param soup:
             :return: a dictionary of tag_field.text : content list
             """
-            dict = {}
+            _dict = {}
             for scrap_field in self.instances.ids.scrap_field_box_id.children:
                 # determine tag_selector len
                 total_tag_selector = len(scrap_field.tag_selector_list)
@@ -432,8 +384,10 @@ class MinerSeleniumTabDrivers(DriverBase):
                 if not utils.is_empty(last_item.tag_field.text):
                     pre_content = _get_items(soup, pre_content, last_item)
                 # write to dict
-                dict[scrap_field.field_name.text] = _check_field_value(scrap_field, pre_content)
-            return dict
+                print(_dict)
+                _dict[scrap_field.field_name.text] = _check_field_value(scrap_field, pre_content)
+                print(_dict)
+            return _dict
 
         def _soup(driver, wait_time, _dict=None, _s_dict=False):
             _get_parameter_scroll(driver, wait_time)
@@ -450,44 +404,62 @@ class MinerSeleniumTabDrivers(DriverBase):
 
         def collector(wait_time):
             """
-            docstring
+            collect data function
             :param wait_time: float get from time_id.value
             :return: single dict or combined dict from single page or all page
             """
-            main_dict = {}
-            # collect browser
-            if self.instances.ids.google_chrome_id.active:
+            def _init_browser(_wait_time=wait_time, driver_executable="chrome"):
+                """
+
+                :param _wait_time:
+                :param driver_executable_path:
+                choose any three from
+                ".\\dll\\chrome_drivers\\chromedriver.exe" for chrome
+                ".\\dll\\firefox_drivers\\geckodriver.exe" for firefox
+                ".\\dll\explorer_drivers\\IEDriverServer.exe" for ie
+                :return:
+                """
                 _scrap_link_list = _collect_link()  # collect link to scrap
+
                 if _scrap_link_list is None:
-                    self.snacks("simple", "Please select an option in Scrap Link")
+                    self.snacks("simple", "Please select a Scrap Link option")
                     return None
                 elif _scrap_link_list == [""]:
                     self.snacks("simple", "No link to scrap")
                     return None
                 else:
                     # self.instances.ids.start_scrapping_btn_id.disabled = True
-                    self.driver = webdriver.Chrome(executable_path=".\\dll\\chrome_drivers\\chromedriver.exe")
+                    if driver_executable == "chrome":
+                        self.driver = webdriver.Chrome(executable_path=".\\dll\\chrome_drivers\\chromedriver.exe")
+                    elif driver_executable == "firefox":
+                        self.driver = webdriver.Firefox(executable_path=".\\dll\\firefox_drivers\\geckodriver.exe")
+                    else:
+                        self.driver = webdriver.Ie(executable_path=".\\dll\explorer_drivers\\IEDriverServer.exe")
+
+                    page_load_time = round(self.instances.ids.pageload_time_id.value, 0)
+                    self.driver.set_page_load_timeout(page_load_time)  # set webdriver timeout for page loading
 
                     _collect_login(self.driver, wait_time)  # collect if login data available
+
                     for link in _scrap_link_list:
-                        # check for next
                         try:
-                            self.driver.get(link)
-                            time.sleep(wait_time)
-                        except:
-                            self.snacks("simple", "Cant open the link")
+                            self.driver.get(link)  # first link from the kv
+                            time.sleep(wait_time)  # wait to load the page
+                        except TimeoutException:
+                            self.snacks(type="button", duration=999,
+                                        message=f"Timeout. Page is taking more than {page_load_time} seconds to load")
 
                         _next = _process_next(self.driver, wait_time)  # Collect if next available
 
                         if _next is not None:
                             _dict_list = []
                             limit_count = 0
-                            parameter_limiter = _get_parameter_limiter()
+                            parameter_limiter = _get_parameter_limit()
                             while _next is not None:
                                 if limit_count == parameter_limiter:
                                     break
                                 _soup(self.driver, wait_time, _dict=_dict_list) # make soup and gather data
-                                _next.click()
+                                self.driver.execute_script("arguments[0].click();", _next)
                                 time.sleep(wait_time)
                                 _next = _process_next(self.driver, wait_time) # Collect next link from the page
                                 limit_count += 1
@@ -513,12 +485,14 @@ class MinerSeleniumTabDrivers(DriverBase):
                     self.driver.quit()
                     return main_dict
 
+            main_dict = {}
+            # collect browser
+            if self.instances.ids.google_chrome_id.active:
+                _init_browser()
             elif self.instances.ids.mozilla_firefox_id.active:
-                self.driver = webdriver.Firefox(executable_path=".\\dll\\firefox_drivers\\geckodriver.exe")
-                self._collect_login(self.driver, wait_time)
+                _init_browser(driver_executable="firefox")
             elif self.instances.ids.ie_id.active:
-                self.driver = webdriver.Ie(executable_path=".\\dll\explorer_drivers\\IEDriverServer.exe")
-                self._collect_login(self.driver, wait_time)
+                _init_browser(driver_executable="ie")
             else:
                 self.snacks("simple", "Please Choose a Browser")
                 return None
@@ -544,7 +518,7 @@ class MinerSeleniumTabDrivers(DriverBase):
                 utils.send_a_mail(email_subject=f"Scrapping Done at {curr}",
                                   email_body=email_body,login_pass="chr0niclesOFana&ash")
 
-        wait_time = round(self.instances.ids.time_id.value, 1)
+        wait_time = round(self.instances.ids.action_time_id.value, 1)
 
         # progress
         # self.scrapping_progress = self.pop.pop_progress(title="Scrapping In Progress", text="",
@@ -573,7 +547,6 @@ class MinerSeleniumTabDrivers(DriverBase):
         self.show_pop_fileopen(on_dismiss_callback=_import_callback)
 
         # Clock.schedule_once(lambda dt: self.update_progress(progress_text="initializing....", pn_delta=0), .1)
-
 
 
     def on_complete_progress(self):
@@ -641,3 +614,84 @@ class MinerSeleniumTabDrivers(DriverBase):
         pass
     def export_to_excel(self):
         pass
+
+
+class MinerUtilityTabDrivers(DriverBase):
+    def __init__(self, instances, **kwargs):
+        super(MinerUtilityTabDrivers, self).__init__(**kwargs)
+        self.instances = instances
+
+    @utils.threaded(thread_name="email check thread")
+    def email_check(self, email):
+        def _on_dismiss_callback():
+            self.instances.ids.check_email_btn_id.disabled = False
+
+        # Simple Regex for syntax checking
+        regex = '^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,})$'
+        if email != str:
+            email_address = str(email)
+        else:
+            email_address = email
+
+        # Syntax check
+        match = re.match(regex, email_address)
+        if match == None:
+            self.snacks("simple", "Please Provide an Email address")
+        else:
+            self.instances.ids.check_email_btn_id.disabled = True
+            _get = utils.email_check(email)
+            if _get:
+                content = self.add_md_label(font_style="Body1",
+                                            text="Looks like the Email is valid",
+                                            halign="center")
+                self.show_pop_modal(size_hint_x=0.5, size_hint_y=None,
+                                    height=200, title_align="center", title_colors=True,
+                                    dialog_title="Email Found", content=content,
+                                    dismiss_callback=_on_dismiss_callback)
+            else:
+                content = self.add_md_label(font_style="Body1",
+                                            text="Oops the Email seems fake",
+                                            halign="center")
+                self.show_pop_modal(size_hint_x=0.5, size_hint_y=None,
+                                    height=200, title_align="center", title_colors=True,
+                                    dialog_title="Email Not Found", content=content,
+                                    dismiss_callback=_on_dismiss_callback)
+
+    @utils.threaded(thread_name="website check thread")
+    def website_check(self, website):
+        def _on_dismiss_callback():
+            pass
+        web_framwork_dict = parse(website)
+
+        # TODO: implement modal to organize and show data
+        print(web_framwork_dict)
+
+    @utils.threaded(thread_name="whois check thread")
+    def whois_check(self, website):
+        def modal_btn_callback():
+            pass
+
+        whois_object = None
+        try:
+            whois_object = whois(website)
+        except: # check for time out
+            pass
+        # wait for grabbing all
+
+        # make fill column and rows with who is object keys and value
+        if whois_object is not None:
+            # add a gridlayout as content
+            grid = self.add_grid_layout()
+            # organize content
+            grid.cols = len(whois_object)
+
+            # for key, value in whois_object.items():
+            #     make lbl
+            #  assign them on col and rows
+
+            # init md dialog with button ok size 8 by 8 (clear)
+            self.show_pop_modal(size_hint_x=.7, size_hint_y=.7,
+                                title_colors=True, title_align="center", dialog_title="WHOIS",
+                                content=grid)
+        # add gridlayout content into scrolview of md dialog
+        print(whois_object)
