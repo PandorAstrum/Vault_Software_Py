@@ -567,7 +567,7 @@ class MinerSeleniumTabDrivers(DriverBase):
 
             if self.instances.ids.google_chrome_id.active:
                 # collect scrap link
-                _scrap_link_list = self._collect_link(enclose=False)
+                _scrap_link_list = self._collect_link(enclose=True)
 
                 if _scrap_link_list is None:
                     self.snacks("simple", "Please select a Scrap Link option")

@@ -682,6 +682,10 @@ Miner_selenium_tab_kv = """
                 text: "Start Scrapping"
                 on_release: root.drivers.start_scrapping()
 """
+Miner_crawler_creator_tab = """
+<MinerCrawlerCreatorTab>:
+
+"""
 Miner_grabber_tab = """
 <MinerGrabberTab>:
     BoxLayout:
@@ -813,5 +817,6 @@ Miner_wiki_tab = """
 kv = Miner_scrapy_tab_kv \
      + Miner_selenium_tab_kv \
      + Miner_grabber_tab \
+     + Miner_crawler_creator_tab \
      + Miner_utility_tab \
      + Miner_wiki_tab

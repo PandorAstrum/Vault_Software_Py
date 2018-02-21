@@ -90,6 +90,29 @@ json_settings = {
                 "have_toolbar": False,
                 "toolbar_color": []
             },
+            "tab_class_name": "MinerCrawlerCreatorTab",
+            "tab_name": "CrawlerCreator",
+            "tab_id": "crawlercreator",
+            "tab_icon": "fa-book",
+            "tab_icon_class": "font_awesome",
+            "tab_type": "list",
+            "tab_content": [
+                {
+                    "tab_item_name": "Themes"
+                },
+                {
+                    "tab_item_name": "2 Second"
+                },
+                {
+                    "tab_item_name": "3 Second"
+                }
+            ]
+        },
+        {
+            "toolbar": {
+                "have_toolbar": False,
+                "toolbar_color": []
+            },
             "tab_class_name": "MinerWikiTab",
             "tab_name": "Wiki",
             "tab_id": "wiki",
@@ -149,6 +172,11 @@ class MinerGrabberTab(TabBase):
     def __init__(self, **kwargs):
         super(MinerGrabberTab, self).__init__(**kwargs)
         self.__name__ = "MinerGrabberTab"
+
+class MinerCrawlerCreator(TabBase):
+    def __init__(self, **kwargs):
+        super(MinerCrawlerCreator, self).__init__(**kwargs)
+        self.__name__ = "MinerCrawlCreatorTab"
 
 class MinerUtilityTab(TabBase):
     def __init__(self, **kwargs):
