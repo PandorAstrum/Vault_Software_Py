@@ -151,12 +151,12 @@ class MainScreen(Screen, Snacks):
         :return:
         """
         if component_name.endswith("_PR"):
-            component_class = f"bin.Component.{component_name}Component.Component"
+            component_class = f"bin.Component.{component_name}Component.component"
             module = utils.module_import_simple(component_class)
             return module.json_settings
         else:
             full_path = f"{self.se_component_dir}\\{component_name}Component\\"
-            module = utils.module_import_from_abs(full_path, "*Component.py")
+            module = utils.module_import_from_abs(full_path, "*component.py")
             return module.json_settings
 
     def _init_component(self, **kwargs):
@@ -167,7 +167,7 @@ class MainScreen(Screen, Snacks):
         """
         component_name = kwargs.get("component_name")
         if component_name.endswith("_PRComponent"):
-            component_class = f"bin.Component.{component_name}.Component"
+            component_class = f"bin.Component.{component_name}.component"
             module = utils.module_import_simple(component_class)
             return module.Component(component_name=kwargs.get("name"),
                                 component_id=kwargs.get("component_id"),
@@ -176,7 +176,7 @@ class MainScreen(Screen, Snacks):
                                 tab_group_name=kwargs.get("tab_group_name"))
         else:
             full_path = f"{self.se_component_dir}\\{component_name}\\"
-            module = utils.module_import_from_abs(full_path, "*Component.py")
+            module = utils.module_import_from_abs(full_path, "*component.py")
             return module.Component(component_name=kwargs.get("name"),
                                     component_id=kwargs.get("component_id"),
                                     component_icon=kwargs.get("component_icon"),
@@ -448,13 +448,13 @@ class LaunchPad(ScreenManager):
         if utils.is_empty(secondary_component_entry):
             for component_name in primary_component_entry:
                 if component_name.endswith("_PR"):
-                    kv_class = f"bin.Component.{component_name}Component.KV"
+                    kv_class = f"bin.Component.{component_name}Component.kv"
                     module = utils.module_import_simple(kv_class)
                     all_kv += module.kv
         else:
             for component_name in [*primary_component_entry, *secondary_component_entry]:
                 if component_name.endswith("_PR"):
-                    kv_class = f"bin.Component.{component_name}Component.KV"
+                    kv_class = f"bin.Component.{component_name}Component.kv"
                     module = utils.module_import_simple(kv_class)
                     all_kv += module.kv
                 else:

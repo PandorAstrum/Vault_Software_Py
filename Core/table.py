@@ -32,11 +32,14 @@ Builder.load_string('''
 <Table>
     do_scroll_y: False
     do_scroll_x: True
+    # size_hint: (1, None)
+    # height: table_layout_id.height
     BoxLayout:
         id: table_layout_id
         orientation:'vertical'
         size_hint_x: 1 if root.fixed_width_header else None
         width: header_container_id.width
+
         GridLayout:
             id: header_container_id
             spacing: dp(2)

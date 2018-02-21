@@ -3,18 +3,9 @@
 __author__ = "Ashiquzzaman Khan"
 __desc__ = "Main Exe file to Run"
 """
-from kivy.event import EventDispatcher
-import kivy
-from kivy.app import App
+
 from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.widget import Widget
-from kivymd.button import MDIconButton
-from kivymd.card import MDCard
-from kivymd.label import MDLabel
-from kivymd.selectioncontrols import MDCheckbox
-from kivymd.snackbar import Snackbar
-from kivymd.textfields import MDTextField
-from kivymd.theming import ThemableBehavior
+
 
 import utils
 from functools import partial
@@ -237,11 +228,7 @@ class TabBase(ScrollView):
     def _make(self):
         pass
 
-class DriverBase(Snacks, Spawn, EventDispatcher):
-    def __init__(self, **kwargs):
-        super(DriverBase, self).__init__(**kwargs)
-        # self.pop = Popups()
-        # self.snacks_bar = Snacks()
+
 
 
 class MiningField(BoxLayout):

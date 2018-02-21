@@ -6,6 +6,7 @@ theme_text_color must be ['Primary', 'Secondary', 'Hint', 'Error', 'Custom', 'Co
 """
 from os.path import expanduser
 
+from kivy.clock import mainthread
 from kivy.metrics import dp
 from kivy.properties import ObjectProperty
 from kivy.uix.boxlayout import BoxLayout
@@ -19,6 +20,7 @@ from kivymd.selectioncontrols import MDCheckbox
 from kivymd.textfields import MDTextField
 from kivymd.theming import ThemableBehavior
 from Core import xpop
+from Core.table import Table
 
 
 class Spawn(ThemableBehavior):
@@ -42,6 +44,46 @@ class Spawn(ThemableBehavior):
         grd_lt = GridLayout()
         return grd_lt
     # md modal
+
+    def add_modal_dialog(self, dialog_title="test", title_align="left", title_colors=False,
+                         size_hint_x=.9, size_hint_y=.9, height=200, auto_dismiss=False,
+                         content=None, content_table=False,
+                         button_anchor_x="right",
+                         buttons="default",
+                         default_callback=None):
+        def _on_dismiss(dismiss_callback):
+            if dismiss_callback is not None:
+                self.d.dismiss(dismiss_callback())
+            else:
+                self.d.dismiss()
+
+        if content is not None:
+            # content.bind(texture_size=content.setter("size"))
+            # _content = content
+            # _content.bind(texture_size=_content.setter('size'))
+            self.d = MDDialog(title=dialog_title, title_align=title_align, title_colors=title_colors,
+                          size_hint=(size_hint_x, size_hint_y),
+                          height=dp(height) if size_hint_y is None else dp(height),
+                          auto_dismiss=auto_dismiss,
+                          content=content, content_table=content_table,
+                          button_anchor_x=button_anchor_x)
+
+        if not auto_dismiss:
+            if buttons == "default":
+                self.d.add_action_button("Okay", action=lambda *x: _on_dismiss(default_callback))
+            # else:
+            #     for btn in buttons.keys():
+            #         self.d.add_action_button(btn, action=lambda *x: self.d.dismiss(buttons[btn]()))
+        return self.d
+
+    def add_table(self, table_content=None, fixed_width_header=True, cell_align="center", blank_cell_message=""):
+        if table_content is not None:
+            t = Table(table_content=table_content,
+                      fixed_width_header=fixed_width_header,
+                      cell_align=cell_align,
+                      blank_cell_message=blank_cell_message)
+            return t
+
     def show_pop_modal(self, size_hint_x=.9,
                        size_hint_y=.9, height=200,
                        auto_dismiss=False, dialog_title="Title here",
@@ -76,7 +118,7 @@ class Spawn(ThemableBehavior):
             _content.bind(texture_size=_content.setter('size'))
         self.dialog = MDDialog(title=dialog_title,
                                title_align=title_align,
-                               content=content,
+                               content=_content,
                                title_colors=title_colors,
                                size_hint=(size_hint_x, size_hint_y),
                                height=dp(height) if size_hint_y is None else dp(height),
@@ -88,9 +130,12 @@ class Spawn(ThemableBehavior):
                 self.dialog.add_action_button("Okay",
                                               action=lambda *x: _on_dismiss(dismiss_callback))
             else:
-                for btn, callbacks in buttons.items():
-                    self.dialog.add_action_button(str(btn),
-                                                  action=lambda *x: callbacks())
+                for btn in buttons.keys():
+                    # print
+                    func = buttons[btn]
+                    # func()
+                    self.dialog.add_action_button(btn,
+                                                  action=lambda *x: self.dialog.dismiss(func()))
 
 
         self.dialog.open()
@@ -120,8 +165,8 @@ class Spawn(ThemableBehavior):
         pass
 
     def show_pop_fileopen(self, on_dismiss_callback=None,
-                         path=expanduser(u'~'),
-                         multiselect=False):
+                          path=expanduser(u'~'),
+                          multiselect=False):
         """
         show the pop up for file open and calls callback on dismiss
         :param on_dismiss_callback: default callback when the pop up dismissed
@@ -136,11 +181,13 @@ class Spawn(ThemableBehavior):
     def add_md_label(self, font_style="Body1",
                      theme_text_color="Secondary",
                      text="msg here", size_hint_y=None,
-                     halign="left", valign="center"):
+                     halign="left", valign="center", auto_size=False):
         lbl = MDLabel(font_style=font_style,
                       theme_text_color=theme_text_color,
                       text=text, size_hint_y=size_hint_y,
                       halign=halign, valign=valign)
+        if auto_size:
+            lbl.bind(texture_size=lbl.setter("size"))
         return lbl
 
     def add_MDCard(self):

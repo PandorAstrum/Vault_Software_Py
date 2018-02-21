@@ -3,14 +3,15 @@
 from Core.baseInterface import ComponentBase, TabBase
 from bin.Component.Miner_PRComponent import MinerSeleniumTabDrivers
 from bin.Component.Miner_PRComponent import MinerUtilityTabDrivers
+from test.cefpython_master import CEFBrowser
 
-__all__ = [
+__all__         = [
     "Component",
     "json_settings"
 ]
 __author__      = "Ashiquzzaman Khan"
 __copyright__   = "2018 GPL"
-__desc__        = """Miner Component"""
+__desc__        = """Miner Component file"""
 
 json_settings = {
     "id": "Miner",
@@ -159,3 +160,4 @@ class MinerWikiTab(TabBase):
     def __init__(self, **kwargs):
         super(MinerWikiTab, self).__init__(**kwargs)
         self.__name__ = "MinerWikiTab"
+

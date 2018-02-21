@@ -4,7 +4,7 @@ from kivy.metrics import dp
 import utils
 
 from Core.baseInterface import CustomLayout
-from utils import download
+
 
 __author__      = "Ashiquzzaman Khan"
 __copyright__   = "2018 GPL"
@@ -104,9 +104,8 @@ class _TagSelectorField(CustomLayout):
             else:
                 self.tag_selector_holder.remove_widget(self)
                 self.scrap_field_instance.tag_selector_list.remove(self)
-                print(self.scrap_field_instance.tag_selector_list)
                 one_step_up = len(self.scrap_field_instance.tag_selector_list) - 1
-                self.scrap_field_instance.tag_selector_list[0].add_new_tag_selector_field_btn.disabled = True
+                self.scrap_field_instance.tag_selector_list[one_step_up].add_new_tag_selector_field_btn.disabled = False
 
         self.tag_selector_box.size_hint_y = None
         self.tag_selector_box.bind(minimum_height=self.tag_selector_box.setter("height"))
@@ -212,18 +211,7 @@ class ScrapField(CustomLayout):
                 self.scrap_field_holder_id.remove_widget(self)
                 self.main_instance.field_instance.remove(self)
 
-        def _check_button_callback(instance):
-
-            # grab the length of tag_slector_child
-            ss = len(self.tag_selector_box_holder.children)
-
-            # download html and make it a beautiful soup
-            # download()
-            # from soup find one
-            print(ss)
-
         self.delete_field_btn.bind(on_release=_delete_button_callback)
-        self.check_field_btn.bind(on_release=_check_button_callback)
 
         self.card.size_hint_y = None
         self.card.bind(minimum_height=self.card.setter('height'))

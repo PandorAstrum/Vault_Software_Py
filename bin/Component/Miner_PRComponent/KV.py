@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-__all__ = [
+__all__         = [
     "kv"
 ]
 __author__      = "Ashiquzzaman Khan"
@@ -316,7 +316,7 @@ Miner_selenium_tab_kv = """
                         theme_text_color: "Primary" if next_page_id.active else "Secondary"
                     MDTextField:
                         id: next_page_tag_id
-                        hint_text: "Next page Button or link XPath" if next_page_id.active else "Disabled"
+                        hint_text: "Next page Button or link css selector" if next_page_id.active else "Disabled"
                         color_mode: "accent"
                         disabled: False if next_page_id.active else True
                 BoxLayout: # link parameter Continuous page
@@ -681,11 +681,6 @@ Miner_selenium_tab_kv = """
                 id: start_scrapping_btn_id
                 text: "Start Scrapping"
                 on_release: root.drivers.start_scrapping()
-            MDRaisedButton:
-                id: view_data_btn_id
-                text: "View Data"
-                disabled: True
-                on_release: root.drivers.view_data()
 """
 Miner_grabber_tab = """
 <MinerGrabberTab>:
@@ -812,8 +807,7 @@ Miner_wiki_tab = """
         height: self.minimum_height
         padding: "20dp"
         spacing: "5dp"
-        Button:
-            text: "Miner wiki Tab"
+        id: wikia
 """
 
 kv = Miner_scrapy_tab_kv \

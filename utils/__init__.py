@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-__author__ = "Ashiquzzaman Khan"
-__desc__ = "Utility file"
-"""
+
 import fnmatch
 import importlib
 import importlib.util
@@ -28,7 +25,7 @@ from bin import appSettings
 from utils.appDirs import user_cache_dir
 from bin.appSettings import APP_EMAIL
 
-__all__ = [
+__all__         = [
     "color_scale",
     "check_internet",
     "threaded",
@@ -43,9 +40,12 @@ __all__ = [
     "combine_dict",
     "run_once",
     "send_a_mail",
-    "download"
+    "download_webpage",
+    "make_str"
 ]
-
+__author__      = "Ashiquzzaman Khan"
+__copyright__   = "2018 GPL"
+__desc__        = """ Useful Utility functions file"""
 
 def color_scale(input_value):
     """
@@ -275,16 +275,27 @@ def send_a_mail(email_subject="Subject",
     server.sendmail(from_addr, to_addr, text)
     server.quit()
 
-def download(url, user_agent='wswp', num_retries=2):
-    print('Progress bar -> Downloading:', url)
+def download_webpage(url, user_agent='wswp', num_retries=2):
+    # print('Progress bar -> Downloading:', url)
     headers = {'User-agent': user_agent}
     request = urllib2.Request(url, headers=headers)
     try:
         html = urllib2.urlopen(request).read()
     except urllib2.URLError as e:
-        print('Progress bar -> Download error:', e.reason)
+        # print('Progress bar -> Download error:', e.reason)
         html = None
         if num_retries > 0:
             if hasattr(e, 'code') and 500 <= e.code < 600:  # recursively retry 5xx HTTP errors
-                return download(url, user_agent, num_retries-1)
+                return download_webpage(url, user_agent, num_retries-1)
     return html
+
+
+def make_str(data_struct):
+    temp_str = ""
+    if data_struct is list:
+        for i in data_struct:
+            temp_str += i
+
+    return temp_str
+
+
